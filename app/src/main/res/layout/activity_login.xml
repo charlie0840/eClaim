@@ -46,7 +46,7 @@ android:weightSum="1">
     android:layout_width="173dp"
     android:layout_height="wrap_content"
     android:id="@+id/imageView"
-    android:src="@drawable/appLOGO"/>
+    android:src="@drawable/applogo"/>
 
 <!--<Space
     android:layout_width="282dp"
