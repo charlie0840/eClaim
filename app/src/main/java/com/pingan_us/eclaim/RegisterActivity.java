@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -44,8 +46,7 @@ public class RegisterActivity extends Activity {
     String first_name, last_name, user_password, confirm_password, type, user_role = "none", email_address, phone;
     Context ctx = this;
     boolean reg = true;
-    List<String> list = new ArrayList<String>();
-
+    byte[] picBinary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,13 +92,12 @@ public class RegisterActivity extends Activity {
 
 
                     Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
-
-
-
-            /* Now you have choosen image in Bitmap format in object "yourSelectedImage". You can use it in way you want! */
+                    PHOTO.setImageBitmap(yourSelectedImage);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    yourSelectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    picBinary = stream.toByteArray();
                 }
         }
-
     };
 
 
@@ -150,8 +150,8 @@ public class RegisterActivity extends Activity {
 
             if(th == true){
                 nDialog.dismiss();
-                BackgroundWorker backgroundWorker = new BackgroundWorker(ctx);
-                backgroundWorker.execute(type, user_name, user_password);
+                //BackgroundWorker backgroundWorker = new BackgroundWorker(ctx);
+                //backgroundWorker.execute(type, user_name, user_password);
             }
             else{
                 nDialog.dismiss();
@@ -195,6 +195,11 @@ public class RegisterActivity extends Activity {
                         USER_PASSWORD.setText("");
                         CONFIRM_PASSWORD.setText("");
                     }
+                    else if(picBinary == null) {
+                        Toast.makeText(getApplicationContext(), "please upload the photo of your driver license", Toast.LENGTH_SHORT).show();
+                        USER_PASSWORD.setText("");
+                        CONFIRM_PASSWORD.setText("");
+                    }
                     else {
                         if (reg)
                             type = "register";
@@ -216,15 +221,16 @@ public class RegisterActivity extends Activity {
                                 e.printStackTrace();
                             }
                             if(retVal) {
+                                String uploadImage = Base64.encodeToString(picBinary, Base64.DEFAULT);
                                 BackgroundWorker backgroundWorker = new BackgroundWorker(ctx);
-                                backgroundWorker.execute(type, first_name, last_name, email_address, phone, user_password, photo);
+                                backgroundWorker.execute(type, first_name, last_name, email_address, phone, user_password, uploadImage);
                             }
                         }
                     }
                     break;
 
                 case R.id.cancel_btn:
-                    Intent intent = new Intent(getApplicationContext(), StartActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(intent);
                     break;
                 case R.id.photo:

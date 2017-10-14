@@ -24,7 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
-public class StartActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
     private Button login, register, unregister, logout;
     private EditText username, password;
@@ -103,7 +103,7 @@ public class StartActivity extends AppCompatActivity {
                             password.setVisibility(View.GONE);
                             login.setVisibility(View.GONE);
                             register.setVisibility(View.GONE);
-                            Intent intent = new Intent(getApplicationContext(), ClassroomtypeActivity.class); //fixed
+                            Intent intent = new Intent(getApplicationContext(), ProfileActivity.class); //fixed
                             intent.putExtra("user", final_user);
                             startActivity(intent);
                         }
@@ -162,7 +162,7 @@ public class StartActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute(){
             super.onPreExecute();
-            nDialog = new ProgressDialog(StartActivity.this);
+            nDialog = new ProgressDialog(LoginActivity.this);
             nDialog.setTitle("Checking Network");
             nDialog.setMessage("Loading..");
             nDialog.setIndeterminate(false);
@@ -258,7 +258,7 @@ public class StartActivity extends AppCompatActivity {
         shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "eClaim");
         Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.drawable.icon);
         shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
-        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(getApplicationContext(), StartActivity.class));
+        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(getApplicationContext(), LoginActivity.class));
         sendBroadcast(shortcutintent);
     }
 

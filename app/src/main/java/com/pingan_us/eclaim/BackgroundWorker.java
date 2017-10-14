@@ -37,18 +37,17 @@ public class BackgroundWorker extends AsyncTask<String, Void, String>{
     protected String doInBackground(String... params) {
 
         type = params[0];
-        String login_url = "https://moviphones.com/whiteboard/user/login.php";
-        String register_url = "https://moviphones.com/whiteboard/user/register.php";
-        String unregister_url = "https://moviphones.com/whiteboard/user/unregister.php";
-        String createsession_url = "https://moviphones.com/whiteboard/class/createsession.php";
-        String joinsession_url = "https://moviphones.com/whiteboard/class/joinsession.php";
-        String deletesession_url = "https://moviphones.com/whiteboard/class/deletesession.php";
-        String schoolinfo_url = "https://moviphones.com/whiteboard/college/schoolinfo.php";
-        String imageupdate_url = "https://moviphones.com/whiteboard/class/imageupdate.php";
-        String updateIpAndPort_url = "https://moviphones.com/whiteboard/school_user/update_IpAndPort.php",
-                updatesession_url = "https://moviphones.com/whiteboard/class/session_updatestudent.php",
-                updateImage_url = "https://moviphones.com/whiteboard/class/update_image.php",
-                sessionIsStart_url = "https://moviphones.com/whiteboard/class/session_start.php";
+        String login_url = "";
+        String register_url = "";
+        String unregister_url = "";
+        String createsession_url = "";
+        String joinsession_url = "";
+        String deletesession_url = "";
+        String imageupdate_url = "";
+        String updateIpAndPort_url = "",
+                updatesession_url = "",
+                updateImage_url = "",
+                sessionIsStart_url = "";
 
 
         if(type.equals("login")) {
@@ -62,8 +61,8 @@ public class BackgroundWorker extends AsyncTask<String, Void, String>{
                 httpURLConnection.setDoInput(true);
                 OutputStream outputStream = httpURLConnection.getOutputStream();
                 BufferedWriter bufferWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                String post_data = URLEncoder.encode("user_name", "UTF-8")+"="+URLEncoder.encode(user_name,"UTF-8")+
-                        "&"+URLEncoder.encode("user_password","UTF-8")+"="+URLEncoder.encode(user_password,"UTF-8");
+                String post_data = "";//URLEncoder.encode("user_name", "UTF-8")+"="+URLEncoder.encode(user_name,"UTF-8")+
+                        //"&"+URLEncoder.encode("user_password","UTF-8")+"="+URLEncoder.encode(user_password,"UTF-8");
                 bufferWriter.write(post_data);
                 bufferWriter.flush();
                 bufferWriter.close();
@@ -88,8 +87,11 @@ public class BackgroundWorker extends AsyncTask<String, Void, String>{
         }
         else if(type.equals("register")) {
             try {
-                String user_name = params[1];
-                String user_password = params[2];
+                String first_name = params[1];
+                String last_name = params[2];
+                String email = params[3];
+                String phone = params[4];
+                String password = params[5];
                 URL url = new URL(register_url);
                 HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
@@ -97,8 +99,9 @@ public class BackgroundWorker extends AsyncTask<String, Void, String>{
                 httpURLConnection.setDoInput(true);
                 OutputStream outputStream = httpURLConnection.getOutputStream();
                 BufferedWriter bufferWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                String post_data = URLEncoder.encode("user_name", "UTF-8")+"="+URLEncoder.encode(user_name,"UTF-8")+
-                        "&"+URLEncoder.encode("user_password","UTF-8")+"="+URLEncoder.encode(user_password,"UTF-8");
+                String post_data = "";
+                        //URLEncoder.encode("user_name", "UTF-8")+"="+URLEncoder.encode(user_name,"UTF-8")+
+                        //"&"+URLEncoder.encode("user_password","UTF-8")+"="+URLEncoder.encode(user_password,"UTF-8");
                 bufferWriter.write(post_data);
                 bufferWriter.flush();
                 bufferWriter.close();
@@ -146,122 +149,6 @@ public class BackgroundWorker extends AsyncTask<String, Void, String>{
                 String result = "";
                 String line = "";
                 while((line = bufferedReader.readLine()) != null) {
-                    result += line;
-                }
-                bufferedReader.close();
-                inputStream.close();
-                httpURLConnection.disconnect();
-
-                return result;
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-
-        else if(type.equals("createsession")) {
-            try {
-                String group_name = params[1];
-                String permission_code = params[2];
-                //String host = params[3];
-                URL url = new URL(createsession_url);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                BufferedWriter bufferWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                String post_data = URLEncoder.encode("group_name", "UTF-8") + "=" + URLEncoder.encode(group_name, "UTF-8") +
-                        "&" + URLEncoder.encode("permission_code", "UTF-8") + "=" + URLEncoder.encode(permission_code, "UTF-8");
-                //+"&" + URLEncoder.encode("host", "UTF-8") + "=" + URLEncoder.encode(host, "UTF-8");
-                bufferWriter.write(post_data);
-                bufferWriter.flush();
-                bufferWriter.close();
-                outputStream.close();
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
-                String result = "";
-                String line = "";
-                while ((line = bufferedReader.readLine()) != null) {
-                    result += line;
-                }
-                bufferedReader.close();
-                inputStream.close();
-                httpURLConnection.disconnect();
-
-                return result;
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        else if(type.equals("joinsession")) {
-            try {
-                String group_name = params[1];
-                String permission_code = params[2];
-                URL url = new URL(joinsession_url);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                BufferedWriter bufferWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                String post_data = URLEncoder.encode("group_name", "UTF-8") + "=" + URLEncoder.encode(group_name, "UTF-8") +
-                        "&" + URLEncoder.encode("permission_code", "UTF-8") + "=" + URLEncoder.encode(permission_code, "UTF-8");
-                bufferWriter.write(post_data);
-                bufferWriter.flush();
-                bufferWriter.close();
-                outputStream.close();
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
-                String result = "";
-                String line = "";
-                while ((line = bufferedReader.readLine()) != null) {
-                    result += line;
-                }
-                bufferedReader.close();
-                inputStream.close();
-                httpURLConnection.disconnect();
-
-                return result;
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-        else if(type.equals("deletesession")) {
-            try {
-                String group_name = params[1];
-                String permission_code = params[2];
-                URL url = new URL(deletesession_url);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                BufferedWriter bufferWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                String post_data = URLEncoder.encode("group_name", "UTF-8") + "=" + URLEncoder.encode(group_name, "UTF-8") +
-                        "&" + URLEncoder.encode("permission_code", "UTF-8") + "=" + URLEncoder.encode(permission_code, "UTF-8");
-                bufferWriter.write(post_data);
-                bufferWriter.flush();
-                bufferWriter.close();
-                outputStream.close();
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
-                String result = "";
-                String line = "";
-                while ((line = bufferedReader.readLine()) != null) {
                     result += line;
                 }
                 bufferedReader.close();
@@ -356,89 +243,9 @@ public class BackgroundWorker extends AsyncTask<String, Void, String>{
                 e.printStackTrace();
             }
         }
-
-        else if(type.equals("updateipandport")) {
-            try {
-                String ip_addr = params[1];
-                String port = params[2];
-                String user_id = params[3];
-                String session_id = params[4];
-
-                URL url = new URL(updateIpAndPort_url);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                BufferedWriter bufferWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                String post_data = URLEncoder.encode("ip_addr", "UTF-8") + "=" + URLEncoder.encode(ip_addr, "UTF-8") +
-                        "&" + URLEncoder.encode("port", "UTF-8") + "=" + URLEncoder.encode(port, "UTF-8") +
-                        "&" + URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(user_id, "UTF-8") +
-                        "&" + URLEncoder.encode("current_session", "UTF-8") + "=" + URLEncoder.encode(session_id, "UTF-8");
-                bufferWriter.write(post_data);
-                bufferWriter.flush();
-                bufferWriter.close();
-                outputStream.close();
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
-                String result = "";
-                String line = "";
-                while ((line = bufferedReader.readLine()) != null) {
-                    result += line;
-                }
-                bufferedReader.close();
-                inputStream.close();
-                httpURLConnection.disconnect();
-
-                return result;
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        else if(type.equals("updatesessionuser")) {
-            try {
-                String user_id = params[1];
-                String session_id = params[2];
-                URL url = new URL(updatesession_url);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                BufferedWriter bufferWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                String post_data = URLEncoder.encode("user_id", "UTF-8") + "=" + URLEncoder.encode(user_id, "UTF-8") +
-                        "&" + URLEncoder.encode("session_id", "UTF-8") + "=" + URLEncoder.encode(session_id, "UTF-8");
-                bufferWriter.write(post_data);
-                bufferWriter.flush();
-                bufferWriter.close();
-                outputStream.close();
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
-                String result = "";
-                String line = "";
-                while ((line = bufferedReader.readLine()) != null) {
-                    result += line;
-                }
-                bufferedReader.close();
-                inputStream.close();
-                httpURLConnection.disconnect();
-
-                return result;
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
         else if(type.equals("uploadimage")) {
             try {
-                String image = params[2];
-                String session_id = params[1];
+                String image = params[1];
                 URL url = new URL(updateImage_url);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
@@ -446,8 +253,9 @@ public class BackgroundWorker extends AsyncTask<String, Void, String>{
                 httpURLConnection.setDoInput(true);
                 OutputStream outputStream = httpURLConnection.getOutputStream();
                 BufferedWriter bufferWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                String post_data = URLEncoder.encode("image", "UTF-8") + "=" + URLEncoder.encode(image, "UTF-8") +
-                        "&" + URLEncoder.encode("session_id", "UTF-8") + "=" + URLEncoder.encode(session_id, "UTF-8");
+                String post_data = "";
+                //URLEncoder.encode("image", "UTF-8") + "=" + URLEncoder.encode(image, "UTF-8") +
+                        //"&" + URLEncoder.encode("session_id", "UTF-8") + "=" + URLEncoder.encode(session_id, "UTF-8");
                 bufferWriter.write(post_data);
                 bufferWriter.flush();
                 bufferWriter.close();
@@ -471,79 +279,6 @@ public class BackgroundWorker extends AsyncTask<String, Void, String>{
                 e.printStackTrace();
             }
         }
-
-        else if(type.equals("closesession")) {
-            try {
-                String session_id = params[1];
-                URL url = new URL(sessionIsStart_url);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                BufferedWriter bufferWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                String post_data = URLEncoder.encode("session_id", "UTF-8") + "=" + URLEncoder.encode(session_id, "UTF-8");
-                bufferWriter.write(post_data);
-                bufferWriter.flush();
-                bufferWriter.close();
-                outputStream.close();
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
-                String result = "";
-                String line = "";
-                while ((line = bufferedReader.readLine()) != null) {
-                    result += line;
-                }
-                bufferedReader.close();
-                inputStream.close();
-                httpURLConnection.disconnect();
-
-                return result;
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        else if(type.equals("opensession")) {
-            try {
-                String session_id = params[1];
-                URL url = new URL(sessionIsStart_url);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                BufferedWriter bufferWriter = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-                String post_data = URLEncoder.encode("session_id", "UTF-8") + "=" + URLEncoder.encode(session_id, "UTF-8");
-                bufferWriter.write(post_data);
-                bufferWriter.flush();
-                bufferWriter.close();
-                outputStream.close();
-                InputStream inputStream = httpURLConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"));
-                String result = "";
-                String line = "";
-                System.out.println("start test open session>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + session_id);
-                while ((line = bufferedReader.readLine()) != null) {
-                    result += line;
-                    System.out.println("open session test: " + line + " >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                }
-                bufferedReader.close();
-                inputStream.close();
-                httpURLConnection.disconnect();
-
-                return result;
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-
         return null;
     }
 
@@ -554,7 +289,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String>{
 
     @Override
     protected void onPostExecute(String result) {
-        Toast.makeText(context, type + " : " + result + "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", Toast.LENGTH_LONG).show();
+        //Toast.makeText(context, type + " : " + result + "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", Toast.LENGTH_LONG).show();
         //System.out.println(type + " : " + result + "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
     }
 
