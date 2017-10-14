@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<EditText
+    android:id="@+id/firstname"
+    android:layout_width="match_parent"
+
+    android:layout_height="wrap_content"
+    android:hint="First name"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_centerHorizontal="true"
+    android:layout_alignParentStart="true" />
+
+<EditText
+        android:id="@+id/lastname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="First name"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/firstname"
+        android:layout_alignParentStart="true" />
+
+<EditText
+        android:id="@+id/phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lastname"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_centerHorizontal="true"
+        android:hint="phone number" />
+
+<EditText
+        android:id="@+id/email_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lastname"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_centerHorizontal="true"
+        android:hint="phone number" />
+
+<TextView
+        android:id="@+id/addphoto_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/phone"
+        android:layout_alignStart="@+id/phone"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="20dp"
+        android:text="take photo of your
+driver license"/>
+
+
+<ImageView
+        android:id="@+id/photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/phone"
+        android:src="@drawable/addphoto"
+
+        android:layout_alignRight="@+id/firstname"
+        android:layout_toRightOf="@+id/addphoto_text"/>
+
+<EditText
+    android:id="@+id/password"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/addphoto_text"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_centerHorizontal="true"
+    android:hint="Enter password"
+    android:inputType="textPassword" />
+
+<EditText
+    android:id="@+id/confpassword"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_below="@+id/password"
+    android:layout_centerHorizontal="true"
+    android:hint="confirm password"
+    android:inputType="textPassword" />
+
+<Button
+    android:id="@+id/confirm_btn"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:onClick="saveInfo"
+    android:text="Register"
+    android:layout_marginTop="20dp"
+    android:layout_below="@+id/confpassword"
+    android:layout_alignLeft="@+id/firstname"
+    android:layout_centerHorizontal="true" />
+<Button
+    android:id="@+id/cancel_btn"
+    android:layout_width="80dp"
+    android:layout_height="wrap_content"
+    android:text="Cancel"
+    android:layout_marginTop="20dp"
+    android:layout_alignright="@+id/firstname"
+    android:layout_below="@+id/confpassword"
+    android:layout_alignEnd="@+id/email_text" />
+</RelativeLayout>
+
+
