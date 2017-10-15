@@ -164,8 +164,7 @@
                 android:layout_below="@+id/vehicle_section"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android>
+                android:layout_marginBottom="10dp">
             </ImageSwitcher>
         </RelativeLayout>
     </LinearLayout>
