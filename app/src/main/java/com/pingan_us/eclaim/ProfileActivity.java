@@ -1,9 +1,11 @@
 package com.pingan_us.eclaim;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +16,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.util.Base64;
 import android.view.MotionEvent;
@@ -25,6 +28,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
@@ -41,6 +46,10 @@ import java.util.concurrent.ExecutionException;
 
 public class ProfileActivity extends Activity{
     private ImageSwitcher IDImageSwitcher, VehicleImageSwitcher;
+    private LinearLayout photo_section;
+    private RelativeLayout info_section, claim_section, phone_section, id_section, vehicle_section;
+    private Button view_doc_btn, file_claim_btn;
+    private ImageButton phone_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +57,44 @@ public class ProfileActivity extends Activity{
         setContentView(R.layout.activity_register);
 
         Intent intent = getIntent();
+
         IDImageSwitcher = (ImageSwitcher) findViewById(R.id.ID_switch);
+        VehicleImageSwitcher = (ImageSwitcher) findViewById(R.id.vehicle_switch);
+
+        photo_section = (LinearLayout) findViewById(R.id.second_layer);
+        info_section = (RelativeLayout) findViewById(R.id.first_layer);
+        claim_section = (RelativeLayout) findViewById(R.id.third_layer);
+        phone_section = (RelativeLayout) findViewById(R.id.fourth_layout);
+        id_section = (RelativeLayout) findViewById(R.id.id_section);
+        vehicle_section = (RelativeLayout) findViewById(R.id.vehicle_section);
+
+        view_doc_btn = (Button) findViewById(R.id.claim_button);
+        file_claim_btn = (Button) findViewById(R.id.file_claim_button);
+        phone_btn = (ImageButton) findViewById(R.id.assistance_phone_button);
+
+        file_claim_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), FileClaim1Activity.class); //fixed
+                startActivity(intent);
+            }
+        });
+
+        phone_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:123456789"));
+                if (ActivityCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(), "please grant the access to phone call", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    startActivity(callIntent);
+                }
+            }
+        });
+
+
         //nextImageButton = (Button) findViewById(R.id.nextImageButton);
 
         IDImageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {

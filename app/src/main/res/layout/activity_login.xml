@@ -30,78 +30,79 @@ android:weightSum="1">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:text="your personal auto claim assistance"
-        android:textColor="#14ab0f"/>
+        android:textColor="@color/colorPrimary"/>
 
     <LinearLayout
-    android:id="@+id/email_login_form"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:weightSum="1"
-    android:layout_weight="0.42">
-
-    <android.support.design.widget.TextInputLayout
+        android:id="@+id/email_login_form"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:weightSum="1"
+        android:layout_weight="0.42">
 
-        <AutoCompleteTextView
-            android:id="@+id/username"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Username"
-            android:textColor="#FFFFFF"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textColorHint="#ffffff"
-            android:imeOptions="actionNext"
+            android:layout_height="wrap_content">
+            <AutoCompleteTextView
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Username"
+                android:textColor="#FFFFFF"
+                android:maxLines="1"
+                android:textColorHint="#ffffff"
+                android:imeOptions="actionNext"
             />
+        </android.support.design.widget.TextInputLayout>
 
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/password"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:imeActionId="@+id/login"
+                android:imeActionLabel="@string/action_sign_in_short"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:textColor="#ffffff"
+                android:textColorHint="#ffffff"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/loginbutton"
+            android:layout_width="148dp"
             android:layout_height="wrap_content"
-            android:hint="Password"
-            android:imeActionId="@+id/login"
-            android:imeActionLabel="@string/action_sign_in_short"
-            android:imeOptions="actionUnspecified"
-            android:inputType="textPassword"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:textColor="#ffffff"
-            android:textColorHint="#ffffff"/>
+            android:layout_marginTop="10dp"
+            android:text="login"
+            android:layout_gravity="center_horizontal"
+            android:textSize="20dp"
+            android:onClick="onLogin"
+            android:alpha="0.6"/>
 
-    </android.support.design.widget.TextInputLayout>
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="148dp"
-        android:layout_height="36dp"
-        android:text="Log In"
-        android:id="@+id/loginbutton"
         android:layout_gravity="center_horizontal"
-        android:background="#f3f1f1"
-        android:textColor="#030000"
+            android:alpha="0.7"
+        android:background="@drawable/cycle"/>
+        android:alpha="0.6"
         android:textSize="20sp"
-        android:onClick="onLogin"/>
+        android:onClick="onLogin"
 
     <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="148dp"
-        android:layout_height="36dp"
-        android:text="Log Out"
         android:id="@+id/logoutbutton"
+        android:layout_width="148dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Log Out"
         android:layout_gravity="center_horizontal"
-        android:background="#f3f1f1"
-        android:textColor="#030000"
+        android:alpha="0.6"
         android:textSize="20sp"
         android:onClick="onLogOut"/>
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -121,8 +122,6 @@ android:weightSum="1">
         android:id="@+id/registerbutton"
         android:layout_gravity="center_horizontal"
         android:background="@android:color/transparent"
-
-        android:singleLine="true"
         android:textColor="#ffffff"
         android:textColorHint="#ffffff" />
 
