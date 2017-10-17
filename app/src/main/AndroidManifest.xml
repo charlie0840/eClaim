@@ -10,14 +10,35 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity">
+        <uses-library android:name="com.google.android.maps" />
+        <activity
+            android:name=".LoginActivity"
+            android:configChanges="orientation"
+            android:label="eClaim"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FileClaim1Activity"></activity>
+        <activity
+            android:name=".FileClaim1Activity"
+            android:configChanges="orientation"
+            android:label="eClaim"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".RegisterActivity"
+            android:configChanges="orientation"
+            android:label="eClaim"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".ProfileActivity"
+            android:configChanges="orientation"
+            android:label="eClaim"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

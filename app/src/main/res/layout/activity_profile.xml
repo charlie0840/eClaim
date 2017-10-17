@@ -34,7 +34,8 @@
                 android:layout_width="wrap_content"
                 android:id="@+id/name_title"
                 android:text="Name:"
-                android:textSize="20dp" />
+                android:textSize="20dp"
+                android:textColor="@color/colorBlack"/>
             <TextView
                 android:id="@+id/name_field"
                 android:layout_width="wrap_content"
@@ -43,6 +44,7 @@
                 android:layout_alignBottom="@+id/name_title"
                 android:layout_toRightOf="@+id/name_title"
                 android:text="Charlie Yu"
+                android:textColor="@color/colorBlack"
                 android:textSize="20dp"/>
         </RelativeLayout>
 
@@ -59,7 +61,8 @@
                 android:layout_width="wrap_content"
                 android:id="@+id/phone_title"
                 android:text="Phone #:"
-                android:textSize="20dp" />
+                android:textSize="20dp"
+                android:textColor="@color/colorBlack" />
 
             <TextView
                 android:id="@+id/phone_field"
@@ -69,7 +72,8 @@
                 android:layout_alignBottom="@+id/phone_title"
                 android:layout_toRightOf="@+id/phone_title"
                 android:text="888-333-9999"
-                android:textSize="20dp"/>
+                android:textSize="20dp"
+                android:textColor="@color/colorBlack"/>
         </RelativeLayout>
     </RelativeLayout>
 
@@ -103,6 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:textSize="15dp"
+                    android:textColor="@color/colorBlack"
                     android:text="Your ID"/>
                 <ImageButton
                     android:id="@+id/id_add_button"
@@ -147,6 +152,7 @@
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:textSize="15dp"
+                    android:textColor="@color/colorBlack"
                     android:text="Your vehicles"/>
                 <ImageButton
                     android:id="@+id/vehicle_add_button"
@@ -187,7 +193,8 @@
             android:layout_centerVertical="true"
             android:layout_margin="20dp"
             android:text="Your Claims"
-            android:textSize="15dp"/>
+            android:textSize="15dp"
+            android:textColor="@color/colorBlack"/>
         <Button
             android:id="@+id/claim_button"
             android:layout_width="105dp"
@@ -195,6 +202,7 @@
             android:layout_marginEnd="20dp"
             android:layout_centerVertical="true"
             android:text="View Docs"
+            android:textColor="@color/colorBlack"
             android:layout_alignParentRight="true"/>
     </RelativeLayout>
 
@@ -219,6 +227,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15dp"
+                android:textColor="@color/colorBlack"
                 android:text="Roadside Assistance"/>
             <TextView
                 android:id="@+id/assistance_phone_number"
@@ -228,6 +237,7 @@
                 android:layout_below="@+id/assistance_phone_title"
                 android:layout_centerHorizontal="true"
                 android:textSize="15dp"
+                android:textColor="@color/colorBlack"
                 android:text="1-800-000-0000"/>
         </RelativeLayout>
         <ImageButton
@@ -249,6 +259,7 @@
         android:layout_marginRight="20dp"
         android:background="@drawable/cycle"
         android:alpha="0.6"
+        android:textColor="@color/colorBlack"
         android:text="File a New Claim"/>
 
 
