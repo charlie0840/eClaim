@@ -6,7 +6,7 @@
     android:background="@drawable/profilebackground">
 
     <RelativeLayout
-        android:id="@+id/step3_title"
+        android:id="@+id/finish_step_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
@@ -22,18 +22,15 @@
             android:textColor="@color/colorBlack"
             android:text="Step 3 of 3:select auto repair"/>
     </RelativeLayout>
-
-    <Spinner
-        android:id="@+id/auto_repair_spinner"
-        android:layout_width="match_parent"
+    <android.support.v4.widget.CircleImageView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
-    </Spinner>
-
+        android:scaleType="fitCenter"
+        android:src="@drawable/claimfinish"
+        android:layout_centerHorizontal="true"/>
 
     <Button
-        android:id="@+id/finish_step_button"
+        android:id="@+id/back_to_profile_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
@@ -41,5 +38,5 @@
         android:background="@drawable/cycle"
         android:alpha="0.6"
         android:textSize="20dp"
-        android:text="Confirm and Submit" />
+        android:text="Back to Profile" />
 </RelativeLayout>
