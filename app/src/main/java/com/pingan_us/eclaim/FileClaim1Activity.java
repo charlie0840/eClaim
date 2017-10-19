@@ -8,6 +8,7 @@ import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -26,7 +27,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -36,6 +36,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class FileClaim1Activity extends FragmentActivity implements View.OnClickListener, OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -44,14 +46,21 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         GoogleMap.OnMapLongClickListener,
         GoogleMap.OnMarkerClickListener {
 
-    protected Button next_btn, time_btn, btn;
+    protected Button next_btn, time_btn, set_btn;
     protected CheckBox injure_box, present_box, drivable_box;
     protected RelativeLayout injure_section, present_section, drivable_section;
     protected Spinner vehicle_spinner;
     protected RadioButton I_rbtn, other_rbtn;
+
+    private DatePicker datePicker;
+    private TimePicker timePicker;
+    private View dialogView;
+    private AlertDialog alertDialog;
+
     private GoogleMap mMap;
     private GoogleApiClient googleApiClient;
     private double longitude = 0, latitude = 0;
+    private long time;
     public static final int  PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
     private boolean mLocationPermissionGranted = false;
     private SupportMapFragment mapFragment;
@@ -63,8 +72,8 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        //mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        //mapFragment.getMapAsync(this);
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -89,26 +98,56 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         other_rbtn = (RadioButton) findViewById(R.id.other_pick_radiobutton);
 
         next_btn.setOnClickListener(this);
-        time_btn.setOnClickListener(this);
         I_rbtn.setOnClickListener(this);
         other_rbtn.setOnClickListener(this);
         injure_section.setOnClickListener(this);
         present_section.setOnClickListener(this);
         drivable_section.setOnClickListener(this);
+        time_btn.setOnClickListener(this);
 
         I_rbtn.setChecked(true);
         other_rbtn.setChecked(false);
+
+
+        dialogView = View.inflate(this, R.layout.date_time_picker, null);
+        alertDialog = new AlertDialog.Builder(this).create();
+
+        time_btn = (Button) findViewById(R.id.time_picker_btn);
+
+
+        dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
+                TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.time_picker);
+
+                Calendar calendar = new GregorianCalendar(datePicker.getYear(),
+                        datePicker.getMonth(),
+                        datePicker.getDayOfMonth(),
+                        timePicker.getCurrentHour(),
+                        timePicker.getCurrentMinute());
+
+                time = calendar.getTimeInMillis();
+                Date date=new Date(time);
+
+                time_btn.setText(date.toString());
+                alertDialog.dismiss();
+            }});
+
+
+        alertDialog.setView(dialogView);
     }
 
     @Override
     public void onClick(View v) {
         switch(v.getId()){
+            case R.id.time_picker_btn:
+                alertDialog.show();
+                break;
             case R.id.start_step2_button:
                 Intent intent = new Intent(this, FileClaim2Activity.class);
                 this.startActivity(intent);
-                break;
-            case R.id.time_picker_btn:
-                showDateTimePicker();
                 break;
             case R.id.drivable_section:
                 if(!drivable_box.isChecked())
@@ -129,21 +168,26 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                     present_box.setChecked(false);
                 break;
             case R.id.I_pick_radiobutton:
-                if(!other_rbtn.isChecked())
-                    other_rbtn.setChecked(true);
-                else
+                if(other_rbtn.isChecked())
                     other_rbtn.setChecked(false);
                 break;
             case R.id.other_pick_radiobutton:
-                if(!I_rbtn.isChecked())
-                    I_rbtn.setChecked(true);
-                else
+                if(I_rbtn.isChecked())
                     I_rbtn.setChecked(false);
                 break;
         }
     }
 
     Calendar date;
+
+
+
+
+
+
+
+
+
     public void showDateTimePicker() {
         final Calendar currentDate = Calendar.getInstance();
         date = Calendar.getInstance();
@@ -151,6 +195,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 date.set(year, monthOfYear, dayOfMonth);
+
                 new TimePickerDialog(getApplicationContext(), new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -165,7 +210,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
     @Override
     public void onMapReady(GoogleMap map) {
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        LatLng defLoc = new LatLng(0,0);
+        LatLng defLoc = new LatLng(-13,76);
         CameraPosition googlePlex = CameraPosition.builder()
                  .target(defLoc)
                  .zoom(16)

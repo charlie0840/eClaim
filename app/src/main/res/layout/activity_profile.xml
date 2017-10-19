@@ -1,267 +1,281 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:background="@drawable/profilebackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <RelativeLayout
-        android:id="@+id/first_layer"
-        android:alpha="0.6"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/cycle">
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profile_photo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/profilephoto"/>
+        android:layout_height="match_parent">
         <RelativeLayout
-            android:id="@+id/name_layout"
-            android:layout_toRightOf="@+id/profile_photo"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="5dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:id="@+id/name_title"
-                android:text="Name:"
-                android:textSize="20dp"
-                android:textColor="@color/colorBlack"/>
-            <TextView
-                android:id="@+id/name_field"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/name_title"
-                android:layout_alignBottom="@+id/name_title"
-                android:layout_toRightOf="@+id/name_title"
-                android:text="Charlie Yu"
-                android:textColor="@color/colorBlack"
-                android:textSize="20dp"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/profile_photo"
-            android:layout_alignBottom="@+id/profile_photo"
-            android:layout_marginBottom="15dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginLeft="10dp">
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:id="@+id/phone_title"
-                android:text="Phone #:"
-                android:textSize="20dp"
-                android:textColor="@color/colorBlack" />
-
-            <TextView
-                android:id="@+id/phone_field"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/phone_title"
-                android:layout_alignBottom="@+id/phone_title"
-                android:layout_toRightOf="@+id/phone_title"
-                android:text="888-333-9999"
-                android:textSize="20dp"
-                android:textColor="@color/colorBlack"/>
-        </RelativeLayout>
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/second_layer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:showDividers="middle"
-        android:divider="@drawable/empty_tall_divider">
-        <RelativeLayout
-            android:id="@+id/entire_id_section"
-            android:alpha="0.6"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginRight="0dp"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:background="@drawable/cycle">
+            android:layout_height="match_parent">
             <RelativeLayout
-                android:id="@+id/id_section"
-                android:layout_width="wrap_content"
+                android:id="@+id/first_layer"
+                android:alpha="0.6"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
-                <TextView
-                    android:id="@+id/id_section_title"
-                    android:layout_height="wrap_content"
+                android:background="@drawable/cycle">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile_photo"
                     android:layout_width="wrap_content"
-                    android:textSize="15dp"
-                    android:textColor="@color/colorBlack"
-                    android:text="Your ID"/>
-                <ImageButton
-                    android:id="@+id/id_add_button"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_toRightOf="@+id/id_section_title"
-                    android:background="@drawable/cycle"
-                    android:src="@drawable/addphoto"
-                    android:scaleType="fitCenter"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:src="@drawable/profilephoto"/>
+                <RelativeLayout
+                    android:id="@+id/name_layout"
+                    android:layout_toRightOf="@+id/profile_photo"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:id="@+id/name_title"
+                        android:text="Name:"
+                        android:textSize="20dp"
+                        android:textColor="@color/colorBlack"/>
+                    <TextView
+                        android:id="@+id/name_field"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@+id/name_title"
+                        android:layout_alignBottom="@+id/name_title"
+                        android:layout_toRightOf="@+id/name_title"
+                        android:text="Charlie Yu"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="20dp"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/profile_photo"
+                    android:layout_alignBottom="@+id/profile_photo"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="10dp">
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:id="@+id/phone_title"
+                        android:text="Phone #:"
+                        android:textSize="20dp"
+                        android:textColor="@color/colorBlack" />
+
+                    <TextView
+                        android:id="@+id/phone_field"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@+id/phone_title"
+                        android:layout_alignBottom="@+id/phone_title"
+                        android:layout_toRightOf="@+id/phone_title"
+                        android:text="888-333-9999"
+                        android:textSize="20dp"
+                        android:textColor="@color/colorBlack"/>
+                </RelativeLayout>
             </RelativeLayout>
-            <ImageSwitcher
-                android:id="@+id/ID_switch"
-                android:layout_width="95dp"
-                android:layout_height="75dp"
-                android:background="@drawable/cycle"
-                android:layout_below="@+id/id_section"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp">
-            </ImageSwitcher>
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/entire_vehicle_section"
-            android:alpha="0.6"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginEnd="20dp"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:background="@drawable/cycle">
+
+            <LinearLayout
+                android:id="@+id/second_layer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/first_layer"
+                android:orientation="horizontal"
+                android:showDividers="middle"
+                android:divider="@drawable/empty_tall_divider">
+                <RelativeLayout
+                    android:id="@+id/entire_id_section"
+                    android:alpha="0.6"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/cycle">
+                    <RelativeLayout
+                        android:id="@+id/id_section"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp">
+                        <TextView
+                            android:id="@+id/id_section_title"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:textSize="15dp"
+                            android:textColor="@color/colorBlack"
+                            android:text="Your ID"/>
+                        <ImageButton
+                            android:id="@+id/id_add_button"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_toRightOf="@+id/id_section_title"
+                            android:background="@drawable/cycle"
+                            android:src="@drawable/addphoto"
+                            android:scaleType="fitCenter"/>
+                    </RelativeLayout>
+                    <ImageSwitcher
+                        android:id="@+id/ID_switch"
+                        android:layout_width="95dp"
+                        android:layout_height="75dp"
+                        android:background="@drawable/cycle"
+                        android:layout_below="@+id/id_section"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp">
+                    </ImageSwitcher>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/entire_vehicle_section"
+                    android:alpha="0.6"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/cycle">
+                    <RelativeLayout
+                        android:id="@+id/vehicle_section"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp">
+                        <TextView
+                            android:id="@+id/vehicle_section_title"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:textSize="15dp"
+                            android:textColor="@color/colorBlack"
+                            android:text="Your vehicles"/>
+                        <ImageButton
+                            android:id="@+id/vehicle_add_button"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_toRightOf="@+id/vehicle_section_title"
+                            android:background="@drawable/cycle"
+                            android:src="@drawable/addphoto"
+                            android:scaleType="fitCenter"/>
+                    </RelativeLayout>
+                    <ImageSwitcher
+                        android:id="@+id/vehicle_switch"
+                        android:layout_width="95dp"
+                        android:layout_height="75dp"
+                        android:background="@drawable/cycle"
+                        android:layout_below="@+id/vehicle_section"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp">
+                    </ImageSwitcher>
+                </RelativeLayout>
+            </LinearLayout>
+
             <RelativeLayout
-                android:id="@+id/vehicle_section"
-                android:layout_width="wrap_content"
+                android:id="@+id/third_layer"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/second_layer"
                 android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:alpha="0.6"
+                android:background="@drawable/cycle">
                 <TextView
-                    android:id="@+id/vehicle_section_title"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/claim_title"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="20dp"
+                    android:text="Your Claims"
                     android:textSize="15dp"
+                    android:textColor="@color/colorBlack"/>
+                <Button
+                    android:id="@+id/claim_button"
+                    android:layout_width="105dp"
+                    android:layout_height="45dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_centerVertical="true"
+                    android:text="View Docs"
                     android:textColor="@color/colorBlack"
-                    android:text="Your vehicles"/>
-                <ImageButton
-                    android:id="@+id/vehicle_add_button"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_toRightOf="@+id/vehicle_section_title"
-                    android:background="@drawable/cycle"
-                    android:src="@drawable/addphoto"
-                    android:scaleType="fitCenter"/>
+                    android:layout_alignParentRight="true"/>
             </RelativeLayout>
-            <ImageSwitcher
-                android:id="@+id/vehicle_switch"
-                android:layout_width="95dp"
-                android:layout_height="75dp"
+
+            <RelativeLayout
+                android:id="@+id/fourth_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/third_layer"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:background="@drawable/cycle"
-                android:layout_below="@+id/vehicle_section"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp">
-            </ImageSwitcher>
+                android:alpha="0.6">
+                <RelativeLayout
+                    android:id="@+id/phone_section"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:layout_alignParentStart="true"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/assistance_phone_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15dp"
+                        android:textColor="@color/colorBlack"
+                        android:text="Roadside Assistance"/>
+                    <TextView
+                        android:id="@+id/assistance_phone_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@+id/assistance_phone_title"
+                        android:layout_centerHorizontal="true"
+                        android:textSize="15dp"
+                        android:textColor="@color/colorBlack"
+                        android:text="1-800-000-0000"/>
+                </RelativeLayout>
+                <ImageButton
+                    android:id="@+id/assistance_phone_button"
+                    android:layout_width="85dp"
+                    android:layout_height="55dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="20dp"
+                    android:src="@drawable/assistancephonecall"
+                    android:scaleType="fitCenter"
+                    android:background="@drawable/cycle"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp">
+            </RelativeLayout>
         </RelativeLayout>
-    </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/third_layer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:alpha="0.6"
-        android:background="@drawable/cycle">
-        <TextView
-            android:id="@+id/claim_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="20dp"
-            android:text="Your Claims"
-            android:textSize="15dp"
-            android:textColor="@color/colorBlack"/>
-        <Button
-            android:id="@+id/claim_button"
-            android:layout_width="105dp"
-            android:layout_height="45dp"
-            android:layout_marginEnd="20dp"
-            android:layout_centerVertical="true"
-            android:text="View Docs"
-            android:textColor="@color/colorBlack"
-            android:layout_alignParentRight="true"/>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/fourth_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/cycle"
-        android:alpha="0.6">
-        <RelativeLayout
-            android:id="@+id/phone_section"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:layout_alignParentStart="true"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/assistance_phone_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="15dp"
-                android:textColor="@color/colorBlack"
-                android:text="Roadside Assistance"/>
-            <TextView
-                android:id="@+id/assistance_phone_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_below="@+id/assistance_phone_title"
-                android:layout_centerHorizontal="true"
-                android:textSize="15dp"
-                android:textColor="@color/colorBlack"
-                android:text="1-800-000-0000"/>
-        </RelativeLayout>
-        <ImageButton
-            android:id="@+id/assistance_phone_button"
-            android:layout_width="85dp"
-            android:layout_height="55dp"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="20dp"
-            android:src="@drawable/assistancephonecall"
-            android:scaleType="fitCenter"
-            android:background="@drawable/cycle"/>
-    </RelativeLayout>
+    </ScrollView>
     <Button
         android:id="@+id/file_claim_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="20dp"
         android:background="@drawable/cycle"
         android:alpha="0.6"
         android:textColor="@color/colorBlack"
         android:text="File a New Claim"/>
 
 
-</LinearLayout>
+</RelativeLayout>

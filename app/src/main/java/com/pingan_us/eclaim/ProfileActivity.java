@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -33,11 +34,15 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import com.google.android.gms.common.images.WebImage;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -50,6 +55,8 @@ public class ProfileActivity extends Activity{
     private RelativeLayout info_section, claim_section, phone_section, id_section, vehicle_section;
     private Button view_doc_btn, file_claim_btn;
     private ImageButton phone_btn;
+    private List<Drawable> picList;
+    private int counter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +64,23 @@ public class ProfileActivity extends Activity{
         setContentView(R.layout.activity_profile);
 
         Intent intent = getIntent();
+
+        picList = new ArrayList<Drawable>();
+
+        Bitmap icon1 = BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                R.drawable.addphoto);
+        Bitmap icon2 = BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                R.drawable.driverlicense);
+        Bitmap icon3 = BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                R.drawable.insurance);
+        Drawable p1 = new BitmapDrawable(icon1);
+        Drawable p2 = new BitmapDrawable(icon2);
+        Drawable p3 = new BitmapDrawable(icon3);
+        picList.add(p1);
+        picList.add(p2);
+        picList.add(p3);
+
+
 
         IDImageSwitcher = (ImageSwitcher) findViewById(R.id.ID_switch);
         VehicleImageSwitcher = (ImageSwitcher) findViewById(R.id.vehicle_switch);
@@ -97,7 +121,7 @@ public class ProfileActivity extends Activity{
 
         //nextImageButton = (Button) findViewById(R.id.nextImageButton);
 
-      /*  IDImageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
+        IDImageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
             public View makeView() {
                 ImageView switcherImageView = new ImageView(getApplicationContext());
@@ -105,34 +129,43 @@ public class ProfileActivity extends Activity{
                         ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.FILL_PARENT
                 ));
                 switcherImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                switcherImageView.setImageResource(R.drawable.addphoto);
+                switcherImageView.setImageDrawable(picList.get(0));
                 return switcherImageView;
             }
-        });*/
-        addImageForSwitcher(IDImageSwitcher);
+        });
+        //addImageForSwitcher(IDImageSwitcher);
 
-        //Animation animationLOut = AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
-        //Animation animationLIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
-        //IDImageSwitcher.setOutAnimation(animationLOut);
-        //IDImageSwitcher.setInAnimation(animationLIn);
+        Animation animationLOut = AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
+        Animation animationLIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
+        IDImageSwitcher.setOutAnimation(animationLOut);
+        IDImageSwitcher.setInAnimation(animationLIn);
 
 
         //准备把左右滑动加上
-     /*   IDImageSwitcher.setOnTouchListener(new OnSwipeTouchListener(getBaseContext()) {
+
+        Toast.makeText(getApplicationContext(), "touched", Toast.LENGTH_LONG).show();
+
+        IDImageSwitcher.setOnTouchListener(new OnSwipeTouchListener(getBaseContext()) {
+
+            int switcherImage = picList.size();
             @Override
-            void onSwipeRight() {
+            public void onSwipeRight() {
+                Toast.makeText(getApplicationContext(), "right touched", Toast.LENGTH_LONG).show();
+
                 counter++;
                 if (counter == switcherImage)
                     counter = 0;
-                myImageSwitcher.setImageResource(imageSwitcherImages[counter]);
+                IDImageSwitcher.setImageDrawable(picList.get(counter));
             }
 
             @Override
-            void onSwipeLeft() {
-                counter++;
-                if (counter == switcherImage)
-                    counter = 0;
-                myImageSwitcher.setImageResource(imageSwitcherImages[counter]);
+            public void onSwipeLeft() {
+                Toast.makeText(getApplicationContext(), "left touched", Toast.LENGTH_LONG).show();
+
+                counter--;
+                if (counter == -1)
+                    counter = switcherImage - 1;
+                IDImageSwitcher.setImageDrawable(picList.get(counter));
             }
 
             @Override
@@ -140,14 +173,11 @@ public class ProfileActivity extends Activity{
                 return false;
             }
 
-        });*/
+        });
 
     }
 
     protected  void addImageForSwitcher(ImageSwitcher switcher){//List<Bitmap> list){
-
-        //switcher.setImageDrawable(new BitmapDrawable(list.get(index)));
-
 
         switcher.setFactory(new ViewSwitcher.ViewFactory() {
             @Override

@@ -202,8 +202,9 @@ public class RegisterActivity extends Activity {
                             Toast.makeText(getApplicationContext(), "Passwordwords do not match", Toast.LENGTH_SHORT).show();
                             USER_PASSWORD.setText("");
                             CONFIRM_PASSWORD.setText("");
-                        } else {
-                            NetCheck netCheck = new NetCheck();
+                        }
+                        else {
+                            /*NetCheck netCheck = new NetCheck();
                             netCheck.execute();
                             boolean retVal = false;
                             try {
@@ -217,9 +218,11 @@ public class RegisterActivity extends Activity {
                                 String uploadImage = Base64.encodeToString(picBinary, Base64.DEFAULT);
                                 BackgroundWorker backgroundWorker = new BackgroundWorker(ctx);
                                 backgroundWorker.execute(type, first_name, last_name, email_address, phone, user_password, uploadImage);
-                            }
+                            }*/
                         }
                     }
+                    Intent intent1 = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(intent1);
                     break;
 
                 case R.id.cancel_btn:

@@ -43,7 +43,6 @@ public class LoginActivity extends AppCompatActivity {
 
         login=(Button)findViewById(R.id.loginbutton);
         register = (Button)findViewById(R.id.registerbutton);
-        unregister = (Button)findViewById(R.id.unregister_btn);
         logout = (Button)findViewById(R.id.logoutbutton);
 
         username=(EditText)findViewById(R.id.username);
@@ -243,31 +242,13 @@ public class LoginActivity extends AppCompatActivity {
                     intent3.putExtra("reg", true);
                     startActivity(intent3);
                     break;
-
-                case R.id.unregister_btn:
-                    NetCheck netCheck = new NetCheck();
-                    netCheck.execute();
-                    boolean retVal = false;
-                    try {
-                        retVal = netCheck.get();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                    if(retVal) {
-                        Intent intent4 = new Intent(getApplicationContext(), RegisterActivity.class);
-                        intent4.putExtra("reg", false);
-                        startActivity(intent4);
-                    }
-                    break;
             }
         }
     };
 
     private void setUpUIElements() {
         register.setOnClickListener(onClickListener);
-        unregister.setOnClickListener(onClickListener);
+        //unregister.setOnClickListener(onClickListener);
     }
 
     public void createShortCut(){

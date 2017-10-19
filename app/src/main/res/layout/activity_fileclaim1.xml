@@ -8,7 +8,8 @@
     <ScrollView
         android:id="@+id/entire_scroll_section"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/start_step2_button">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -145,11 +146,12 @@
                     <Button
                         android:id="@+id/time_picker_btn"
                         android:layout_alignTop="@+id/time_pick_title"
-                        android:layout_alignBottom="@+id/time_pick_title"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
                         android:layout_toRightOf="@+id/time_pick_title"
-                        android:layout_alignParentRight="true">
+                        android:layout_alignParentRight="true"
+                        android:textSize="15dp"
+                        android:text="Click here to set the time">
                     </Button>
                 </RelativeLayout>
                 <RelativeLayout
@@ -166,12 +168,14 @@
                         android:textSize="15dp"
                         android:textColor="@color/colorBlack"
                         android:text="Select Location"/>
-             <!--       <fragment
-                        android:name="com.google.android.gms.maps.MapFragment"
+                    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:tools="http://schemas.android.com/tools"
                         android:id="@+id/map"
+                        android:name="com.google.android.gms.maps.SupportMapFragment"
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:layout_below="@+id/loc_pick_title"/> -->
+                        android:layout_height="200dp"
+                        android:layout_below="@id/loc_pick_title"
+                        tools:context="com.example.currentplacedetailsonmap.MapsActivityCurrentPlace" />
                 </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/vehicle_pick_section"
@@ -308,3 +312,7 @@
         android:text="next step" />
 
 </RelativeLayout>
+
+<!--
+                        android:name="com.google.android.gms.maps.SupportMapFragment"
+-->

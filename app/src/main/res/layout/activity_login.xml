@@ -9,17 +9,10 @@ android:paddingLeft="@dimen/activity_horizontal_margin"
 android:paddingRight="@dimen/activity_horizontal_margin"
 android:paddingTop="@dimen/activity_vertical_margin"
 tools:context="com.pingan_us.eclaim.LoginActivity"
-android:background="#ffffff"
+android:background="@drawable/profilebackground"
 android:weightSum="1">
 
 <!-- Login progress -->
-<ProgressBar
-    android:id="@+id/login_progress"
-    style="?android:attr/progressBarStyleLarge"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    android:visibility="gone" />
 
 <ImageView
     android:layout_width="173dp"
@@ -50,9 +43,7 @@ android:weightSum="1">
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Username"
-                android:textColor="#000000"
                 android:maxLines="1"
-                android:textColorHint="#000000"
                 android:imeOptions="actionNext"
             />
         </android.support.design.widget.TextInputLayout>
@@ -69,9 +60,7 @@ android:weightSum="1">
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
-                android:maxLines="1"
-                android:textColor="#000000"
-                android:textColorHint="#000000"/>
+                android:maxLines="1"/>
         </android.support.design.widget.TextInputLayout>
 
         <Button
@@ -79,18 +68,12 @@ android:weightSum="1">
             android:layout_width="148dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="login"
+            android:text="  login  "
             android:layout_gravity="center_horizontal"
             android:textSize="20dp"
             android:onClick="onLogin"
+            android:background="@drawable/cycle"
             android:alpha="0.6"/>
-
-        android:layout_gravity="center_horizontal"
-            android:alpha="0.7"
-        android:background="@drawable/cycle"/>
-        android:alpha="0.6"
-        android:textSize="20sp"
-        android:onClick="onLogin"
 
     <Button
         android:id="@+id/logoutbutton"
@@ -100,40 +83,30 @@ android:weightSum="1">
         android:text="Log Out"
         android:layout_gravity="center_horizontal"
         android:alpha="0.6"
-        android:textSize="20sp"
+        android:textSize="20dp"
         android:onClick="onLogOut"/>
 
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Not regestered yet?"
-        android:id="@+id/textView"
         android:layout_gravity="center_horizontal"
-        android:paddingTop="30dp"
-        android:textColor="#ffffff"/>
+        android:paddingTop="30dp"/>
 
     <Button
+        android:id="@+id/registerbutton"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Regester here"
-        android:id="@+id/registerbutton"
-        android:layout_gravity="center_horizontal"
-        android:background="@android:color/transparent"
-        android:textColor="#ffffff"
-        android:textColorHint="#ffffff" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="UNREGISTER"
-        android:id="@+id/unregister_btn"
+        android:textSize="16dp"
+        android:text="  Regester here  "
         android:layout_gravity="center_horizontal"
-        android:background="@android:color/transparent"
-        android:textColor="#ffffff"/>
-
+        android:alpha="0.6"
+        android:background="@drawable/cycle" />
 
 </LinearLayout>
 

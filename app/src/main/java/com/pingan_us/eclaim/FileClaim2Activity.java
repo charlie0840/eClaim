@@ -35,10 +35,20 @@ public class FileClaim2Activity extends AppCompatActivity {
     private int change_or_insert, pos;
     private static final int REQUEST_CAMERA = 0, SELECT_FILE = 1, INSERT_IMAGE = 1, CHANGE_IMAGE = 2;
     private CustomList adapter;
+    private Button next_btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fileclaim2);
+
+        next_btn = (Button) findViewById(R.id.start_step3_button);
+        next_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), FileClaim3Activity.class);
+                startActivity(intent);
+            }
+        });
 
         picList = new ArrayList<Bitmap>();
         titleList = new ArrayList<String>();
@@ -97,7 +107,8 @@ public class FileClaim2Activity extends AppCompatActivity {
                     alertDialog.show();
                 }
                 else{
-                    if(position + 1 != 4) {
+                    if(position + 1 != titleList.size()) {
+                        Toast.makeText(getApplicationContext(), "start editing", Toast.LENGTH_LONG).show();
                         editList(position);
                     }
                 }
@@ -221,8 +232,8 @@ public class FileClaim2Activity extends AppCompatActivity {
     }
 
     public void addToList(Bitmap resBitmap) {
-        titleList.add(resStr);
-        titleList.add(titleList.get(titleList.size() - 1));
+        String str = titleList.get(titleList.size() - 1);
+        titleList.add(str);
         Bitmap currBitmap = picList.get(picList.size() - 1);
         picList.add(currBitmap);
         picList.set(picList.size() - 2, resBitmap);
@@ -247,7 +258,7 @@ public class FileClaim2Activity extends AppCompatActivity {
         // set prompts.xml to alertdialog builder
         alertDialogBuilder.setView(promptsView);
 
-        Button rmv_btn = (Button) findViewById(R.id.remove_button);
+        Button rmv_btn;
 
         final EditText userInput = (EditText) promptsView
                 .findViewById(R.id.editTextDialogUserInput);
@@ -255,8 +266,9 @@ public class FileClaim2Activity extends AppCompatActivity {
 
         userInput.setFocusable(false);
 
-        if(position > 3) {
+        if(position > 2) {
             userInput.setFocusable(true);
+            rmv_btn = (Button) promptsView.findViewById(R.id.remove_button);
             rmv_btn.setVisibility(View.VISIBLE);
             rmv_btn.setClickable(true);
             rmv_btn.setOnClickListener(new View.OnClickListener() {
@@ -264,6 +276,7 @@ public class FileClaim2Activity extends AppCompatActivity {
                 public void onClick(View v) {
                     titleList.remove(position);
                     picList.remove(position);
+                    adapter.notifyDataSetChanged();
                     Toast.makeText(FileClaim2Activity.this, "Picture Removed, press Return to exit", Toast.LENGTH_LONG).show();
                 }
             });

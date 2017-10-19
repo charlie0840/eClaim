@@ -5,26 +5,31 @@
     android:layout_height="match_parent"
     android:background="@drawable/profilebackground">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/finish_step_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/finish_icon"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:layout_marginRight="20dp">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="325dp"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:textSize="15dp"
-            android:layout_margin="10dp"
+            android:textSize="20dp"
+            android:layout_gravity="center_horizontal"
             android:textColor="@color/colorBlack"
-            android:text="Step 3 of 3:select auto repair"/>
-    </RelativeLayout>
-    <android.support.v4.widget.CircleImageView
+            android:text="Your case has been successfully submitted for review. You can go to Your Claims to check the status."/>
+
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/finish_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="30dp"
         android:scaleType="fitCenter"
         android:src="@drawable/claimfinish"
         android:layout_centerHorizontal="true"/>
