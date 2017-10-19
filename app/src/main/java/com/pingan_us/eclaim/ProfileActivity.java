@@ -54,7 +54,7 @@ public class ProfileActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_profile);
 
         Intent intent = getIntent();
 
@@ -97,7 +97,7 @@ public class ProfileActivity extends Activity{
 
         //nextImageButton = (Button) findViewById(R.id.nextImageButton);
 
-        IDImageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
+      /*  IDImageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
             public View makeView() {
                 ImageView switcherImageView = new ImageView(getApplicationContext());
@@ -108,13 +108,13 @@ public class ProfileActivity extends Activity{
                 switcherImageView.setImageResource(R.drawable.addphoto);
                 return switcherImageView;
             }
-        });
+        });*/
         addImageForSwitcher(IDImageSwitcher);
 
-        Animation animationLOut = AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
-        Animation animationLIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
-        IDImageSwitcher.setOutAnimation(animationLOut);
-        IDImageSwitcher.setInAnimation(animationLIn);
+        //Animation animationLOut = AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
+        //Animation animationLIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
+        //IDImageSwitcher.setOutAnimation(animationLOut);
+        //IDImageSwitcher.setInAnimation(animationLIn);
 
 
         //准备把左右滑动加上
@@ -142,11 +142,6 @@ public class ProfileActivity extends Activity{
 
         });*/
 
-
-
-
-
-
     }
 
     protected  void addImageForSwitcher(ImageSwitcher switcher){//List<Bitmap> list){
@@ -158,9 +153,6 @@ public class ProfileActivity extends Activity{
             @Override
             public View makeView() {
                 ImageView switcherImageView = new ImageView(getApplicationContext());
-                switcherImageView.setLayoutParams(new ImageSwitcher.LayoutParams(
-                        ActionBar.LayoutParams.FILL_PARENT, ActionBar.LayoutParams.FILL_PARENT
-                ));
                 switcherImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 switcherImageView.setImageResource(R.drawable.icon);
                 return switcherImageView;

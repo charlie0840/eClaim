@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/profilebackground">
+
+    <RelativeLayout
+        android:id="@+id/step2_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="20dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textSize="15dp"
+            android:layout_margin="10dp"
+            android:textColor="@color/colorBlack"
+            android:text="Step 2 of 3:take photos at scene"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="1000dp"
+        android:layout_below="@+id/step2_title"
+        android:layout_above="@+id/start_step3_button">
+        <ListView
+            android:id="@+id/photo_list"
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="34dp"></ListView>
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/start_step3_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/cycle"
+        android:alpha="0.6"
+        android:textSize="20dp"
+        android:text="next step" />
+
+</RelativeLayout>

@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         username=(EditText)findViewById(R.id.username);
         password=(EditText)findViewById(R.id.password);
         logout.setVisibility(View.GONE);
+        register.setVisibility(View.VISIBLE);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,10 +63,24 @@ public class LoginActivity extends AppCompatActivity {
                 type = "login";
                 String retval = "";
                 String result = "";
-                NetCheck netCheck = new NetCheck();
-                netCheck.execute();
+                //NetCheck netCheck = new NetCheck();
+                //netCheck.execute();
                 boolean retVal = false;
-                try {
+
+
+                enabled = true;
+                logout.setVisibility(View.VISIBLE);
+                username.setVisibility(View.GONE);
+                password.setVisibility(View.GONE);
+                login.setVisibility(View.GONE);
+                register.setVisibility(View.GONE);
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class); //fixed
+                intent.putExtra("user", final_user);
+                startActivity(intent);
+
+
+                //login content
+                /*try {
                     retVal = netCheck.get();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -108,7 +123,10 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                     }
-                }
+                }*/
+
+
+
 //				user_name = username.getText().toString();
 //				user_password = password.getText().toString();
 //				DatabaseOperations DOP = new DatabaseOperations(CTX);

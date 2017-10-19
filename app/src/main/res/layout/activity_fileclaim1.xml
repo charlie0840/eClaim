@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/profilebackground">
 
@@ -142,7 +143,7 @@
                         android:textColor="@color/colorBlack"
                         android:text="Select time"/>
                     <Button
-                        android:id="@+id/time_picker"
+                        android:id="@+id/time_picker_btn"
                         android:layout_alignTop="@+id/time_pick_title"
                         android:layout_alignBottom="@+id/time_pick_title"
                         android:layout_width="wrap_content"
@@ -165,15 +166,12 @@
                         android:textSize="15dp"
                         android:textColor="@color/colorBlack"
                         android:text="Select Location"/>
-                    <com.google.android.gms.maps.MapView
-                        android:id="@+id/map_picker"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_below="@+id/loc_pick_title"
-                        android:layout_centerHorizontal="true">
-
-                    </com.google.android.gms.maps.MapView>
+             <!--       <fragment
+                        android:name="com.google.android.gms.maps.MapFragment"
+                        android:id="@+id/map"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:layout_below="@+id/loc_pick_title"/> -->
                 </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/vehicle_pick_section"
@@ -220,6 +218,7 @@
                         android:textColor="@color/colorBlack"
                         android:text="I             "/>
                     <RadioButton
+                        android:id="@+id/other_pick_radiobutton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
@@ -255,17 +254,44 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:layout_margin="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:textSize="15dp"
                     android:textColor="@color/colorBlack"
                     android:text="Add info of other drivers"/>
                 <ImageView
+                    android:id="@+id/other_driver_license_pic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/other_driver_title"
                     android:layout_margin="5dp"
                     android:background="@drawable/cycle"
                     android:src="@drawable/driverlicense"/>
+                <ImageView
+                    android:id="@+id/other_insurance_card_pic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/other_driver_title"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/cycle"
+                    android:src="@drawable/insurance"/>
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/other_driver_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textSize="15dp"
+                    android:hint="Phone #"
+                    android:layout_below="@+id/other_driver_license_pic"
+                    />
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@+id/other_driver_section"
+                android:visibility="invisible">
             </RelativeLayout>
         </RelativeLayout>
     </ScrollView>
@@ -280,6 +306,5 @@
         android:alpha="0.6"
         android:textSize="20dp"
         android:text="next step" />
-
 
 </RelativeLayout>
