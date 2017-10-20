@@ -1,5 +1,6 @@
 package com.pingan_us.eclaim;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,7 +35,7 @@ public class FileClaim2Activity extends AppCompatActivity {
     private List<String> titleList;
     private String resStr, userChoosenTask;
     private int change_or_insert, pos;
-    private static final int REQUEST_CAMERA = 0, SELECT_FILE = 1, INSERT_IMAGE = 1, CHANGE_IMAGE = 2;
+    private static final int REQUEST_CAMERA = 0, SELECT_FILE = 1, INSERT_IMAGE = 1, CHANGE_IMAGE = 2, MY_CAMERA_REQUEST_CODE = 1;
     private CustomList adapter;
     private Button next_btn;
     @Override
@@ -130,7 +132,14 @@ public class FileClaim2Activity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "no permission!!!!", Toast.LENGTH_LONG).show();
                 if (items[item].equals("Take Photo")) {
                     userChoosenTask="Take Photo";
-                    if(result)
+                    if (android.os.Build.VERSION.SDK_INT >= 23) {
+                        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                            requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
+                        }
+                        else
+                            cameraIntent();
+                    }
+                    else
                         cameraIntent();
                 } else if (items[item].equals("Choose from Library")) {
                     userChoosenTask="Choose from Library";
@@ -225,8 +234,11 @@ public class FileClaim2Activity extends AppCompatActivity {
                     else if(userChoosenTask.equals("Choose from Library"))
                         galleryIntent();
                 } else {
-                    //code for deny
+                    Toast.makeText(getApplicationContext(), "Access Denied, please grant eClaim the access to gallery/camera!", Toast.LENGTH_LONG).show();
                 }
+                break;
+            case MY_CAMERA_REQUEST_CODE:
+                cameraIntent();
                 break;
         }
     }

@@ -6,7 +6,8 @@
     android:layout_height="match_parent">
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/file_claim_button">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -99,6 +100,9 @@
                     android:layout_marginRight="0dp"
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:layout_height="wrap_content"
                     android:background="@drawable/cycle">
                     <RelativeLayout
@@ -144,6 +148,9 @@
                     android:layout_marginEnd="20dp"
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:layout_height="wrap_content"
                     android:background="@drawable/cycle">
                     <RelativeLayout
@@ -259,10 +266,6 @@
                     android:scaleType="fitCenter"
                     android:background="@drawable/cycle"/>
             </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="100dp">
-            </RelativeLayout>
         </RelativeLayout>
 
     </ScrollView>
@@ -271,11 +274,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="20dp"
+        android:layout_marginBottom="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_above="@+id/test"
         android:background="@drawable/cycle"
         android:alpha="0.6"
         android:textColor="@color/colorBlack"
         android:text="File a New Claim"/>
+    <include layout="@layout/navigation_bar"
+        android:id="@+id/nav_layout"/>
 
 
 </RelativeLayout>

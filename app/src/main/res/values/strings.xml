@@ -37,5 +37,6 @@
         <item>4 or more</item>
     </string-array>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_view_claims">ViewClaimsActivity</string>
 
 </resources>

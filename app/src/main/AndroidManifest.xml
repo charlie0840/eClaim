@@ -63,6 +63,11 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyDWLfjyZkIESNpPgG7lZXIzGIJbmQSi6WE" />
 
+        <activity android:name=".ViewClaimActivity" />
+        <activity
+            android:name=".ViewClaimsActivity"
+            android:label="@string/title_activity_view_claims"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
