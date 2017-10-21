@@ -1,5 +1,6 @@
 package com.pingan_us.eclaim;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,9 +13,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 public class ViewClaimsActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+                    View.OnClickListener {
+
+    private View nav_bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +37,29 @@ public class ViewClaimsActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         final Menu menu = navigationView.getMenu();
+
+        nav_bar = findViewById(R.id.claim_nav_layout);
+        ImageView home_nav = (ImageView) nav_bar.findViewById(R.id.home_nav);
+        ImageView profile_nav = (ImageView) nav_bar.findViewById(R.id.profile_nav);
+        home_nav.setOnClickListener(this);
+        profile_nav.setOnClickListener(this);
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.home_nav:
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case R.id.profile_nav:
+                Intent intent1 = new Intent(this, ProfileActivity.class);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent1);
+                break;
+        }
     }
 
     @Override
@@ -59,9 +87,6 @@ public class ViewClaimsActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -80,10 +105,10 @@ public class ViewClaimsActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        } else if (id == R.id.file_new_claim) {
+            Intent intent = new Intent(this, FileClaim1Activity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
