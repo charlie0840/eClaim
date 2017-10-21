@@ -402,5 +402,3 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             }
         }
     }
-
-}
