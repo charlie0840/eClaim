@@ -13,7 +13,7 @@
     <ImageView
         android:id="@+id/home_nav"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_height="30dp"
         android:layout_margin="5dp"
         android:layout_columnWeight="1"
         android:gravity="center"
@@ -24,7 +24,7 @@
     <ImageView
         android:id="@+id/claims_nav"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_height="30dp"
         android:layout_margin="5dp"
         android:layout_columnWeight="1"
         android:gravity="center"
@@ -35,7 +35,7 @@
     <ImageView
         android:id="@+id/profile_nav"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_height="30dp"
         android:layout_margin="5dp"
         android:layout_columnWeight="1"
         android:gravity="center"
