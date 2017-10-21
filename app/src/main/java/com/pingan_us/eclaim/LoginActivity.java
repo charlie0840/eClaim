@@ -26,12 +26,11 @@ import java.util.concurrent.ExecutionException;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private Button login, register, unregister, logout;
+    private Button login, register, logout;
     private EditText username, password;
     private String user_name, user_password;
     Context CTX = this;
     boolean enabled = false;
-    private String type, final_user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +58,6 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "please enter user name", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                type = "login";
                 String retval = "";
                 String result = "";
                 //NetCheck netCheck = new NetCheck();
@@ -73,8 +71,8 @@ public class LoginActivity extends AppCompatActivity {
                 password.setVisibility(View.GONE);
                 login.setVisibility(View.GONE);
                 register.setVisibility(View.GONE);
-                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class); //fixed
-                intent.putExtra("user", final_user);
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
 
 
@@ -239,7 +237,7 @@ public class LoginActivity extends AppCompatActivity {
             switch(v.getId()) {
                 case R.id.registerbutton:
                     Intent intent3 = new Intent(getApplicationContext(), RegisterActivity.class);
-                    intent3.putExtra("reg", true);
+                    intent3.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent3);
                     break;
             }
@@ -248,7 +246,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void setUpUIElements() {
         register.setOnClickListener(onClickListener);
-        //unregister.setOnClickListener(onClickListener);
     }
 
     public void createShortCut(){
