@@ -344,6 +344,3 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         Toast.makeText(FileClaim1Activity.this, "onMarkerClick", Toast.LENGTH_SHORT).show();
         return true;
     }
-
-
-}
