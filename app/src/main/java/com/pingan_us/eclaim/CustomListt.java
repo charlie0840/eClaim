@@ -18,7 +18,7 @@ public class CustomListt extends ArrayAdapter<String>{
     private final Activity context;
     private List<Bitmap> imageId;
     public CustomListt(Activity context, List<Bitmap> imageId) {
-        super(context, R.layout.list_single);
+        super(context, R.layout.grid_single);
         this.context = context;
         this.imageId = imageId;
 
@@ -27,7 +27,6 @@ public class CustomListt extends ArrayAdapter<String>{
     public View getView(final int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView= inflater.inflate(R.layout.grid_single, null, true);
-        TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
 

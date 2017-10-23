@@ -61,7 +61,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
     private GoogleApiClient googleApiClient;
     private double longitude = 0, latitude = 0;
     private long time;
-    public static final int  PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
+    public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
     private boolean mLocationPermissionGranted = false;
     private SupportMapFragment mapFragment;
 
@@ -129,11 +129,12 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                         timePicker.getCurrentMinute());
 
                 time = calendar.getTimeInMillis();
-                Date date=new Date(time);
+                Date date = new Date(time);
 
                 time_btn.setText(date.toString());
                 alertDialog.dismiss();
-            }});
+            }
+        });
 
 
         alertDialog.setView(dialogView);
@@ -141,16 +142,16 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()){
+        switch (v.getId()) {
             case R.id.time_picker_btn:
                 alertDialog.show();
                 break;
             case R.id.start_step2_button:
-                Intent intent = new Intent(this, FileClaim2Activity.class);
+                Intent intent = new Intent(this, FileClaim2tActivity.class);
                 this.startActivity(intent);
                 break;
             case R.id.drivable_section:
-                if(!drivable_box.isChecked())
+                if (!drivable_box.isChecked())
                     drivable_box.setChecked(true);
                 else
                     drivable_box.setChecked(false);
@@ -162,30 +163,23 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                     injure_box.setChecked(false);
                 break;
             case R.id.atscene_section:
-                if(!present_box.isChecked())
+                if (!present_box.isChecked())
                     present_box.setChecked(true);
                 else
                     present_box.setChecked(false);
                 break;
             case R.id.I_pick_radiobutton:
-                if(other_rbtn.isChecked())
+                if (other_rbtn.isChecked())
                     other_rbtn.setChecked(false);
                 break;
             case R.id.other_pick_radiobutton:
-                if(I_rbtn.isChecked())
+                if (I_rbtn.isChecked())
                     I_rbtn.setChecked(false);
                 break;
         }
     }
 
     Calendar date;
-
-
-
-
-
-
-
 
 
     public void showDateTimePicker() {
@@ -210,13 +204,13 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
     @Override
     public void onMapReady(GoogleMap map) {
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        LatLng defLoc = new LatLng(-13,76);
+        LatLng defLoc = new LatLng(-13, 76);
         CameraPosition googlePlex = CameraPosition.builder()
-                 .target(defLoc)
-                 .zoom(16)
-                 .bearing(0)
-                 .tilt(45)
-                 .build();
+                .target(defLoc)
+                .zoom(16)
+                .bearing(0)
+                .tilt(45)
+                .build();
         map.moveCamera(CameraUpdateFactory.newCameraPosition(googlePlex));
         map.setOnMarkerClickListener(this);
         map.setOnMarkerDragListener(this);
@@ -232,8 +226,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mLocationPermissionGranted = true;
-                }
-                else {
+                } else {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
@@ -252,8 +245,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-        else {
+        } else {
             Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
             if (location != null) {
                 //Getting longitude and latitude
@@ -344,3 +336,4 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         Toast.makeText(FileClaim1Activity.this, "onMarkerClick", Toast.LENGTH_SHORT).show();
         return true;
     }
+}

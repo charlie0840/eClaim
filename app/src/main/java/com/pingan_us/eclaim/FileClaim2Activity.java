@@ -60,13 +60,12 @@ public class FileClaim2Activity extends AppCompatActivity {
         picList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.addphoto));
         picList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.addphoto));
 
-        titleList.add("Whole Scene");
-        titleList.add("Your Vehicle Plate");
-        titleList.add("The other vehicle plate");
-        titleList.add("More pictures");
+        titleList.add(MyAppConstants.wholeScene_FC2);
+        titleList.add(MyAppConstants.yourPlate_FC2);
+        titleList.add(MyAppConstants.otherPlate_FC2);
+        titleList.add(MyAppConstants.morePic);
 
-        adapter = new
-                CustomList(FileClaim2Activity.this, titleList, picList);
+        adapter = new CustomList(FileClaim2Activity.this, titleList, picList);
         list=(ListView)findViewById(R.id.photo_list);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {

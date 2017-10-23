@@ -23,72 +23,66 @@
             android:text="Step 2 of 3:take photos at scene"/>
     </RelativeLayout>
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/step2_title"
-        android:layout_above="@+id/start_step3_button">
-        <RelativeLayout
+        android:layout_above="@+id/start_step3_button"
+        android:layout_alignParentStart="true">
+        <GridLayout
+            android:id="@+id/default_pic_grid"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <GridLayout
-                android:id="@+id/default_pic_grid"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:columnCount="3"
-                android:rowCount="1"
-                android:alpha="0.6">
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:columnCount="3"
+            android:rowCount="1"
+            android:alpha="0.6">
 
-                <LinearLayout
-                    android:id="@+id/whole_scene_section"
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="10dp"
-                    android:orientation="horizontal">
-                    <include layout="@layout/list_single"
-                        android:id="@+id/whole_scene"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/your_plate_section"
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="10dp"
-                    android:orientation="horizontal">
-                    <include layout="@layout/list_single"
-                        android:id="@+id/your_plate"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/other_plate_section"
-                    android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="10dp"
-                    android:orientation="horizontal">
-                    <include layout="@layout/list_single"
-                        android:id="@+id/other_plate"/>
-                </LinearLayout>
-            </GridLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="1000dp"
-                android:layout_below="@+id/default_pic_grid"
-                android:layout_margin="10dp">
-                <ListView
-                    android:id="@+id/more_photo_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentStart="true"
-                    android:divider="@android:color/transparent"
-                    android:dividerHeight="10dp"
-                    android:layout_marginBottom="34dp">
-                </ListView>
-            </RelativeLayout>
-        </RelativeLayout>
-    </ScrollView>
+            <LinearLayout
+                android:id="@+id/whole_scene_section"
+                android:layout_width="0dp"
+                android:layout_height="130dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+                <include layout="@layout/list_single"
+                    android:id="@+id/whole_scene"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/your_plate_section"
+                android:layout_width="0dp"
+                android:layout_height="130dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+                <include layout="@layout/list_single"
+                    android:id="@+id/your_plate"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/other_plate_section"
+                android:layout_width="0dp"
+                android:layout_height="130dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+                <include layout="@layout/list_single"
+                    android:id="@+id/other_plate"/>
+            </LinearLayout>
+        </GridLayout>
+
+        <ListView
+            android:id="@+id/more_photo_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/default_pic_grid"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="10dp"
+            android:layout_marginBottom="10dp">
+        </ListView>
+    </RelativeLayout>
 
     <Button
         android:id="@+id/start_step3_button"

@@ -124,7 +124,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         add_vehicle.setOnClickListener(this);
 
 
-
         file_claim_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,8 +139,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                 callIntent.setData(Uri.parse("tel:123456789"));
                 if (ActivityCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(getApplicationContext(), "please grant the access to phone call", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     startActivity(callIntent);
                 }
             }
@@ -190,6 +188,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         Toast.makeText(getApplicationContext(), "touched", Toast.LENGTH_LONG).show();
         id_section.setOnTouchListener(new OnSwipeTouchListener(getBaseContext()) {
             int switcherImage = 0;
+
             @Override
             public void onSwipeRight() {
                 switcherImage = IDPicList.size();
@@ -199,6 +198,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                     counter = 0;
                 IDImageSwitcher.setImageDrawable(IDPicList.get(counter));
             }
+
             @Override
             public void onSwipeLeft() {
                 switcherImage = IDPicList.size();
@@ -213,6 +213,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
 
         vehicle_section.setOnTouchListener(new OnSwipeTouchListener(getBaseContext()) {
             int switcherImage = 0;
+
             @Override
             public void onSwipeRight() {
                 switcherImage = vehiclePicList.size();
@@ -222,6 +223,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                     counter = 0;
                 VehicleImageSwitcher.setImageDrawable(vehiclePicList.get(counter));
             }
+
             @Override
             public void onSwipeLeft() {
                 switcherImage = vehiclePicList.size();
@@ -237,7 +239,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()) {
+        switch (v.getId()) {
             case R.id.id_section:
                 ID_or_Vehicle = 0;
                 Toast.makeText(getApplicationContext(), "add pic!", Toast.LENGTH_SHORT).show();
@@ -265,23 +267,23 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     }
 
     private void selectImage() {
-        final CharSequence[] items = { "Take Photo", "Choose from Library",
-                "Cancel" };
+        final CharSequence[] items = {"Take Photo", "Choose from Library",
+                "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
         builder.setTitle("Add Photo!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                boolean result=Utility.checkPermission(ProfileActivity.this);
-                if(!result)
+                boolean result = Utility.checkPermission(ProfileActivity.this);
+                if (!result)
                     Toast.makeText(getApplicationContext(), "no permission!!!!", Toast.LENGTH_LONG).show();
                 if (items[item].equals("Take Photo")) {
-                    userChoosenTask="Take Photo";
-                    if(result)
+                    userChoosenTask = "Take Photo";
+                    if (result)
                         cameraIntent();
                 } else if (items[item].equals("Choose from Library")) {
-                    userChoosenTask="Choose from Library";
-                    if(result)
+                    userChoosenTask = "Choose from Library";
+                    if (result)
                         galleryIntent();
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
@@ -298,8 +300,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         PackageManager pm = getApplicationContext().getPackageManager();
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
-        }
-        else {
+        } else {
             if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA))
                 startActivityForResult(intent, REQUEST_CAMERA);
             else
@@ -316,7 +317,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     }
 
     private void onSelectFromGalleryResult(Intent data) {
-        Bitmap bm=null;
+        Bitmap bm = null;
         if (data != null) {
             try {
                 bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
@@ -355,12 +356,11 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     public void addToList(Drawable pic) {
 
         Toast.makeText(getApplicationContext(), "add to list!", Toast.LENGTH_SHORT).show();
-        if(ID_or_Vehicle == 0) {
+        if (ID_or_Vehicle == 0) {
             IDPicList.add(pic);
 
             Toast.makeText(getApplicationContext(), "id size " + IDPicList.size(), Toast.LENGTH_SHORT).show();
-        }
-        else {
+        } else {
             vehiclePicList.add(pic);
             Toast.makeText(getApplicationContext(), "vehicle size " + vehiclePicList.size(), Toast.LENGTH_SHORT).show();
 
@@ -402,3 +402,4 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             }
         }
     }
+}

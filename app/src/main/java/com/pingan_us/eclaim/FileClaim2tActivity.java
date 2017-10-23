@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -20,8 +21,11 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -32,11 +36,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileClaim2tActivity extends AppCompatActivity{
-    private GridLayout default_grid;
+import me.nereo.multi_image_selector.MultiImageSelector;
+import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
+public class FileClaim2tActivity extends AppCompatActivity implements View.OnClickListener{
+    private GridLayout default_grid;
+    private View l1, l2, l3;
     private ListView list;
+    private LinearLayout p1, p2, p3;
     private List<Bitmap> picList;
+    private ArrayList<String> strList;
     private String resStr, userChoosenTask;
     private int change_or_insert, pos;
     private static final int REQUEST_CAMERA = 0, SELECT_FILE = 1, INSERT_IMAGE = 1, CHANGE_IMAGE = 2, MY_CAMERA_REQUEST_CODE = 1;
@@ -49,7 +58,34 @@ public class FileClaim2tActivity extends AppCompatActivity{
         setContentView(R.layout.activity_fileclaim2t);
 
 
+
         default_grid = (GridLayout) findViewById(R.id.default_pic_grid);
+
+        p1 = (LinearLayout) default_grid.findViewById(R.id.whole_scene_section);
+        p2 = (LinearLayout) default_grid.findViewById(R.id.your_plate_section);
+        p3 = (LinearLayout) default_grid.findViewById(R.id.other_plate_section);
+
+        l1 = findViewById(R.id.whole_scene);
+        l2 = findViewById(R.id.your_plate);
+        l3 = findViewById(R.id.other_plate);
+
+        ImageView I1 = l1.findViewById(R.id.img);
+        ImageView I2 = l2.findViewById(R.id.img);
+        ImageView I3 = l3.findViewById(R.id.img);
+        TextView t1 = l1.findViewById(R.id.txt);
+        TextView t2 = l2.findViewById(R.id.txt);
+        TextView t3 = l3.findViewById(R.id.txt);
+
+        I1.setImageDrawable(getResources().getDrawable(R.drawable.addphoto));
+        I2.setImageDrawable(getResources().getDrawable(R.drawable.addphoto));
+        I3.setImageDrawable(getResources().getDrawable(R.drawable.addphoto));
+        t1.setText(MyAppConstants.wholeScene_FC2);
+        t2.setText(MyAppConstants.yourPlate_FC2);
+        t3.setText(MyAppConstants.otherPlate_FC2);
+
+        l1.setOnClickListener(this);
+        l2.setOnClickListener(this);
+        l3.setOnClickListener(this);
 
         next_btn = (Button) findViewById(R.id.start_step3_button);
         next_btn.setOnClickListener(new View.OnClickListener() {
@@ -61,12 +97,19 @@ public class FileClaim2tActivity extends AppCompatActivity{
         });
 
         picList = new ArrayList<Bitmap>();
+        strList = new ArrayList<String>();
 
+        picList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.addphoto));
+        picList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.addphoto));
         picList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.addphoto));
 
         adapter = new CustomListt(FileClaim2tActivity.this, picList);
-        list=(ListView)findViewById(R.id.photo_list);
+        list=(ListView)findViewById(R.id.more_photo_list);
         list.setAdapter(adapter);
+        addToList(BitmapFactory.decodeResource(this.getResources(), R.drawable.addphoto));
+
+        addToList(BitmapFactory.decodeResource(this.getResources(), R.drawable.addphoto));
+        addToList(BitmapFactory.decodeResource(this.getResources(), R.drawable.addphoto));
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -114,6 +157,18 @@ public class FileClaim2tActivity extends AppCompatActivity{
         });
     }
 
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+          //  case R.id.whole_scene:
+           //     break;
+           // case R.id.your_plate:
+             //   break;
+           // case R.id.other_plate:
+               // break;
+        }
+    }
+
     private void selectImage() {
         final CharSequence[] items = { "Take Photo", "Choose from Library",
                 "Cancel" };
@@ -159,12 +214,27 @@ public class FileClaim2tActivity extends AppCompatActivity{
     }
 
     private void galleryIntent() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
+
+        //MultiImageSelector.create(getApplicationContext()).start(Activity, SELECT_FILE);
+
+        Intent intent = new Intent(getApplicationContext(), MultiImageSelectorActivity.class);
+        if(change_or_insert == INSERT_IMAGE) {
+            intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, 9);
+            intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_MULTI);
+            intent.putStringArrayListExtra(MultiImageSelectorActivity.EXTRA_DEFAULT_SELECTED_LIST, strList);
+        }
+        else {
+            intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_SINGLE);
+        }
+        startActivityForResult(intent, SELECT_FILE);
+        //Intent intent = new Intent();
+        //intent.setType("image/*");
+        //intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        //intent.setAction(Intent.ACTION_GET_CONTENT);
+        //startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -181,27 +251,40 @@ public class FileClaim2tActivity extends AppCompatActivity{
         Bitmap bm=null;
 
 
+        List<String> path = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
 
-
-
-        if (data != null) {
-                Uri selectedImageUri = data.getData();
-                String[] projection = {MediaStore.MediaColumns.DATA};
-                Cursor cursor = managedQuery(selectedImageUri, projection, null, null,
-                        null);
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-                cursor.moveToFirst();
-
-                String selectedImagePath = cursor.getString(column_index);
-
+        for(int i = 0; i < path.size(); i++) {
+            Uri curr = Uri.parse(path.get(i));
+            try {
+                bm = MediaStore.Images.Media.getBitmap(this.getContentResolver(), curr);
+                Bitmap resBitmap = Bitmap.createScaledBitmap(bm, bm.getWidth()/2, bm.getHeight()/2, true);
+                if(change_or_insert == INSERT_IMAGE)
+                    addToList(resBitmap);
+                else
+                    setList(resBitmap);
+            }
+            catch(IOException e){
+                Toast.makeText(getApplicationContext(), "this is " + path.get(i), Toast.LENGTH_LONG).show();
+            }
         }
-        Bitmap resBitmap = Bitmap.createScaledBitmap(bm, bm.getWidth()/2, bm.getHeight()/2, true);
-        bm.recycle();
-        if(change_or_insert == INSERT_IMAGE)
-            addToList(resBitmap);
-        else{
-            setList(resBitmap);
-        }
+        //if (data != null) {
+        //        Uri selectedImageUri = data.getData();
+        //        String[] projection = {MediaStore.MediaColumns.DATA};
+        //        Cursor cursor = managedQuery(selectedImageUri, projection, null, null,
+        //                null);
+        //        int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+        //        cursor.moveToFirst();
+
+        //        String selectedImagePath = cursor.getString(column_index);
+
+        //}
+        //Bitmap resBitmap = Bitmap.createScaledBitmap(bm, bm.getWidth()/2, bm.getHeight()/2, true);
+        //bm.recycle();
+        //if(change_or_insert == INSERT_IMAGE)
+        //    addToList(resBitmap);
+        //else{
+        //    setList(resBitmap);
+        //}
     }
 
     private void onCaptureImageResult(Intent data) {

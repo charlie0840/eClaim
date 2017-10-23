@@ -27,7 +27,9 @@
             android:name=".LoginActivity"
             android:configChanges="orientation"
             android:label="eClaim"
-            android:screenOrientation="portrait">
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,10 +45,12 @@
             android:name=".RegisterActivity"
             android:configChanges="orientation"
             android:label="eClaim"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ProfileActivity"
             android:configChanges="orientation"
+            android:launchMode="singleInstance"
             android:label="eClaim"
             android:screenOrientation="portrait" />
         <activity android:name=".FileClaim2Activity"
@@ -61,13 +65,15 @@
             android:configChanges="orientation"
             android:label="eClaim"
             android:screenOrientation="portrait" />
+        <activity android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity"
+            android:configChanges="orientation|screenSize" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
              Note that the API key is linked to the encryption key used to sign the APK.
              You need a different API key for each encryption key, including the release key that is used to
              sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
@@ -77,6 +83,7 @@
         <activity
             android:name=".ViewClaimsActivity"
             android:label="@string/title_activity_view_claims"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".FileClaim2tActivity"></activity>
     </application>
