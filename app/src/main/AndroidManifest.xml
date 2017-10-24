@@ -2,9 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pingan_us.eclaim">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -31,8 +30,7 @@
             android:configChanges="orientation"
             android:label="eClaim"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait"
-            >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,6 +42,12 @@
             android:configChanges="orientation"
             android:label="eClaim"
             android:screenOrientation="portrait" />
+        <activity android:name=".MapActivity"
+            android:configChanges="orientation"
+            android:label="eClaim"
+            android:screenOrientation="portrait">
+        </activity>
+
         <activity
             android:name=".RegisterActivity"
             android:configChanges="orientation"
@@ -53,22 +57,26 @@
         <activity
             android:name=".ProfileActivity"
             android:configChanges="orientation"
+            android:label="eClaim"
             android:launchMode="singleInstance"
-            android:label="eClaim"
             android:screenOrientation="portrait" />
-        <activity android:name=".FileClaim2Activity"
+        <activity
+            android:name=".FileClaim2Activity"
             android:configChanges="orientation"
             android:label="eClaim"
             android:screenOrientation="portrait" />
-        <activity android:name=".FileClaim3Activity"
+        <activity
+            android:name=".FileClaim3Activity"
             android:configChanges="orientation"
             android:label="eClaim"
             android:screenOrientation="portrait" />
-        <activity android:name=".ClaimFinishActivity"
+        <activity
+            android:name=".ClaimFinishActivity"
             android:configChanges="orientation"
             android:label="eClaim"
             android:screenOrientation="portrait" />
-        <activity android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity"
+        <activity
+            android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity"
             android:configChanges="orientation|screenSize" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -81,8 +89,6 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBkNueDbg1Gy5rKSOUkIwZa07r0MhgMa-M" />
-
-
         <meta-data
             android:name="com.parse.SERVER_URL"
             android:value="@string/back4app_server_url" />
@@ -99,7 +105,7 @@
             android:label="@string/title_activity_view_claims"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".FileClaim2tActivity"></activity>
+        <activity android:name=".FileClaim2tActivity" />
     </application>
 
 </manifest>

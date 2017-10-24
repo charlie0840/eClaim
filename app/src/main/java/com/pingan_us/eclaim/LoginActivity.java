@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                 password.setVisibility(View.GONE);
                 login.setVisibility(View.GONE);
                 register.setVisibility(View.GONE);
-                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MapActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
 
