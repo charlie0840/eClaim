@@ -39,4 +39,11 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_view_claims">ViewClaimsActivity</string>
 
+
+    <string name="back4app_server_url">https://parseapi.back4app.com/</string>
+
+    <!-- Change the following strings as required -->
+    <string name="back4app_app_id">fNI0240TwUfsNXwMacRfUnUw3QdVIfGrQgzkVAIp</string>
+    <string name="back4app_client_key">QrLwWEzREvvLnq2OLsQeTsI0UjeOwvHE11bqybXI</string>
+
 </resources>
