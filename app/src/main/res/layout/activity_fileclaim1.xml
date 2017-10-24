@@ -142,6 +142,7 @@
                         android:layout_alignParentLeft="true"
                         android:textSize="15dp"
                         android:textColor="@color/colorBlack"
+                        android:layout_centerVertical="true"
                         android:text="Select time"/>
                     <Button
                         android:id="@+id/time_picker_btn"
@@ -150,7 +151,9 @@
                         android:layout_height="40dp"
                         android:layout_toRightOf="@+id/time_pick_title"
                         android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
                         android:textSize="15dp"
+                        android:alpha="0.8"
                         android:text="Click here to set the time">
                     </Button>
                 </RelativeLayout>
@@ -168,13 +171,20 @@
                         android:textSize="15dp"
                         android:textColor="@color/colorBlack"
                         android:text="Select Location"/>
+                    <TextView
+                        android:id="@+id/loc_indicate_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/loc_pick_title"
+                        android:text="No location selected, please click the map"
+                        android:textSize="10dp"/>
                     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                         xmlns:tools="http://schemas.android.com/tools"
                         android:id="@+id/map"
                         android:name="com.google.android.gms.maps.SupportMapFragment"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
-                        android:layout_below="@id/loc_pick_title"
+                        android:layout_below="@+id/loc_indicate_text"
                         tools:context="com.example.currentplacedetailsonmap.MapsActivityCurrentPlace" />
                 </RelativeLayout>
                 <RelativeLayout
@@ -290,12 +300,6 @@
                     android:hint="Phone #"
                     android:layout_below="@+id/other_driver_license_pic"
                     />
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_below="@+id/other_driver_section"
-                android:visibility="invisible">
             </RelativeLayout>
         </RelativeLayout>
     </ScrollView>

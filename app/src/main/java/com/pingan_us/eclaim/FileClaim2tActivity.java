@@ -157,6 +157,8 @@ public class FileClaim2tActivity extends AppCompatActivity implements View.OnCli
         });
     }
 
+
+
     @Override
     public void onClick(View v) {
         switch(v.getId()){

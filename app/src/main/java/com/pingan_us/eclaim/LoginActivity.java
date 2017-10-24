@@ -1,27 +1,18 @@
 package com.pingan_us.eclaim;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
-import android.os.Handler;
 import android.os.Parcelable;
+import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -29,12 +20,11 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.ParseInstallation;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener{
 
     private Button login, register, logout;
     private EditText username, password;
     private String user_name, user_password;
-    Context CTX = this;
     boolean enabled = false;
 
     @Override
@@ -58,203 +48,61 @@ public class LoginActivity extends AppCompatActivity {
         logout.setVisibility(View.GONE);
         register.setVisibility(View.VISIBLE);
 
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        login.setOnClickListener(this);
+        logout.setOnClickListener(this);
+        register.setOnClickListener(this);
+
+        username.setOnKeyListener(this);
+        password.setOnKeyListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.loginbutton:
                 user_name = username.getText().toString();
                 user_password = password.getText().toString();
                 if(user_name.length() == 0) {
                     Toast.makeText(getApplicationContext(), "please enter user name", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String retval = "";
-                String result = "";
-                //NetCheck netCheck = new NetCheck();
-                //netCheck.execute();
-                boolean retVal = false;
-
-
                 enabled = true;
                 logout.setVisibility(View.VISIBLE);
                 username.setVisibility(View.GONE);
                 password.setVisibility(View.GONE);
                 login.setVisibility(View.GONE);
                 register.setVisibility(View.GONE);
-                Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
-
-
-                //login content
-                /*try {
-                    retVal = netCheck.get();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if(retVal) {
-                    BackgroundWorker backgroundWorker = new BackgroundWorker(CTX);
-                    backgroundWorker.execute(type, user_name, user_password);
-                    try {
-                        result = backgroundWorker.get();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                    String succ = "succeed";
-                    String fail = "fail";
-                    if(result == null)
-                    {
-                        Toast.makeText(getApplicationContext(), "Please re-log in", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        if (result.toLowerCase().indexOf(succ.toLowerCase()) != -1) {
-
-                            retval = succ;
-                            final_user = user_name;
-                        } else
-                            retval = fail;
-                        if (retval.equals("succeed")) {
-
-                            enabled = true;
-                            logout.setVisibility(View.VISIBLE);
-                            username.setVisibility(View.GONE);
-                            password.setVisibility(View.GONE);
-                            login.setVisibility(View.GONE);
-                            register.setVisibility(View.GONE);
-                            Intent intent = new Intent(getApplicationContext(), ProfileActivity.class); //fixed
-                            intent.putExtra("user", final_user);
-                            startActivity(intent);
-                        }
-                    }
-                }*/
-
-
-
-//				user_name = username.getText().toString();
-//				user_password = password.getText().toString();
-//				DatabaseOperations DOP = new DatabaseOperations(CTX);
-//				Cursor CR = DOP.getInformation(DOP);
-//				CR.moveToFirst();
-//				boolean status = false;
-//				String NAME = "";
-//				do {
-//					if(user_name.equals(CR.getString(0)) && user_password.equals(CR.getString(1))) {
-//						Toast.makeText(getApplicationContext(), "Redirecting...",Toast.LENGTH_SHORT).show();
-//						//beginButton.setEnabled(true);
-//						//joinButton.setEnabled(true);
-//						enabled = true;
-//						beginButton.setVisibility(View.VISIBLE);
-//						joinButton.setVisibility(View.VISIBLE);
-//						logout.setVisibility(View.VISIBLE);
-//						username.setVisibility(View.GONE);
-//						password.setVisibility(View.GONE);
-//						login.setVisibility(View.GONE);
-//						register.setVisibility(View.GONE);
-//						break;
-//					}
-//					else{
-//						Toast.makeText(getApplicationContext(), "Wrong Credentials",Toast.LENGTH_SHORT).show();
-//					}
-//
-//				}while (CR.moveToNext());
-            }
-        });
-        logout.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
+                break;
+            case R.id.logoutbutton:
                 logout.setVisibility(View.GONE);
                 username.setVisibility(View.VISIBLE);
                 password.setVisibility(View.VISIBLE);
                 login.setVisibility(View.VISIBLE);
                 register.setVisibility(View.VISIBLE);
-            }
-        });
-        setUpUIElements();
-
-    }
-
-    /**
-     * Async Task to check whether internet connection is working.
-     **/
-
-    private class NetCheck extends AsyncTask<String,String,Boolean> {
-        private ProgressDialog nDialog;
-
-        @Override
-        protected void onPreExecute(){
-            super.onPreExecute();
-            nDialog = new ProgressDialog(LoginActivity.this);
-            nDialog.setTitle("Checking Network");
-            nDialog.setMessage("Loading..");
-            nDialog.setIndeterminate(false);
-            nDialog.setCancelable(true);
-            nDialog.show();
-        }
-        /**
-         * Gets current device state and checks for working internet connection by trying Google.
-         **/
-        @Override
-        protected Boolean doInBackground(String... args){
-            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfo = cm.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.isConnected()) {
-                try {
-                    URL url = new URL("http://www.google.com");
-                    HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
-                    urlc.setConnectTimeout(3000);
-                    urlc.connect();
-                    if (urlc.getResponseCode() == 200) {
-                        return true;
-                    }
-                } catch (MalformedURLException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-            return false;
-
-        }
-        @Override
-        protected void onPostExecute(Boolean th){
-
-            if(th == true){
-                nDialog.dismiss();
-            }
-            else{
-                nDialog.setMessage("not connected to network");
-                Handler handler = null;
-                handler = new Handler();
-                handler.postDelayed(new Runnable(){
-                    public void run(){
-                        nDialog.cancel();
-                        nDialog.dismiss();
-                    }
-                }, 1000);
-            }
+                break;
+            case R.id.registerbutton:
+                Intent intent3 = new Intent(getApplicationContext(), RegisterActivity.class);
+                intent3.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent3);
+                break;
         }
     }
 
-    private View.OnClickListener onClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch(v.getId()) {
-                case R.id.registerbutton:
-                    Intent intent3 = new Intent(getApplicationContext(), RegisterActivity.class);
-                    intent3.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivity(intent3);
-                    break;
-            }
-        }
-    };
-
-    private void setUpUIElements() {
-        register.setOnClickListener(onClickListener);
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event){
+       if(event.getAction() == KeyEvent.ACTION_DOWN) {
+           switch(keyCode) {
+               case KeyEvent.KEYCODE_ENTER:
+                   InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                   View view = this.getCurrentFocus();
+                   imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                   return true;
+           }
+       }
+       return false;
     }
 
     public void createShortCut(){

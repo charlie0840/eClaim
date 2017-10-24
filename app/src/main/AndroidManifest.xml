@@ -37,14 +37,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".FileClaim1Activity"
-            android:configChanges="orientation"
-            android:label="eClaim"
-            android:screenOrientation="portrait" />
         <activity android:name=".MapActivity"
             android:configChanges="orientation"
             android:label="eClaim"
+            android:theme="@android:style/Theme.Dialog"
             android:screenOrientation="portrait">
         </activity>
 
@@ -61,10 +57,19 @@
             android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".FileClaim1Activity"
+            android:configChanges="orientation"
+            android:label="eClaim"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".FileClaim2Activity"
             android:configChanges="orientation"
             android:label="eClaim"
             android:screenOrientation="portrait" />
+        <activity android:name=".FileClaim2tActivity"
+            android:configChanges="orientation"
+            android:label="eClaim"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".FileClaim3Activity"
             android:configChanges="orientation"
@@ -78,6 +83,14 @@
         <activity
             android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity"
             android:configChanges="orientation|screenSize" />
+
+        <activity
+            android:name=".ViewClaimsActivity"
+            android:label="@string/title_activity_view_claims"
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -98,14 +111,6 @@
         <meta-data
             android:name="com.parse.CLIENT_KEY"
             android:value="@string/back4app_client_key" />
-
-        <activity android:name=".ViewClaimActivity" />
-        <activity
-            android:name=".ViewClaimsActivity"
-            android:label="@string/title_activity_view_claims"
-            android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".FileClaim2tActivity" />
     </application>
 
 </manifest>

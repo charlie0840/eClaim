@@ -1,24 +1,30 @@
 package com.pingan_us.eclaim;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.support.v4.app.FragmentActivity;
@@ -35,20 +41,21 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationServices;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Locale;
 
-public class FileClaim1Activity extends FragmentActivity implements View.OnClickListener, OnMapReadyCallback,
+public class FileClaim1Activity extends FragmentActivity implements View.OnClickListener, View.OnKeyListener,
+        OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        GoogleMap.OnMarkerDragListener,
-        GoogleMap.OnMapLongClickListener,
-        GoogleMap.OnMarkerClickListener {
+        GoogleApiClient.OnConnectionFailedListener {
 
     protected Button next_btn, time_btn, set_btn;
     protected CheckBox injure_box, present_box, drivable_box;
-    protected RelativeLayout injure_section, present_section, drivable_section;
+    protected RelativeLayout injure_section, present_section, drivable_section, loc_section;
     protected Spinner vehicle_spinner;
     protected RadioButton I_rbtn, other_rbtn;
 
@@ -59,11 +66,16 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
     private GoogleMap mMap;
     private GoogleApiClient googleApiClient;
+    private SupportMapFragment mapFragment;
+    private View fg;
+    private TextView loc_indicate_txt;
+    private EditText other_driver_phone_txt;
+
     private double longitude = 0, latitude = 0;
     private long time;
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
+    public static final int GET_LOC_REQUEST = 1;
     private boolean mLocationPermissionGranted = false;
-    private SupportMapFragment mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +93,9 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 .addApi(LocationServices.API)
                 .build();
 
+        loc_indicate_txt = (TextView) findViewById(R.id.loc_indicate_text);
+        other_driver_phone_txt = (EditText) findViewById(R.id.other_driver_phone);
+
         next_btn = (Button) findViewById(R.id.start_step2_button);
         time_btn = (Button) findViewById(R.id.time_picker_btn);
 
@@ -88,14 +103,19 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         present_box = (CheckBox) findViewById(R.id.atscene_checkbox);
         drivable_box = (CheckBox) findViewById(R.id.drivable_checkbox);
 
+        loc_section = (RelativeLayout) findViewById(R.id.loc_section);
         injure_section = (RelativeLayout) findViewById(R.id.injure_section);
         present_section = (RelativeLayout) findViewById(R.id.atscene_section);
         drivable_section = (RelativeLayout) findViewById(R.id.drivable_section);
+
+        fg = (View) findViewById(R.id.map);
 
         vehicle_spinner = (Spinner) findViewById(R.id.vehicle_pick_spinner);
 
         I_rbtn = (RadioButton) findViewById(R.id.I_pick_radiobutton);
         other_rbtn = (RadioButton) findViewById(R.id.other_pick_radiobutton);
+
+        other_driver_phone_txt.setOnKeyListener(this);
 
         next_btn.setOnClickListener(this);
         I_rbtn.setOnClickListener(this);
@@ -104,6 +124,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         present_section.setOnClickListener(this);
         drivable_section.setOnClickListener(this);
         time_btn.setOnClickListener(this);
+        loc_indicate_txt.setOnClickListener(this);
 
         I_rbtn.setChecked(true);
         other_rbtn.setChecked(false);
@@ -113,7 +134,6 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         alertDialog = new AlertDialog.Builder(this).create();
 
         time_btn = (Button) findViewById(R.id.time_picker_btn);
-
 
         dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,8 +156,21 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
             }
         });
 
-
         alertDialog.setView(dialogView);
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event){
+        if(event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch(keyCode) {
+                case KeyEvent.KEYCODE_ENTER:
+                    InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    View view = this.getCurrentFocus();
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -176,6 +209,10 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 if (I_rbtn.isChecked())
                     I_rbtn.setChecked(false);
                 break;
+            case R.id.loc_indicate_text:
+                Intent intent2 = new Intent(this, MapActivity.class);
+                startActivityForResult(intent2, GET_LOC_REQUEST);
+                break;
         }
     }
 
@@ -203,6 +240,8 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
     @Override
     public void onMapReady(GoogleMap map) {
+        mMap = map;
+        map.getUiSettings().setScrollGesturesEnabled(false);
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         LatLng defLoc = new LatLng(-13, 76);
         CameraPosition googlePlex = CameraPosition.builder()
@@ -212,14 +251,11 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 .tilt(45)
                 .build();
         map.moveCamera(CameraUpdateFactory.newCameraPosition(googlePlex));
-        map.setOnMarkerClickListener(this);
-        map.setOnMarkerDragListener(this);
+        map.addMarker(new MarkerOptions().position(defLoc));
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[],
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         mLocationPermissionGranted = false;
         switch (requestCode) {
             case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
@@ -235,27 +271,6 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 return;
             }
         }
-        getCurrentLocation();
-    }
-
-
-    private void getCurrentLocation() {
-        mMap.clear();
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        } else {
-            Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-            if (location != null) {
-                //Getting longitude and latitude
-                longitude = location.getLongitude();
-                latitude = location.getLatitude();
-
-                //moving the map to location
-                moveMap();
-            }
-        }
     }
 
     private void moveMap() {
@@ -265,15 +280,19 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
          * move the camera with animation
          */
         LatLng latLng = new LatLng(latitude, longitude);
+        if(mMap == null){
+            Toast.makeText(getApplicationContext(), "map null!!!!", Toast.LENGTH_LONG).show();
+            return;
+        }
         mMap.addMarker(new MarkerOptions()
                 .position(latLng)
-                .draggable(true)
-                .title("Marker in India"));
+                .draggable(true));
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         mMap.getUiSettings().setZoomControlsEnabled(true);
-
+        mMap.clear();
+        mMap.addMarker(new MarkerOptions().position(latLng));
 
     }
 
@@ -293,32 +312,6 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
     }
 
     @Override
-    public void onMapLongClick(LatLng latLng) {
-        // mMap.clear();
-        mMap.addMarker(new MarkerOptions().position(latLng).draggable(true));
-    }
-
-    @Override
-    public void onMarkerDragStart(Marker marker) {
-        Toast.makeText(FileClaim1Activity.this, "onMarkerDragStart", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onMarkerDrag(Marker marker) {
-        Toast.makeText(FileClaim1Activity.this, "onMarkerDrag", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onMarkerDragEnd(Marker marker) {
-        // getting the Co-ordinates
-        latitude = marker.getPosition().latitude;
-        longitude = marker.getPosition().longitude;
-
-        //move to current position
-        moveMap();
-    }
-
-    @Override
     protected void onStart() {
         googleApiClient.connect();
         super.onStart();
@@ -330,10 +323,44 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         super.onStop();
     }
 
-
     @Override
-    public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(FileClaim1Activity.this, "onMarkerClick", Toast.LENGTH_SHORT).show();
-        return true;
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == GET_LOC_REQUEST) {
+            if(resultCode == RESULT_OK) {
+                LatLng currLoc = null;
+                Bundle bundle = data.getParcelableExtra("bundle");
+                currLoc = (LatLng) bundle.getParcelable("LatLng");
+                longitude = currLoc.longitude;
+                latitude = currLoc.latitude;
+                Toast.makeText(getApplicationContext(), longitude + " " + latitude, Toast.LENGTH_LONG).show();
+                String retStr = getAddress(latitude, longitude);
+                loc_indicate_txt.setText(retStr);
+                moveMap();
+            }
+        }
     }
+    public String getAddress(double lat, double lng) {
+        String retStr = "";
+        Geocoder geocoder = new Geocoder(this);
+        try {
+            List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            Address obj = addresses.get(0);
+            String add = obj.getAddressLine(0);
+            add = add + "\n" + obj.getCountryName();
+            add = add + "\n" + obj.getCountryCode();
+            add = add + "\n" + obj.getAdminArea();
+            add = add + "\n" + obj.getPostalCode();
+            add = add + "\n" + obj.getSubAdminArea();
+            add = add + "\n" + obj.getLocality();
+            add = add + "\n" + obj.getSubThoroughfare();
+            retStr = add;
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        return retStr;
+    }
+
 }

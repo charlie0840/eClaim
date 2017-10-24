@@ -82,6 +82,7 @@ android:weightSum="1">
         android:layout_marginTop="10dp"
         android:text="Log Out"
         android:layout_gravity="center_horizontal"
+        android:gravity="center_vertical"
         android:alpha="0.6"
         android:textSize="20dp"
         android:onClick="onLogOut"/>
