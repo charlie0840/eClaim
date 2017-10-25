@@ -38,10 +38,13 @@ public class FileClaim2Activity extends AppCompatActivity {
     private static final int REQUEST_CAMERA = 0, SELECT_FILE = 1, INSERT_IMAGE = 1, CHANGE_IMAGE = 2, MY_CAMERA_REQUEST_CODE = 1;
     private CustomList adapter;
     private Button next_btn;
+    private static FileClaim2Activity activity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fileclaim2);
+
+        activity = this;
 
         next_btn = (Button) findViewById(R.id.start_step3_button);
         next_btn.setOnClickListener(new View.OnClickListener() {
@@ -315,5 +318,9 @@ public class FileClaim2Activity extends AppCompatActivity {
 
         // show it
         alertDialog.show();
+    }
+
+    public static FileClaim2Activity getInstance() {
+        return activity;
     }
 }

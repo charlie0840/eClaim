@@ -53,6 +53,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
+    private static FileClaim1Activity activity;
 
     protected Spinner vehicle_spinner;
     protected RadioButton I_rbtn, other_rbtn;
@@ -85,6 +86,8 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fileclaim1);
+
+        activity = this;
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -419,6 +422,10 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
         return retStr;
+    }
+
+    public static FileClaim1Activity getInstance() {
+        return activity;
     }
 
 }

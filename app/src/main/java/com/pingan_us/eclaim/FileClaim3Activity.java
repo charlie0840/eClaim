@@ -11,11 +11,14 @@ public class FileClaim3Activity extends AppCompatActivity {
 
     private Button confirm_btn;
     private Spinner auto_repair_spinner;
+    private static FileClaim3Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fileclaim3);
+
+        activity = this;
 
         confirm_btn = (Button) findViewById(R.id.finish_step_button);
         auto_repair_spinner = (Spinner) findViewById(R.id.auto_repair_spinner);
@@ -27,5 +30,9 @@ public class FileClaim3Activity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    public static FileClaim3Activity getInstance() {
+        return activity;
     }
 }

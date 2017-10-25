@@ -24,6 +24,10 @@ public class ClaimFinishActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
+                FileClaim1Activity.getInstance().finish();
+                FileClaim2Activity.getInstance().finish();
+                FileClaim3Activity.getInstance().finish();
+                finish();
             }
         });
     }
