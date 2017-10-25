@@ -3,117 +3,120 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <EditText
-        android:id="@+id/firstname"
+    <ScrollView
         android:layout_width="match_parent"
-
-        android:layout_height="wrap_content"
-        android:hint="First name"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentStart="true" />
-
-    <EditText
-            android:id="@+id/lastname"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/reg_confirm_btn">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <EditText
+            android:id="@+id/reg_firstname"
             android:layout_width="match_parent"
+
             android:layout_height="wrap_content"
             android:hint="First name"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/firstname"
             android:layout_alignParentStart="true" />
 
-    <EditText
-            android:id="@+id/phone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/lastname"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_centerHorizontal="true"
-            android:hint="phone number" />
-
-    <EditText
-            android:id="@+id/email_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/lastname"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_centerHorizontal="true"
-            android:hint="phone number" />
-    <LinearLayout
-        android:id="@+id/add_license_section"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/phone"
-        android:orientation="horizontal"
-        android:layout_below="@+id/phone">
-        <TextView
-                android:id="@+id/addphoto_text"
-                android:layout_width="wrap_content"
+        <EditText
+                android:id="@+id/reg_lastname"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/phone"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:textSize="20dp"
-                android:text="take photo of your
-driver license"/>
-    </LinearLayout>
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/add_license_section"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_centerHorizontal="true"
-        android:hint="Enter password"
-        android:inputType="textPassword" />
+                android:hint="First name"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/reg_firstname"
+                android:layout_alignParentStart="true" />
 
-    <EditText
-        android:id="@+id/confpassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_below="@+id/password"
-        android:layout_centerHorizontal="true"
-        android:hint="confirm password"
-        android:inputType="textPassword" />
+        <EditText
+                android:id="@+id/reg_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/reg_lastname"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_centerHorizontal="true"
+                android:hint="phone number" />
 
+        <EditText
+                android:id="@+id/reg_email_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/reg_lastname"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_centerHorizontal="true"
+                android:hint="phone number" />
+        <LinearLayout
+            android:id="@+id/reg_add_license_section"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginRight="20dp"
+            android:layout_alignLeft="@+id/reg_phone"
+            android:orientation="horizontal"
+            android:layout_below="@+id/reg_phone">
+            <TextView
+                    android:id="@+id/reg_addphoto_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_below="@+id/phone"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="20dp"
+                    android:text="choose photo for your driver license"/>
+            <ImageView
+                android:id="@+id/reg_photo"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="fitCenter"
+                android:src="@drawable/addphoto" />
+        </LinearLayout>
+        <EditText
+            android:id="@+id/reg_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/reg_add_license_section"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_centerHorizontal="true"
+            android:hint="Enter password"
+            android:inputType="textPassword" />
+
+        <EditText
+            android:id="@+id/reg_confpassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_below="@+id/reg_password"
+            android:layout_centerHorizontal="true"
+            android:hint="confirm password"
+            android:inputType="textPassword" />
+    </RelativeLayout>
+    </ScrollView>
     <Button
-        android:id="@+id/confirm_btn"
+        android:id="@+id/reg_confirm_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="saveInfo"
         android:text="Register"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/confpassword"
-        android:layout_alignLeft="@+id/firstname"
-        android:layout_centerHorizontal="true" />
+        android:layout_margin="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"/>
     <Button
-        android:id="@+id/cancel_btn"
+        android:id="@+id/reg_cancel_btn"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:text="Cancel"
-        android:layout_alignBaseline="@+id/confirm_btn"
-        android:layout_alignBottom="@+id/confirm_btn"
-        android:layout_alignEnd="@+id/confpassword" />
-
-    <ImageView
-        android:id="@+id/photo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/add_license_section"
-        android:layout_alignBottom="@+id/add_license_section"
-        android:layout_toRightOf="@+id/add_license_section"
-        android:layout_alignEnd="@+id/phone"
-        android:layout_below="@+id/phone"
-        android:src="@drawable/addphoto" />
+        android:layout_margin="20dp"/>
 </RelativeLayout>
-
 

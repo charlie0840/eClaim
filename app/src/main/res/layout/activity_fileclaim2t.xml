@@ -44,11 +44,7 @@
                 android:layout_height="130dp"
                 android:layout_columnWeight="1"
                 android:layout_margin="10dp"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="t1"/>
+                android:orientation="horizontal">
                 <include layout="@layout/list_single"
                     android:id="@+id/whole_scene"
                     />
@@ -59,11 +55,7 @@
                 android:layout_height="130dp"
                 android:layout_columnWeight="1"
                 android:layout_margin="10dp"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="t2"/>
+                android:orientation="horizontal">
                 <include layout="@layout/list_single"
                     android:id="@+id/your_plate"/>
             </LinearLayout>
@@ -73,11 +65,7 @@
                 android:layout_height="130dp"
                 android:layout_columnWeight="1"
                 android:layout_margin="10dp"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="t3"/>
+                android:orientation="horizontal">
                 <include layout="@layout/list_single"
                     android:id="@+id/other_plate"/>
             </LinearLayout>

@@ -229,28 +229,35 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/person_pick_title"
                         android:textSize="15dp"
+                        android:layout_marginLeft="10dp"
                         android:textColor="@color/colorBlack"
                         android:text="I             "/>
                     <RadioButton
                         android:id="@+id/other_pick_radiobutton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginRight="20dp"
                         android:layout_below="@+id/person_pick_title"
-                        android:layout_toLeftOf="@+id/add_person_pick_button"
+                        android:layout_alignParentRight="true"
                         android:textSize="15dp"
                         android:text="Others"/>
                     <Button
                         android:id="@+id/add_person_pick_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignTop="@+id/I_pick_radiobutton"
-                        android:layout_alignBottom="@+id/I_pick_radiobutton"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignLeft="@+id/other_pick_radiobutton"
+                        android:layout_alignRight="@+id/other_pick_radiobutton"
+                        android:layout_below="@+id/other_pick_radiobutton"
                         android:background="@drawable/cycle"
                         android:textSize="15dp"
                         android:text="Add ID"
                         android:clickable="false" />
+                    <ImageView
+                        android:id="@+id/add_person_license_pic"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_below="@id/add_person_pick_button"
+                        android:scaleType="fitCenter"/>
                 </RelativeLayout>
             </RelativeLayout>
             <RelativeLayout
@@ -277,20 +284,24 @@
                     android:text="Add info of other drivers"/>
                 <ImageView
                     android:id="@+id/other_driver_license_pic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="100dp"
+                    android:layout_height="80dp"
                     android:layout_below="@+id/other_driver_title"
-                    android:layout_margin="5dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:scaleType="fitCenter"
                     android:background="@drawable/cycle"
                     android:src="@drawable/driverlicense"/>
                 <ImageView
                     android:id="@+id/other_insurance_card_pic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/other_driver_title"
-                    android:layout_alignParentRight="true"
+                    android:layout_width="100dp"
+                    android:layout_height="80dp"
                     android:background="@drawable/cycle"
-                    android:src="@drawable/insurance"/>
+                    android:src="@drawable/insurance"
+                    android:layout_below="@+id/other_driver_title"
+                    android:layout_alignParentEnd="true"
+                    android:scaleType="fitCenter"
+                    android:layout_marginEnd="20dp" />
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/other_driver_phone"
                     android:layout_width="match_parent"

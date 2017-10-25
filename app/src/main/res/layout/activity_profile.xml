@@ -23,10 +23,11 @@
                 android:background="@drawable/cycle">
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profile_photo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_centerVertical="true"
                     android:src="@drawable/profilephoto"/>
                 <RelativeLayout
                     android:id="@+id/name_layout"

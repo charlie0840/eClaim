@@ -18,7 +18,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,14 +33,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutionException;
 
-public class RegisterActivity extends Activity {
-    EditText FIRST_NAME, LAST_NAME, USER_PASSWORD, CONFIRM_PASSWORD, EMAIL_ADDRESS, PHONE;
-    ImageView PHOTO;
-    Button registerButton, cancelButton;
-    String first_name, last_name, user_password, confirm_password, type, user_role = "none", email_address, phone;
-    Context ctx = this;
-    boolean reg = true;
-    byte[] picBinary;
+public class RegisterActivity extends Activity implements View.OnClickListener, View.OnKeyListener{
+    private EditText FIRST_NAME, LAST_NAME, USER_PASSWORD, CONFIRM_PASSWORD, EMAIL_ADDRESS, PHONE;
+    private ImageView PHOTO;
+    private Button registerButton, cancelButton;
+
+    private final int ACTIVITY_SELECT_IMAGE = 1234;
+
+    private String first_name, last_name, user_password, confirm_password, email_address, phone;
+    private boolean reg = true;
+    private byte[] picBinary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,193 +52,133 @@ public class RegisterActivity extends Activity {
         Intent intent = getIntent();
         reg = intent.getBooleanExtra("reg", true);
 
-        registerButton = (Button)findViewById(R.id.confirm_btn);
-        cancelButton = (Button)findViewById(R.id.cancel_btn);
+        PHOTO = (ImageView) findViewById(R.id.reg_photo);
 
-        FIRST_NAME = (EditText)findViewById(R.id.firstname);
-        LAST_NAME = (EditText)findViewById(R.id.lastname);
-        PHONE = (EditText)findViewById(R.id.phone);
+        registerButton = (Button)findViewById(R.id.reg_confirm_btn);
+        cancelButton = (Button)findViewById(R.id.reg_cancel_btn);
 
-        USER_PASSWORD = (EditText)findViewById(R.id.password);
-        CONFIRM_PASSWORD = (EditText)findViewById(R.id.confpassword);
-        EMAIL_ADDRESS = (EditText)findViewById(R.id.email_text);
+        FIRST_NAME = (EditText)findViewById(R.id.reg_firstname);
+        LAST_NAME = (EditText)findViewById(R.id.reg_lastname);
+        PHONE = (EditText)findViewById(R.id.reg_phone);
 
-        if(!reg)
-            registerButton.setText("Unregister");
+        USER_PASSWORD = (EditText)findViewById(R.id.reg_password);
+        CONFIRM_PASSWORD = (EditText)findViewById(R.id.reg_confpassword);
+        EMAIL_ADDRESS = (EditText)findViewById(R.id.reg_email_text);
 
-        registerButton.setOnClickListener(onClickListener);
-        cancelButton.setOnClickListener(onClickListener);
+        USER_PASSWORD.setOnKeyListener(this);
+        CONFIRM_PASSWORD.setOnKeyListener(this);
+        EMAIL_ADDRESS.setOnKeyListener(this);
+        FIRST_NAME.setOnKeyListener(this);
+        LAST_NAME.setOnKeyListener(this);
+        PHONE.setOnKeyListener(this);
+
+        registerButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
+
+        PHOTO.setOnClickListener(this);
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         switch(requestCode) {
             case 1234:
                 if(resultCode == RESULT_OK){
-                    Uri selectedImage = data.getData();
-                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
-
-                    Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                    cursor.moveToFirst();
-
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    String filePath = cursor.getString(columnIndex);
-                    cursor.close();
-
-
-                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
-                    PHOTO.setImageBitmap(yourSelectedImage);
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    yourSelectedImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    picBinary = stream.toByteArray();
-                }
-        }
-    };
-
-
-
-    /**
-     * Async Task to check whether internet connection is working.
-     **/
-    private class NetCheck extends AsyncTask<String,String,Boolean> {
-        private ProgressDialog nDialog;
-
-        @Override
-        protected void onPreExecute(){
-            super.onPreExecute();
-            nDialog = new ProgressDialog(RegisterActivity.this);
-            nDialog.setTitle("Checking Network");
-            nDialog.setMessage("Loading..");
-            nDialog.setIndeterminate(false);
-            nDialog.setCancelable(true);
-            nDialog.show();
-        }
-        /**
-         * Gets current device state and checks for working internet connection by trying Google.
-         **/
-        @Override
-        protected Boolean doInBackground(String... args){
-            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo netInfo = cm.getActiveNetworkInfo();
-            if (netInfo != null && netInfo.isConnected()) {
-                try {
-                    URL url = new URL("http://www.google.com");
-                    HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
-                    urlc.setConnectTimeout(3000);
-                    urlc.connect();
-                    if (urlc.getResponseCode() == 200) {
-                        return true;
+                    Bitmap bm=null;
+                    if (data != null) {
+                        try {
+                            bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
-                } catch (MalformedURLException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    Bitmap yourSelectedImage = Bitmap.createScaledBitmap(bm, bm.getWidth()/2, bm.getHeight()/2, true);
+
+                    bm.recycle();
+
+                    PHOTO.setImageBitmap(yourSelectedImage);
                 }
-            }
-            return false;
-
-        }
-        @Override
-        protected void onPostExecute(Boolean th){
-
-            if(th == true){
-                nDialog.dismiss();
-                //BackgroundWorker backgroundWorker = new BackgroundWorker(ctx);
-                //backgroundWorker.execute(type, user_name, user_password);
-            }
-            else{
-                nDialog.dismiss();
-            }
+                break;
         }
     }
 
-    private View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch(v.getId()) {
-                case R.id.confirm_btn:
-                    first_name = FIRST_NAME.getText().toString();
-                    last_name = LAST_NAME.getText().toString();
-                    phone = PHONE.getText().toString();
-                    email_address = EMAIL_ADDRESS.getText().toString();
-                    user_password = USER_PASSWORD.getText().toString();
-                    confirm_password = CONFIRM_PASSWORD.getText().toString();
-                    if(first_name.length() == 0) {
-                        Toast.makeText(getApplicationContext(), "first name must not be empty", Toast.LENGTH_SHORT).show();
-                        USER_PASSWORD.setText("");
-                        CONFIRM_PASSWORD.setText("");
-                    }
-                    else if(last_name.length() == 0) {
-                        Toast.makeText(getApplicationContext(), "last name must not be empty", Toast.LENGTH_SHORT).show();
-                        USER_PASSWORD.setText("");
-                        CONFIRM_PASSWORD.setText("");
-                    }
-                    else if(phone.length() == 0) {
-                        Toast.makeText(getApplicationContext(), "phone number must not be empty", Toast.LENGTH_SHORT).show();
-                        USER_PASSWORD.setText("");
-                        CONFIRM_PASSWORD.setText("");
-                    }
-                    else if(email_address.length() == 0) {
-                        Toast.makeText(getApplicationContext(), "email address must not be empty", Toast.LENGTH_SHORT).show();
-                        USER_PASSWORD.setText("");
-                        CONFIRM_PASSWORD.setText("");
-                    }
-                    else if(user_password.length() < 2) {
-                        Toast.makeText(getApplicationContext(), "length of password must be at least 2", Toast.LENGTH_SHORT).show();
-                        USER_PASSWORD.setText("");
-                        CONFIRM_PASSWORD.setText("");
-                    }
-                    else if(picBinary == null) {
-                        Toast.makeText(getApplicationContext(), "please upload the photo of your driver license", Toast.LENGTH_SHORT).show();
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event){
+        if(event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch(keyCode) {
+                case KeyEvent.KEYCODE_ENTER:
+                    InputMethodManager imm = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    View view = this.getCurrentFocus();
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.reg_confirm_btn:
+                first_name = FIRST_NAME.getText().toString();
+                last_name = LAST_NAME.getText().toString();
+                phone = PHONE.getText().toString();
+                email_address = EMAIL_ADDRESS.getText().toString();
+                user_password = USER_PASSWORD.getText().toString();
+                confirm_password = CONFIRM_PASSWORD.getText().toString();
+                if(first_name.length() == 0) {
+                    Toast.makeText(getApplicationContext(), MyAppConstants.regFNEmpty, Toast.LENGTH_SHORT).show();
+                    USER_PASSWORD.setText("");
+                    CONFIRM_PASSWORD.setText("");
+                }
+                else if(last_name.length() == 0) {
+                    Toast.makeText(getApplicationContext(), MyAppConstants.regLNEmpty, Toast.LENGTH_SHORT).show();
+                    USER_PASSWORD.setText("");
+                    CONFIRM_PASSWORD.setText("");
+                }
+                else if(phone.length() == 0) {
+                    Toast.makeText(getApplicationContext(), MyAppConstants.regPhoneEmpty, Toast.LENGTH_SHORT).show();
+                    USER_PASSWORD.setText("");
+                    CONFIRM_PASSWORD.setText("");
+                }
+                else if(email_address.length() == 0) {
+                    Toast.makeText(getApplicationContext(), MyAppConstants.regEAEmpty, Toast.LENGTH_SHORT).show();
+                    USER_PASSWORD.setText("");
+                    CONFIRM_PASSWORD.setText("");
+                }
+                else if(user_password.length() < 2) {
+                    Toast.makeText(getApplicationContext(), MyAppConstants.regPWLength, Toast.LENGTH_SHORT).show();
+                    USER_PASSWORD.setText("");
+                    CONFIRM_PASSWORD.setText("");
+                }
+                else if(picBinary == null) {
+                    Toast.makeText(getApplicationContext(), MyAppConstants.regUPEmpty, Toast.LENGTH_SHORT).show();
+                    USER_PASSWORD.setText("");
+                    CONFIRM_PASSWORD.setText("");
+                }
+                else {
+                    if (!user_password.equals(confirm_password)) {
+                        Toast.makeText(getApplicationContext(), MyAppConstants.regPWMatch, Toast.LENGTH_SHORT).show();
                         USER_PASSWORD.setText("");
                         CONFIRM_PASSWORD.setText("");
                     }
                     else {
-                        if (reg)
-                            type = "register";
-                        else
-                            type = "unregister";
-                        if (!user_password.equals(confirm_password)) {
-                            Toast.makeText(getApplicationContext(), "Passwordwords do not match", Toast.LENGTH_SHORT).show();
-                            USER_PASSWORD.setText("");
-                            CONFIRM_PASSWORD.setText("");
-                        }
-                        else {
-                            /*NetCheck netCheck = new NetCheck();
-                            netCheck.execute();
-                            boolean retVal = false;
-                            try {
-                                retVal = netCheck.get();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            }
-                            if(retVal) {
-                                String uploadImage = Base64.encodeToString(picBinary, Base64.DEFAULT);
-                                BackgroundWorker backgroundWorker = new BackgroundWorker(ctx);
-                                backgroundWorker.execute(type, first_name, last_name, email_address, phone, user_password, uploadImage);
-                            }*/
-                        }
                     }
-                    Intent intent1 = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(intent1);
-                    break;
+                }
+                Intent intent1 = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent1);
+                break;
 
-                case R.id.cancel_btn:
-                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(intent);
-                    break;
-                case R.id.photo:
-                    Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                    final int ACTIVITY_SELECT_IMAGE = 1234;
-                    startActivityForResult(i, ACTIVITY_SELECT_IMAGE);
-                    break;
-            }
+            case R.id.reg_cancel_btn:
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.reg_photo:
+                Intent i = new Intent();
+                i.setType("image/*");
+                i.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(i, "Select File"), ACTIVITY_SELECT_IMAGE);
+                break;
         }
-    };
+    }
 }

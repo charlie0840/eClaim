@@ -54,6 +54,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * Created by Charlie0840 on 10/14/2017.
  */
@@ -62,11 +64,12 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     private ImageSwitcher IDImageSwitcher, VehicleImageSwitcher;
     private LinearLayout photo_section;
     private RelativeLayout info_section, claim_section, phone_section, id_section, vehicle_section, add_id, add_vehicle;
-    private Button view_doc_btn, file_claim_btn;
+    private Button view_doc_btn, file_claim_btn, claim_btn;
     private ImageButton phone_btn;
     private Animation animationLOut, animationLIn;
+    private CircleImageView profile_photo;
     private ImageView switcherImageView, switcherImageView2;
-    private static final int REQUEST_CAMERA = 0, SELECT_FILE = 1, MY_CAMERA_REQUEST_CODE = 1;
+    private static final int REQUEST_CAMERA = 0, SELECT_FILE = 1, MY_CAMERA_REQUEST_CODE = 1, MY_CALL_REQUEST_CODE = 2, PROFILE_PHOTO = 3, ID = 0, VEHICLE = 1;
     private List<Drawable> IDPicList, vehiclePicList;
     private int counter, ID_or_Vehicle;
     private String userChoosenTask;
@@ -76,8 +79,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
-        Intent intent = getIntent();
 
         IDPicList = new ArrayList<Drawable>();
         vehiclePicList = new ArrayList<Drawable>();
@@ -99,6 +100,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         vehiclePicList.add(p3);
 
         nav_bar = findViewById(R.id.nav_layout);
+
         ImageView home_nav = (ImageView) nav_bar.findViewById(R.id.home_nav);
         ImageView claim_nav = (ImageView) nav_bar.findViewById(R.id.claims_nav);
         home_nav.setOnClickListener(this);
@@ -116,37 +118,19 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         add_id = (RelativeLayout) findViewById(R.id.id_section);
         add_vehicle = (RelativeLayout) findViewById(R.id.vehicle_section);
 
+        claim_btn = (Button) findViewById(R.id.claim_button);
         view_doc_btn = (Button) findViewById(R.id.claim_button);
         file_claim_btn = (Button) findViewById(R.id.file_claim_button);
         phone_btn = (ImageButton) findViewById(R.id.assistance_phone_button);
+        profile_photo = (CircleImageView) findViewById(R.id.profile_photo);
 
+
+        claim_btn.setOnClickListener(this);
         add_id.setOnClickListener(this);
         add_vehicle.setOnClickListener(this);
-
-
-        file_claim_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), FileClaim1Activity.class); //fixed
-                startActivity(intent);
-            }
-        });
-
-        phone_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent callIntent = new Intent(Intent.ACTION_CALL);
-                callIntent.setData(Uri.parse("tel:123456789"));
-                if (ActivityCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(getApplicationContext(), "please grant the access to phone call", Toast.LENGTH_SHORT).show();
-                } else {
-                    startActivity(callIntent);
-                }
-            }
-        });
-
-
-        //nextImageButton = (Button) findViewById(R.id.nextImageButton);
+        phone_btn.setOnClickListener(this);
+        file_claim_btn.setOnClickListener(this);
+        profile_photo.setOnClickListener(this);
 
         IDImageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
@@ -236,18 +220,22 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         });
 
     }
-
+    @TargetApi(23)
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.id_section:
-                ID_or_Vehicle = 0;
+                ID_or_Vehicle = ID;
                 Toast.makeText(getApplicationContext(), "add pic!", Toast.LENGTH_SHORT).show();
                 selectImage();
                 break;
             case R.id.vehicle_section:
-                ID_or_Vehicle = 1;
+                ID_or_Vehicle = VEHICLE;
                 Toast.makeText(getApplicationContext(), "add pic!", Toast.LENGTH_SHORT).show();
+                selectImage();
+                break;
+            case R.id.profile_photo:
+                ID_or_Vehicle = PROFILE_PHOTO;
                 selectImage();
                 break;
             case R.id.home_nav:
@@ -262,7 +250,24 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                 intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
                 break;
-
+            case R.id.assistance_phone_button:
+                if (ActivityCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, MY_CALL_REQUEST_CODE);
+                } else {
+                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                    callIntent.setData(Uri.parse("tel:123456789"));
+                    startActivity(callIntent);
+                }
+                break;
+            case R.id.file_claim_button:
+                Intent intent2 = new Intent(getApplicationContext(), FileClaim1Activity.class); //fixed
+                startActivity(intent2);
+                break;
+            case R.id.claim_button:
+                Intent intent3 = new Intent(this, ViewClaimsActivity.class);
+                intent3.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent3);
+                break;
         }
     }
 
@@ -356,14 +361,16 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     public void addToList(Drawable pic) {
 
         Toast.makeText(getApplicationContext(), "add to list!", Toast.LENGTH_SHORT).show();
-        if (ID_or_Vehicle == 0) {
+        if (ID_or_Vehicle == ID) {
             IDPicList.add(pic);
 
             Toast.makeText(getApplicationContext(), "id size " + IDPicList.size(), Toast.LENGTH_SHORT).show();
-        } else {
+        } else if (ID_or_Vehicle == VEHICLE){
             vehiclePicList.add(pic);
             Toast.makeText(getApplicationContext(), "vehicle size " + vehiclePicList.size(), Toast.LENGTH_SHORT).show();
-
+        }
+        else {
+            profile_photo.setImageDrawable(pic);
         }
     }
 
@@ -396,10 +403,18 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                     Toast.makeText(getApplicationContext(), "No camera detected", Toast.LENGTH_LONG).show();
 
             } else {
-
                 Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
-
             }
+        }
+        else if(requestCode == MY_CALL_REQUEST_CODE) {
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:123456789"));
+                if (ActivityCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED)
+                    startActivity(callIntent);
+            }
+            else
+                Toast.makeText(this, "Calling permission denied", Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -5,14 +5,14 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -53,29 +54,32 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    protected Button next_btn, time_btn, set_btn;
-    protected CheckBox injure_box, present_box, drivable_box;
-    protected RelativeLayout injure_section, present_section, drivable_section, loc_section;
     protected Spinner vehicle_spinner;
     protected RadioButton I_rbtn, other_rbtn;
+    protected Button next_btn, time_btn, set_btn, add_person_btn;
+    protected CheckBox injure_box, present_box, drivable_box;
 
+
+    private Calendar date;
     private DatePicker datePicker;
     private TimePicker timePicker;
-    private View dialogView;
     private AlertDialog alertDialog;
 
     private GoogleMap mMap;
-    private GoogleApiClient googleApiClient;
-    private SupportMapFragment mapFragment;
-    private View fg;
+    private View fg,dialogView;
     private TextView loc_indicate_txt;
+    private SupportMapFragment mapFragment;
     private EditText other_driver_phone_txt;
+    private GoogleApiClient googleApiClient;
+    private ImageView other_drive_pic, other_insur_pic, add_person_pic;
+    private RelativeLayout injure_section, present_section, drivable_section, loc_section;
 
-    private double longitude = 0, latitude = 0;
     private long time;
-    public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
-    public static final int GET_LOC_REQUEST = 1;
+    private int drive_or_insur;
+    private double longitude = 0, latitude = 0;
     private boolean mLocationPermissionGranted = false;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
+    private static final int GET_LOC_REQUEST = 1, ACTIVITY_SELECT_IMAGE = 2, DRIVE = 1, INSUR = 2, ADD_PERSON = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,8 +100,15 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         loc_indicate_txt = (TextView) findViewById(R.id.loc_indicate_text);
         other_driver_phone_txt = (EditText) findViewById(R.id.other_driver_phone);
 
+        I_rbtn = (RadioButton) findViewById(R.id.I_pick_radiobutton);
+        other_rbtn = (RadioButton) findViewById(R.id.other_pick_radiobutton);
+        add_person_btn = (Button) findViewById(R.id.add_person_pick_button);
         next_btn = (Button) findViewById(R.id.start_step2_button);
         time_btn = (Button) findViewById(R.id.time_picker_btn);
+
+        other_drive_pic = (ImageView) findViewById(R.id.other_driver_license_pic);
+        other_insur_pic = (ImageView) findViewById(R.id.other_insurance_card_pic);
+        add_person_pic = (ImageView) findViewById(R.id.add_person_license_pic);
 
         injure_box = (CheckBox) findViewById(R.id.injure_checkbox);
         present_box = (CheckBox) findViewById(R.id.atscene_checkbox);
@@ -112,28 +123,31 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
         vehicle_spinner = (Spinner) findViewById(R.id.vehicle_pick_spinner);
 
-        I_rbtn = (RadioButton) findViewById(R.id.I_pick_radiobutton);
-        other_rbtn = (RadioButton) findViewById(R.id.other_pick_radiobutton);
+        add_person_pic.setVisibility(View.GONE);
+        add_person_btn.setVisibility(View.GONE);
 
         other_driver_phone_txt.setOnKeyListener(this);
 
         next_btn.setOnClickListener(this);
         I_rbtn.setOnClickListener(this);
         other_rbtn.setOnClickListener(this);
+        time_btn.setOnClickListener(this);
+        add_person_btn.setOnClickListener(this);
+
         injure_section.setOnClickListener(this);
         present_section.setOnClickListener(this);
         drivable_section.setOnClickListener(this);
-        time_btn.setOnClickListener(this);
+
+        other_drive_pic.setOnClickListener(this);
+        other_insur_pic.setOnClickListener(this);
+
         loc_indicate_txt.setOnClickListener(this);
 
         I_rbtn.setChecked(true);
         other_rbtn.setChecked(false);
 
-
         dialogView = View.inflate(this, R.layout.date_time_picker, null);
         alertDialog = new AlertDialog.Builder(this).create();
-
-        time_btn = (Button) findViewById(R.id.time_picker_btn);
 
         dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,7 +194,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 alertDialog.show();
                 break;
             case R.id.start_step2_button:
-                Intent intent = new Intent(this, FileClaim2tActivity.class);
+                Intent intent = new Intent(this, FileClaim2Activity.class);
                 this.startActivity(intent);
                 break;
             case R.id.drivable_section:
@@ -202,10 +216,13 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                     present_box.setChecked(false);
                 break;
             case R.id.I_pick_radiobutton:
+                add_person_btn.setVisibility(View.GONE);
+                add_person_pic.setVisibility(View.GONE);
                 if (other_rbtn.isChecked())
                     other_rbtn.setChecked(false);
                 break;
             case R.id.other_pick_radiobutton:
+                add_person_btn.setVisibility(View.VISIBLE);
                 if (I_rbtn.isChecked())
                     I_rbtn.setChecked(false);
                 break;
@@ -213,11 +230,29 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 Intent intent2 = new Intent(this, MapActivity.class);
                 startActivityForResult(intent2, GET_LOC_REQUEST);
                 break;
+            case R.id.other_driver_license_pic:
+                drive_or_insur = DRIVE;
+                Intent i = new Intent();
+                i.setType("image/*");
+                i.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(i, "Select File"), ACTIVITY_SELECT_IMAGE);
+                break;
+            case R.id.other_insurance_card_pic:
+                drive_or_insur = INSUR;
+                Intent i1 = new Intent();
+                i1.setType("image/*");
+                i1.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(i1, "Select File"), ACTIVITY_SELECT_IMAGE);
+                break;
+            case R.id.add_person_pick_button:
+                drive_or_insur = ADD_PERSON;
+                Intent i2 = new Intent();
+                i2.setType("image/*");
+                i2.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(i2, "Select File"), ACTIVITY_SELECT_IMAGE);
+                break;
         }
     }
-
-    Calendar date;
-
 
     public void showDateTimePicker() {
         final Calendar currentDate = Calendar.getInstance();
@@ -242,6 +277,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
     public void onMapReady(GoogleMap map) {
         mMap = map;
         map.getUiSettings().setScrollGesturesEnabled(false);
+        mMap.getUiSettings().setZoomControlsEnabled(false);
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         LatLng defLoc = new LatLng(-13, 76);
         CameraPosition googlePlex = CameraPosition.builder()
@@ -290,7 +326,6 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-        mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.clear();
         mMap.addMarker(new MarkerOptions().position(latLng));
 
@@ -303,12 +338,10 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
     @Override
     public void onConnectionSuspended(int i) {
-
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 
     @Override
@@ -325,6 +358,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Toast.makeText(getApplicationContext(), "REQUEST CODE IS       " + requestCode, Toast.LENGTH_SHORT).show();
         if(requestCode == GET_LOC_REQUEST) {
             if(resultCode == RESULT_OK) {
                 LatLng currLoc = null;
@@ -338,7 +372,31 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 moveMap();
             }
         }
+        else if(requestCode == ACTIVITY_SELECT_IMAGE) {
+            if(resultCode == RESULT_OK){
+                Bitmap bm=null;
+                if (data != null) {
+                    try {
+                        bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Bitmap yourSelectedImage = Bitmap.createScaledBitmap(bm, bm.getWidth()/2, bm.getHeight()/2, true);
+
+                bm.recycle();
+                if(drive_or_insur == DRIVE)
+                    other_drive_pic.setImageBitmap(yourSelectedImage);
+                else if(drive_or_insur == INSUR)
+                    other_insur_pic.setImageBitmap(yourSelectedImage);
+                else {
+                    add_person_pic.setVisibility(View.VISIBLE);
+                    add_person_pic.setImageBitmap(yourSelectedImage);
+                }
+            }
+        }
     }
+
     public String getAddress(double lat, double lng) {
         String retStr = "";
         Geocoder geocoder = new Geocoder(this);

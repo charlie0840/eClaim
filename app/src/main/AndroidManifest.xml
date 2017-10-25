@@ -48,7 +48,6 @@
             android:name=".RegisterActivity"
             android:configChanges="orientation"
             android:label="eClaim"
-            android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ProfileActivity"
@@ -86,8 +85,10 @@
 
         <activity
             android:name=".ViewClaimsActivity"
-            android:label="@string/title_activity_view_claims"
             android:launchMode="singleInstance"
+            android:configChanges="orientation"
+            android:label="eClaim"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
 
