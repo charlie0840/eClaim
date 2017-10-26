@@ -26,7 +26,7 @@ public class CustomList extends ArrayAdapter<String>{
 
     }
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
+    public View getView(final int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView= inflater.inflate(R.layout.list_single, null, true);
         TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
@@ -36,7 +36,14 @@ public class CustomList extends ArrayAdapter<String>{
 
         imageView.setImageBitmap(imageId.get(position));
 
-        CircleImageView btn = (CircleImageView) rowView.findViewById(R.id.remove);
+        txtTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageId.remove(position);
+                web.remove(position);
+                notifyDataSetChanged();
+            }
+        });
 
         return rowView;
     }

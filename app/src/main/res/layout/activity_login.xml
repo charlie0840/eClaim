@@ -14,7 +14,7 @@ android:weightSum="1">
 
 <!-- Login progress -->
 
-<ImageView
+    <ImageView
     android:layout_width="173dp"
     android:layout_height="wrap_content"
     android:id="@+id/imageView"
@@ -44,8 +44,7 @@ android:weightSum="1">
                 android:layout_height="wrap_content"
                 android:hint="Username"
                 android:maxLines="1"
-                android:imeOptions="actionNext"
-            />
+                android:imeOptions="actionNext" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -69,7 +68,7 @@ android:weightSum="1">
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="  login  "
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="center_horizontal|center_vertical"
             android:textSize="20dp"
             android:onClick="onLogin"
             android:background="@drawable/cycle"
@@ -80,9 +79,9 @@ android:weightSum="1">
         android:layout_width="148dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="Log Out"
+        android:text="  LogOut  "
+        android:background="@drawable/cycle"
         android:layout_gravity="center_horizontal"
-        android:gravity="center_vertical"
         android:alpha="0.6"
         android:textSize="20dp"/>
 
@@ -95,13 +94,11 @@ android:weightSum="1">
         android:text="Not regestered yet?"
         android:layout_gravity="center_horizontal"
         android:paddingTop="30dp"/>
-
     <Button
         android:id="@+id/registerbutton"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
         android:textSize="16dp"
         android:text="  Regester here  "
         android:layout_gravity="center_horizontal"

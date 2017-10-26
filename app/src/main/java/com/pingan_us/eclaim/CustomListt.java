@@ -32,7 +32,7 @@ public class CustomListt extends ArrayAdapter<String>{
 
         imageView.setImageBitmap(imageId.get(position));
 
-        CircleImageView btn = (CircleImageView) rowView.findViewById(R.id.remove);
+        CircleImageView btn = (CircleImageView) rowView.findViewById(R.id.fc2_remove);
 
         btn.setOnClickListener(new View.OnClickListener(){
             @Override

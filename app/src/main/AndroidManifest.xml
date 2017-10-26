@@ -37,13 +37,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MapActivity"
+        <activity
+            android:name=".MapActivity"
             android:configChanges="orientation"
             android:label="eClaim"
-            android:theme="@android:style/Theme.Dialog"
-            android:screenOrientation="portrait">
-        </activity>
-
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog"></activity>
         <activity
             android:name=".RegisterActivity"
             android:configChanges="orientation"
@@ -65,10 +64,11 @@
             android:configChanges="orientation"
             android:label="eClaim"
             android:screenOrientation="portrait" />
-        <activity android:name=".FileClaim2tActivity"
+        <activity
+            android:name=".FileClaim2tActivity"
             android:configChanges="orientation"
             android:label="eClaim"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".FileClaim3Activity"
             android:configChanges="orientation"
@@ -82,15 +82,13 @@
         <activity
             android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity"
             android:configChanges="orientation|screenSize" />
-
         <activity
             android:name=".ViewClaimsActivity"
-            android:launchMode="singleInstance"
             android:configChanges="orientation"
             android:label="eClaim"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -112,6 +110,8 @@
         <meta-data
             android:name="com.parse.CLIENT_KEY"
             android:value="@string/back4app_client_key" />
+
+        <activity android:name=".ViewClaimt"></activity>
     </application>
 
 </manifest>

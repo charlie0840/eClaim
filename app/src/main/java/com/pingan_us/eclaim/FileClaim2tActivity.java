@@ -61,40 +61,34 @@ public class FileClaim2tActivity extends AppCompatActivity implements View.OnCli
 
         default_grid = (GridLayout) findViewById(R.id.default_pic_grid);
 
-        p1 = (LinearLayout) default_grid.findViewById(R.id.whole_scene_section);
-        p2 = (LinearLayout) default_grid.findViewById(R.id.your_plate_section);
-        p3 = (LinearLayout) default_grid.findViewById(R.id.other_plate_section);
+ //       p1 = (LinearLayout) default_grid.findViewById(R.id.whole_scene_section);
+   //     p2 = (LinearLayout) default_grid.findViewById(R.id.your_plate_section);
+     //   p3 = (LinearLayout) default_grid.findViewById(R.id.other_plate_section);
 
-        l1 = findViewById(R.id.whole_scene);
-        l2 = findViewById(R.id.your_plate);
-        l3 = findViewById(R.id.other_plate);
+//        l1 = findViewById(R.id.whole_scene);
+  //      l2 = findViewById(R.id.your_plate);
+    //    l3 = findViewById(R.id.other_plate);
 
-        ImageView I1 = l1.findViewById(R.id.img);
-        ImageView I2 = l2.findViewById(R.id.img);
-        ImageView I3 = l3.findViewById(R.id.img);
-        TextView t1 = l1.findViewById(R.id.txt);
-        TextView t2 = l2.findViewById(R.id.txt);
-        TextView t3 = l3.findViewById(R.id.txt);
+//        ImageView I1 = l1.findViewById(R.id.img);
+  //      ImageView I2 = l2.findViewById(R.id.img);
+    //    ImageView I3 = l3.findViewById(R.id.img);
+      //  TextView t1 = l1.findViewById(R.id.txt);
+        //TextView t2 = l2.findViewById(R.id.txt);
+        //TextView t3 = l3.findViewById(R.id.txt);
 
-        I1.setImageDrawable(getResources().getDrawable(R.drawable.addphoto));
-        I2.setImageDrawable(getResources().getDrawable(R.drawable.addphoto));
-        I3.setImageDrawable(getResources().getDrawable(R.drawable.addphoto));
-        t1.setText(MyAppConstants.wholeScene_FC2);
-        t2.setText(MyAppConstants.yourPlate_FC2);
-        t3.setText(MyAppConstants.otherPlate_FC2);
+        //I1.setImageDrawable(getResources().getDrawable(R.drawable.addphoto));
+        //I2.setImageDrawable(getResources().getDrawable(R.drawable.addphoto));
+//        I3.setImageDrawable(getResources().getDrawable(R.drawable.addphoto));
+  //      t1.setText(MyAppConstants.wholeScene_FC2);
+    //    t2.setText(MyAppConstants.yourPlate_FC2);
+      //  t3.setText(MyAppConstants.otherPlate_FC2);
 
-        l1.setOnClickListener(this);
-        l2.setOnClickListener(this);
-        l3.setOnClickListener(this);
+//        l1.setOnClickListener(this);
+  //      l2.setOnClickListener(this);
+    //    l3.setOnClickListener(this);
 
         next_btn = (Button) findViewById(R.id.start_step3_button);
-        next_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), FileClaim3Activity.class);
-                startActivity(intent);
-            }
-        });
+        next_btn.setOnClickListener(this);
 
         picList = new ArrayList<Bitmap>();
         strList = new ArrayList<String>();
@@ -106,10 +100,6 @@ public class FileClaim2tActivity extends AppCompatActivity implements View.OnCli
         adapter = new CustomListt(FileClaim2tActivity.this, picList);
         list=(ListView)findViewById(R.id.more_photo_list);
         list.setAdapter(adapter);
-        addToList(BitmapFactory.decodeResource(this.getResources(), R.drawable.addphoto));
-
-        addToList(BitmapFactory.decodeResource(this.getResources(), R.drawable.addphoto));
-        addToList(BitmapFactory.decodeResource(this.getResources(), R.drawable.addphoto));
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
@@ -157,8 +147,6 @@ public class FileClaim2tActivity extends AppCompatActivity implements View.OnCli
         });
     }
 
-
-
     @Override
     public void onClick(View v) {
         switch(v.getId()){
@@ -168,6 +156,10 @@ public class FileClaim2tActivity extends AppCompatActivity implements View.OnCli
              //   break;
            // case R.id.other_plate:
                // break;
+            case R.id.start_step3_button:
+                Intent intent = new Intent(getApplicationContext(), FileClaim3Activity.class);
+                startActivity(intent);
+                break;
         }
     }
 
@@ -236,8 +228,6 @@ public class FileClaim2tActivity extends AppCompatActivity implements View.OnCli
         //startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
     }
 
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -249,6 +239,7 @@ public class FileClaim2tActivity extends AppCompatActivity implements View.OnCli
         }
     }
     @SuppressWarnings("deprecation")
+
     private void onSelectFromGalleryResult(Intent data) {
         Bitmap bm=null;
 
