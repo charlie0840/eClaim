@@ -66,15 +66,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(getApplicationContext(), "please enter user name", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                enabled = true;
-                logout.setVisibility(View.VISIBLE);
-                username.setVisibility(View.GONE);
-                password.setVisibility(View.GONE);
-                login.setVisibility(View.GONE);
-                register.setVisibility(View.GONE);
-                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
+                logIn();
                 break;
             case R.id.logoutbutton:
                 logout.setVisibility(View.GONE);
@@ -113,6 +105,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
         shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(getApplicationContext(), LoginActivity.class));
         sendBroadcast(shortcutintent);
+    }
+
+    public void logIn() {
+
+        
+
+        enabled = true;
+        logout.setVisibility(View.VISIBLE);
+        username.setVisibility(View.GONE);
+        password.setVisibility(View.GONE);
+        login.setVisibility(View.GONE);
+        register.setVisibility(View.GONE);
+
+        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
     }
 
 }

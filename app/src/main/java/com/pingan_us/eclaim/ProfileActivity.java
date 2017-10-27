@@ -220,6 +220,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         });
 
     }
+
     @TargetApi(23)
     @Override
     public void onClick(View v) {
@@ -246,7 +247,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             case R.id.profile_nav:
                 break;
             case R.id.claims_nav:
-                Intent intent1 = new Intent(this, ViewClaimsActivity.class);
+                Intent intent1 = new Intent(this, ViewClaimt.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
                 break;
@@ -385,7 +386,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     }
 
     @Override
-
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

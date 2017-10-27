@@ -11,6 +11,7 @@ public class MyAppConstants {
     public static final String otherPlate_FC2 = "Other Plate";
     public static final String morePic = "More Pictures";
 
+    public static final String regUNEmpty = "user name must not be empyt";
     public static final String regFNEmpty = "first name must not be empty";
     public static final String regLNEmpty = "last name must not be empty";
     public static final String regPhoneEmpty = "phone number must not be empty";

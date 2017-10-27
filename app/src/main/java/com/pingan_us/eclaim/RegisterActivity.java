@@ -5,8 +5,11 @@ package com.pingan_us.eclaim;
  */
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -26,21 +29,30 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SignUpCallback;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class RegisterActivity extends Activity implements View.OnClickListener, View.OnKeyListener{
-    private EditText FIRST_NAME, LAST_NAME, USER_PASSWORD, CONFIRM_PASSWORD, EMAIL_ADDRESS, PHONE;
+    private EditText USER_NAME, FIRST_NAME, LAST_NAME, USER_PASSWORD, CONFIRM_PASSWORD, EMAIL_ADDRESS, PHONE;
     private ImageView PHOTO;
     private Button registerButton, cancelButton;
 
     private final int ACTIVITY_SELECT_IMAGE = 1234;
 
-    private String first_name, last_name, user_password, confirm_password, email_address, phone;
+    private String user_name, first_name, last_name, user_password, confirm_password, email_address, phone;
     private boolean reg = true;
     private byte[] picBinary;
 
@@ -48,6 +60,8 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        Parse.initialize(this);
 
         Intent intent = getIntent();
         reg = intent.getBooleanExtra("reg", true);
@@ -57,6 +71,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
         registerButton = (Button)findViewById(R.id.reg_confirm_btn);
         cancelButton = (Button)findViewById(R.id.reg_cancel_btn);
 
+        USER_NAME = (EditText) findViewById(R.id.reg_username);
         FIRST_NAME = (EditText)findViewById(R.id.reg_firstname);
         LAST_NAME = (EditText)findViewById(R.id.reg_lastname);
         PHONE = (EditText)findViewById(R.id.reg_phone);
@@ -120,12 +135,18 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.reg_confirm_btn:
+                user_name = USER_NAME.getText().toString();
                 first_name = FIRST_NAME.getText().toString();
                 last_name = LAST_NAME.getText().toString();
                 phone = PHONE.getText().toString();
                 email_address = EMAIL_ADDRESS.getText().toString();
                 user_password = USER_PASSWORD.getText().toString();
                 confirm_password = CONFIRM_PASSWORD.getText().toString();
+                if(user_name.length() == 0) {
+                    Toast.makeText(getApplicationContext(), MyAppConstants.regUNEmpty, Toast.LENGTH_SHORT).show();
+                    USER_PASSWORD.setText("");
+                    CONFIRM_PASSWORD.setText("");
+                }
                 if(first_name.length() == 0) {
                     Toast.makeText(getApplicationContext(), MyAppConstants.regFNEmpty, Toast.LENGTH_SHORT).show();
                     USER_PASSWORD.setText("");
@@ -163,6 +184,8 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                         CONFIRM_PASSWORD.setText("");
                     }
                     else {
+                        checkDuplicateUser(user_name);
+
                     }
                 }
                 Intent intent1 = new Intent(getApplicationContext(), LoginActivity.class);
@@ -180,5 +203,48 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                 startActivityForResult(Intent.createChooser(i, "Select File"), ACTIVITY_SELECT_IMAGE);
                 break;
         }
+    }
+
+    private void checkDuplicateUser(String user) {
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereEqualTo("username", user_name);
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if(e == null) {
+                    signUp();
+                }
+            }
+        });
+    }
+
+    private void signUp() {
+        ParseUser user = new ParseUser();
+        user.setUsername(user_name);
+        user.put("last_name", last_name);
+        user.put("first_name", first_name);
+        user.put("phone", phone);
+        user.put("email", email_address);
+        user.put("password", user_password);
+        user.signUpInBackground(new SignUpCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e == null) {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
+                    alertDialogBuilder.setMessage("Registration successful");
+                            alertDialogBuilder.setPositiveButton("Return to Login page",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface arg0, int arg1) {
+                                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                            startActivity(intent);
+                                        }
+                                    });
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                }
+            }
+        });
     }
 }
