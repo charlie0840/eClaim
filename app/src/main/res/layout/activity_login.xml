@@ -9,23 +9,29 @@ android:paddingLeft="@dimen/activity_horizontal_margin"
 android:paddingRight="@dimen/activity_horizontal_margin"
 android:paddingTop="@dimen/activity_vertical_margin"
 tools:context="com.pingan_us.eclaim.LoginActivity"
-android:background="@drawable/profilebackground"
 android:weightSum="1">
 
 <!-- Login progress -->
 
     <ImageView
-    android:layout_width="173dp"
-    android:layout_height="wrap_content"
+    android:layout_width="200dp"
+    android:layout_height="60dp"
     android:id="@+id/imageView"
-    android:src="@drawable/applogo"/>
+    android:src="@drawable/loginbackgroundappname"
+    android:scaleType="fitCenter"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/loginbackgroundcar"
+        android:scaleType="fitCenter"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="your personal auto claim assistance"
-        android:textColor="@color/colorPrimary"/>
+        android:textColor="@color/colorBlack"/>
 
     <LinearLayout
         android:id="@+id/email_login_form"
@@ -84,26 +90,26 @@ android:weightSum="1">
         android:layout_gravity="center_horizontal"
         android:alpha="0.6"
         android:textSize="20dp"/>
-
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Not regestered yet?"
-        android:layout_gravity="center_horizontal"
-        android:paddingTop="30dp"/>
     <Button
         android:id="@+id/registerbutton"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:textSize="16dp"
         android:text="  Regester here  "
         android:layout_gravity="center_horizontal"
         android:alpha="0.6"
         android:background="@drawable/cycle" />
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Forgot password?"
+            android:textColor="@color/colorBlack"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="30dp"/>
 
 </LinearLayout>
 

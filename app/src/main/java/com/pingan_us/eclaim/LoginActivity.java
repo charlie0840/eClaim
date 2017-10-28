@@ -14,11 +14,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.ParseInstallation;
+
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener{
 
@@ -108,19 +113,54 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void logIn() {
+        ParseUser.logInInBackground(user_name, user_password, new LogInCallback() {
+            @Override
+            public void done(ParseUser user, ParseException e) {
+                if(user == null) {
+                    Toast.makeText(getApplicationContext(), "User name or password incorrect!", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    enabled = true;
+                    logout.setVisibility(View.VISIBLE);
+                    username.setVisibility(View.GONE);
+                    password.setVisibility(View.GONE);
+                    login.setVisibility(View.GONE);
+                    register.setVisibility(View.GONE);
 
-        
+                    ParseUser curr_user = new ParseUser();
 
-        enabled = true;
-        logout.setVisibility(View.VISIBLE);
-        username.setVisibility(View.GONE);
-        password.setVisibility(View.GONE);
-        login.setVisibility(View.GONE);
-        register.setVisibility(View.GONE);
 
-        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
+
+                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
+    public Bundle getData() {
+        Bundle bundle = new Bundle();
+
+
+
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        query.whereEqualTo("username", user_name);
+        query.findInBackground(new FindCallback<ParseUser>() {
+            @Override
+            public void done(List<ParseUser> objects, ParseException e) {
+                if(e == null) {
+                    for(ParseUser single:objects) {
+                        //do whatever need to be done, fetch all data from parse
+                    }
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Failed to login!", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+
+        return bundle;
+    }
 }

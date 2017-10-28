@@ -54,7 +54,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
 
     private String user_name, first_name, last_name, user_password, confirm_password, email_address, phone;
     private boolean reg = true;
-    private byte[] picBinary;
+    private Bitmap picBinary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,14 +77,15 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
         PHONE = (EditText)findViewById(R.id.reg_phone);
 
         USER_PASSWORD = (EditText)findViewById(R.id.reg_password);
-        CONFIRM_PASSWORD = (EditText)findViewById(R.id.reg_confpassword);
-        EMAIL_ADDRESS = (EditText)findViewById(R.id.reg_email_text);
+        CONFIRM_PASSWORD = (EditText)findViewById(R.id.reg_confirmpassword);
+        EMAIL_ADDRESS = (EditText)findViewById(R.id.reg_email);
 
         USER_PASSWORD.setOnKeyListener(this);
         CONFIRM_PASSWORD.setOnKeyListener(this);
         EMAIL_ADDRESS.setOnKeyListener(this);
         FIRST_NAME.setOnKeyListener(this);
         LAST_NAME.setOnKeyListener(this);
+        USER_NAME.setOnKeyListener(this);
         PHONE.setOnKeyListener(this);
 
         registerButton.setOnClickListener(this);
@@ -108,6 +109,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                         }
                     }
                     Bitmap yourSelectedImage = Bitmap.createScaledBitmap(bm, bm.getWidth()/2, bm.getHeight()/2, true);
+                    picBinary = Bitmap.createScaledBitmap(bm, bm.getWidth()/2, bm.getHeight()/2, true);
 
                     bm.recycle();
 
@@ -185,11 +187,10 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                     }
                     else {
                         checkDuplicateUser(user_name);
-
                     }
                 }
-                Intent intent1 = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent1);
+                //Intent intent1 = new Intent(getApplicationContext(), LoginActivity.class);
+                //startActivity(intent1);
                 break;
 
             case R.id.reg_cancel_btn:
@@ -221,11 +222,17 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
     private void signUp() {
         ParseUser user = new ParseUser();
         user.setUsername(user_name);
-        user.put("last_name", last_name);
-        user.put("first_name", first_name);
-        user.put("phone", phone);
-        user.put("email", email_address);
-        user.put("password", user_password);
+        user.setPassword(user_password);
+        user.setEmail(email_address);
+        user.put("lastName", last_name);
+        user.put("firstName", first_name);
+        user.put("phoneNo", phone);
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        picBinary.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+
+        user.put("idImage", byteArray);
         user.signUpInBackground(new SignUpCallback() {
             @Override
             public void done(ParseException e) {
@@ -243,6 +250,20 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                                     });
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
+                }
+                else {
+                    switch(e.getCode()) {
+                        case ParseException.USERNAME_TAKEN:
+                            Toast.makeText(getApplicationContext(), "User name has been taken!", Toast.LENGTH_LONG).show();
+                            USER_PASSWORD.setText("");
+                            CONFIRM_PASSWORD.setText("");
+                            break;
+                        case ParseException.EMAIL_TAKEN:
+                            Toast.makeText(getApplicationContext(), "Email address has been used!", Toast.LENGTH_LONG).show();
+                            USER_PASSWORD.setText("");
+                            CONFIRM_PASSWORD.setText("");
+                            break;
+                    }
                 }
             }
         });
