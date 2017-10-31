@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,10 +34,12 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
 
     private ListView claim_list;
     private ClaimCustomList adapter;
+    private LinearLayout refresh_btn;
     private CheckBox injure_cb, drivable_cb, atScene_cb;
     private ImageView driver_license_pic, other_license_pic, other_insurance_pic;
     private TextView vehicleNum_txt, time_txt, loc_txt, vehicleType_txt,
                 whoDrive_txt, phoneOfOther_txt;
+    private static ViewClaimt activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,8 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         setContentView(R.layout.activity_viewclaimt);
 
         claim_list = (ListView) findViewById(R.id.vc_claim_list);
+        refresh_btn = (LinearLayout) findViewById(R.id.vc_refresh_btn);
+        refresh_btn.setOnClickListener(this);
 
         View nav_bar = findViewById(R.id.nav_layout);
 
@@ -59,6 +64,10 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         injure_cb = (CheckBox) findViewById(R.id.vc_injure_checkbox);
         atScene_cb = (CheckBox) findViewById(R.id.vc_atscene_checkbox);
         drivable_cb = (CheckBox) findViewById(R.id.vc_drivable_checkbox);
+
+        injure_cb.setClickable(false);
+        atScene_cb.setClickable(false);
+        drivable_cb.setClickable(false);
 
         time_txt = (TextView) findViewById(R.id.vc_time_text);
         loc_txt = (TextView) findViewById(R.id.vc_loc_indicate_text);
@@ -84,7 +93,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         });
         getClaimList();
 
-
+        activity = this;
 
     }
 
@@ -101,7 +110,8 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                 intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1);
                 break;
-            case R.id.claims_nav:
+            case R.id.vc_refresh_btn:
+                getClaimList();
                 break;
         }
     }
@@ -126,6 +136,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                     String vehicleNum = (String)currClaim.get("vehicleNum");
                     String time = (String)currClaim.get("time");
                     String location = (String)currClaim.get("location");
+                    String phone = (String)currClaim.get("phoneOther");
 
                     byte[] otherInsurByte = new byte[0];
                     try {
@@ -155,11 +166,13 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                     vehicleNum_txt.setText(vehicleNum);
                     time_txt.setText(time);
                     loc_txt.setText(location);
+                    phoneOfOther_txt.setText(phone);
                     if(person) {
                         whoDrive_txt.setText("I");
-                        driver_license_pic.setVisibility(View.INVISIBLE);
+                        driver_license_pic.setVisibility(View.GONE);
                     }
                     else{
+                        driver_license_pic.setVisibility(View.VISIBLE);
                         whoDrive_txt.setText("other");
                         Bitmap bmp = null;
                         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -190,14 +203,25 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
 
     public void getClaimList() {
         ParseUser currUser = ParseUser.getCurrentUser();
+        claimIDList = new ArrayList<String>();
         if(currUser.get("claimID") != null) {
-            claimIDList = new ArrayList<String>((List<String>)currUser.get("claimID"));
+            try {
+                claimIDList = new ArrayList<String>((List<String>) currUser.get("claimID"));
+            }
+            catch (ClassCastException e) {
+
+            }
         }
         if(claimIDList.size() != 0)
             noClaim = false;
+        claimList.clear();
         for(int i = 0; i < claimIDList.size(); i++) {
             claimList.add("claim " + Integer.toString(i + 1));
         }
         adapter.notifyDataSetChanged();
+    }
+
+    public static ViewClaimt getInstance() {
+        return activity;
     }
 }

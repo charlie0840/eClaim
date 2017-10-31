@@ -15,10 +15,12 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.LogInCallback;
+import com.parse.LogOutCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -30,11 +32,11 @@ import com.parse.ParseInstallation;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener{
-
+    private View nav_bar;
     private Button login, register, logout;
     private EditText username, password;
-    public String user_name, user_password;
-    boolean enabled = false;
+    private String user_name, user_password;
+    private boolean enabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         username.setOnKeyListener(this);
         password.setOnKeyListener(this);
+
+        nav_bar = findViewById(R.id.nav_layout);
+        ImageView profile_nav = (ImageView) nav_bar.findViewById(R.id.profile_nav);
+        ImageView claim_nav = (ImageView) nav_bar.findViewById(R.id.claims_nav);
+        profile_nav.setOnClickListener(this);
+        claim_nav.setOnClickListener(this);
+        nav_bar.setVisibility(View.GONE);
     }
 
     @Override
@@ -80,16 +89,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 logIn();
                 break;
             case R.id.logoutbutton:
-                logout.setVisibility(View.GONE);
-                username.setVisibility(View.VISIBLE);
-                password.setVisibility(View.VISIBLE);
-                login.setVisibility(View.VISIBLE);
-                register.setVisibility(View.VISIBLE);
+                ParseUser currUser = ParseUser.getCurrentUser();
+                currUser.logOut();
+                ProfileActivity.getInstance().finish();
+                if(ViewClaimt.getInstance() != null)
+                    ViewClaimt.getInstance().finish();
+                Intent intent2 = new Intent(getApplicationContext(), LoginActivity.class);
+                intent2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent2);
                 break;
             case R.id.registerbutton:
                 Intent intent3 = new Intent(getApplicationContext(), RegisterActivity.class);
                 intent3.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent3);
+                break;
+            case R.id.profile_nav:
+                Intent intent = new Intent(this, ProfileActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case R.id.claims_nav:
+                Intent intent1 = new Intent(this, ViewClaimt.class);
+                intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent1);
                 break;
         }
     }
@@ -132,10 +154,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     password.setVisibility(View.GONE);
                     login.setVisibility(View.GONE);
                     register.setVisibility(View.GONE);
+                    nav_bar.setVisibility(View.VISIBLE);
 
                     Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent);
+                }
+                if(e != null) {
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
                 }
             }
         });

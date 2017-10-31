@@ -82,6 +82,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     private int counter, ID_or_Vehicle;
     private byte[] imageByte = null;
     private String userChoosenTask, claimID, vehicleID, user_name, phone_no, full_name;
+    private static ProfileActivity activity;
     private View nav_bar;
 
     @Override
@@ -240,6 +241,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             }
         });
 
+        activity = this;
     }
 
     @TargetApi(23)
@@ -264,8 +266,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                 Intent intent = new Intent(this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
-                break;
-            case R.id.profile_nav:
                 break;
             case R.id.claims_nav:
                 Intent intent1 = new Intent(this, ViewClaimt.class);
@@ -457,5 +457,9 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    public static ProfileActivity getInstance() {
+        return activity;
     }
 }

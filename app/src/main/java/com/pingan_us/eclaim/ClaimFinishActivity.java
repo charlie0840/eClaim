@@ -31,4 +31,7 @@ public class ClaimFinishActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {}
 }

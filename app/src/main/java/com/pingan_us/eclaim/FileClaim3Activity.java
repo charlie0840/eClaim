@@ -35,4 +35,7 @@ public class FileClaim3Activity extends AppCompatActivity {
     public static FileClaim3Activity getInstance() {
         return activity;
     }
+
+    @Override
+    public void onBackPressed() {}
 }

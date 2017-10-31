@@ -491,6 +491,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         Claim.put("person", I_rbtn.isChecked());
         Claim.put("location", location_txt);
         Claim.put("vehicleID", vehicle_id);
+        Claim.put("phoneOther", phone_txt);
         if(f1 != null)
             Claim.put("driverLicense", f1);
         Claim.put("otherLicense", f2);
@@ -501,11 +502,15 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
             public void done(ParseException e) {
                 if(e == null) {
                     Toast.makeText(getApplicationContext(), "claim uploading all good!!!!!!!", Toast.LENGTH_LONG).show();
-
                     final String objectID = Claim.getObjectId();
                     List<String> claimList = new ArrayList<String>();
-                    if(currUser.get("claimID") != null)
-                        claimList = new ArrayList<String>((List<String>)currUser.get("claimID"));
+                    if(currUser.get("claimID") != null) {
+                        try {
+                            claimList = new ArrayList<String>((List<String>) currUser.get("claimID"));
+                        }
+                        catch (ClassCastException e1) {
+                        }
+                    }
                     claimList.add(objectID);
                     currUser.put("claimID", claimList);
                     currUser.saveInBackground(new SaveCallback() {
@@ -576,5 +581,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         });
     }
 
-
+    @Override
+    public void onBackPressed(){
+    }
 }

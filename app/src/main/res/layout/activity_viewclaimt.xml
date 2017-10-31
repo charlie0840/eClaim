@@ -17,14 +17,53 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/nav_layout"
             android:columnCount="2">
-            <ListView
-                android:id="@+id/vc_claim_list"
-                android:layout_width="0dp"
+            <RelativeLayout
                 android:layout_height="match_parent"
+                android:layout_width="0dp"
                 android:divider="@android:color/transparent"
                 android:dividerHeight="10dp"
                 android:layout_columnWeight="2">
-            </ListView>
+                <TextView
+                    android:id="@+id/vc_claim_list_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Your Claim List"
+                    android:textSize="15dp"
+                    android:textColor="@color/colorBlack"
+                    android:alpha="0.7"
+                    android:textStyle="bold|italic"/>
+                <ListView
+                    android:id="@+id/vc_claim_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/vc_claim_list_title"
+                    android:layout_above="@+id/vc_refresh_btn">
+                </ListView>
+                <LinearLayout
+                    android:id="@+id/vc_refresh_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal"
+                    android:alpha="0.7"
+                    android:background="@color/colorGray">
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="5dp"
+                        android:src="@drawable/reload"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="Refresh"
+                        android:textSize="15dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorBlack"
+                        android:layout_gravity="center_vertical"/>
+                </LinearLayout>
+            </RelativeLayout>
+
             <RelativeLayout
                 android:id="@+id/claim_content"
                 android:layout_width="0dp"
@@ -55,6 +94,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_centerVertical="true"
                                     android:textSize="15dp"
+                                    android:textStyle="bold"
                                     android:textColor="@color/colorBlack"
                                     android:text="Anyone injured"/>
                                 <android.support.v7.widget.AppCompatCheckBox
@@ -74,6 +114,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_centerVertical="true"
                                     android:textSize="15dp"
+                                    android:textStyle="bold"
                                     android:textColor="@color/colorBlack"
                                     android:text="Vehicle drivable"/>
                                 <android.support.v7.widget.AppCompatCheckBox
@@ -93,6 +134,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_centerVertical="true"
                                     android:textSize="15dp"
+                                    android:textStyle="bold"
                                     android:textColor="@color/colorBlack"
                                     android:text="Still at scene"/>
                                 <android.support.v7.widget.AppCompatCheckBox
@@ -112,6 +154,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_centerVertical="true"
                                     android:textSize="15dp"
+                                    android:textStyle="bold"
                                     android:textColor="@color/colorBlack"
                                     android:text="Number of vehicles"/>
                                 <TextView
@@ -147,19 +190,16 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentLeft="true"
                                     android:textSize="15dp"
+                                    android:textStyle="bold"
                                     android:textColor="@color/colorBlack"
-                                    android:layout_centerVertical="true"
                                     android:text="Select time"/>
                                 <TextView
                                     android:id="@+id/vc_time_text"
-                                    android:layout_alignTop="@+id/vc_time_pick_title"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="40dp"
-                                    android:layout_toRightOf="@+id/vc_time_pick_title"
-                                    android:layout_alignParentRight="true"
-                                    android:layout_centerVertical="true"
-                                    android:textSize="15dp"
-                                    android:alpha="0.8"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/vc_time_pick_title"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="14dp"
                                     android:text="Click here to set the time">
                                 </TextView>
                             </RelativeLayout>
@@ -175,6 +215,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentLeft="true"
                                     android:textSize="15dp"
+                                    android:textStyle="bold"
                                     android:textColor="@color/colorBlack"
                                     android:text="Select Location"/>
                                 <TextView
@@ -182,8 +223,9 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_below="@id/vc_loc_pick_title"
-                                    android:text="No location selected, please click the map"
-                                    android:textSize="10dp"/>
+                                    android:text="No location selected"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="14dp"/>
                             </RelativeLayout>
                             <RelativeLayout
                                 android:id="@+id/vc_vehicle_pick_section"
@@ -197,6 +239,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentLeft="true"
                                     android:textSize="15dp"
+                                    android:textStyle="bold"
                                     android:textColor="@color/colorBlack"
                                     android:text="Select your vehicle"/>
                                 <TextView
@@ -221,6 +264,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignParentLeft="true"
                                     android:textSize="15dp"
+                                    android:textStyle="bold"
                                     android:textColor="@color/colorBlack"
                                     android:text="Who was driving the vehicle"/>
                                 <TextView
@@ -237,6 +281,7 @@
                                     android:layout_height="100dp"
                                     android:layout_below="@+id/vc_person_pick_text"
                                     android:src="@drawable/driverlicense"
+                                    android:visibility="gone"
                                     android:scaleType="fitCenter"/>
                             </RelativeLayout>
                         </RelativeLayout>
@@ -261,6 +306,7 @@
                                 android:layout_marginTop="10dp"
                                 android:layout_marginBottom="10dp"
                                 android:textSize="15dp"
+                                android:textStyle="bold"
                                 android:textColor="@color/colorBlack"
                                 android:text="Information of other drivers"/>
                             <TextView
@@ -272,6 +318,7 @@
                                 android:layout_marginRight="5dp"
                                 android:layout_marginBottom="10dp"
                                 android:textSize="15dp"
+                                android:textStyle="bold"
                                 android:text="Driver license of other driver"
                                 />
                             <ImageView
@@ -293,6 +340,7 @@
                                 android:layout_marginRight="5dp"
                                 android:layout_marginBottom="10dp"
                                 android:textSize="15dp"
+                                android:textStyle="bold"
                                 android:text="Insurance card of other driver"
                                 />
                             <ImageView
@@ -311,6 +359,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/vc_other_insurance_card_pic"
                                 android:textSize="15dp"
+                                android:textStyle="bold"
                                 android:text="Phone# of Other driver"/>
                             <TextView
                                 android:id="@+id/vc_other_driver_phone_text"
@@ -321,6 +370,7 @@
                                 android:layout_marginRight="5dp"
                                 android:layout_marginBottom="10dp"
                                 android:textSize="15dp"
+                                android:textStyle="bold"
                                 android:text="858-888-8888"
                                 android:layout_below="@+id/vc_other_driver_phone_title"
                                 />
