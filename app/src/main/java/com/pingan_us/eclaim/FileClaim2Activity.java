@@ -41,8 +41,8 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
     private List<Bitmap> picList;
     private List<String> titleList;
     private ArrayList<String> strList;
-    private String resStr, userChoosenTask;
     private int change_or_insert, pos, which_loc;
+    private String resStr, userChoosenTask, claim_id;
     private static final int REQUEST_CAMERA = 0, SELECT_FILE = 1, INSERT_IMAGE = 1, CHANGE_IMAGE = 2, MY_CAMERA_REQUEST_CODE = 1, WHOLE = 3, YOUR = 4, OTHER = 5, MORE = 6;
     private CustomList adapter;
     private Button next_btn;
@@ -55,6 +55,8 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fileclaim2);
+
+        claim_id = getIntent().getStringExtra("claimID");
 
         activity = this;
 

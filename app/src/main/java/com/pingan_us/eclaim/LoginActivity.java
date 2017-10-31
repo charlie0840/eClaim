@@ -1,6 +1,8 @@
 package com.pingan_us.eclaim;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -9,6 +11,7 @@ import android.os.Parcelable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +21,7 @@ import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -29,7 +33,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private Button login, register, logout;
     private EditText username, password;
-    private String user_name, user_password;
+    public String user_name, user_password;
     boolean enabled = false;
 
     @Override
@@ -71,6 +75,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(getApplicationContext(), "please enter user name", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 logIn();
                 break;
             case R.id.logoutbutton:
@@ -116,10 +122,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         ParseUser.logInInBackground(user_name, user_password, new LogInCallback() {
             @Override
             public void done(ParseUser user, ParseException e) {
-                if(user == null) {
+                if (user == null) {
                     Toast.makeText(getApplicationContext(), "User name or password incorrect!", Toast.LENGTH_LONG).show();
-                }
-                else {
+                } else {
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     enabled = true;
                     logout.setVisibility(View.VISIBLE);
                     username.setVisibility(View.GONE);
@@ -127,40 +133,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     login.setVisibility(View.GONE);
                     register.setVisibility(View.GONE);
 
-                    ParseUser curr_user = new ParseUser();
-
-
-
                     Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent);
                 }
             }
         });
-    }
-
-    public Bundle getData() {
-        Bundle bundle = new Bundle();
-
-
-
-        ParseQuery<ParseUser> query = ParseUser.getQuery();
-        query.whereEqualTo("username", user_name);
-        query.findInBackground(new FindCallback<ParseUser>() {
-            @Override
-            public void done(List<ParseUser> objects, ParseException e) {
-                if(e == null) {
-                    for(ParseUser single:objects) {
-                        //do whatever need to be done, fetch all data from parse
-                    }
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "Failed to login!", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-
-        return bundle;
     }
 }

@@ -224,7 +224,7 @@
                 android:layout_below="@+id/reg_driver_license_title"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/regdriverlicense"
-                android:scaleType="fitCenter"/>
+                android:scaleType="fitXY"/>
 
         </RelativeLayout>
 

@@ -43,7 +43,7 @@
                 android:layout_width="0dp"
                 android:layout_height="130dp"
                 android:layout_columnWeight="1"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:orientation="horizontal">
                 <include layout="@layout/list_single"
                     android:id="@+id/whole_scene" />
@@ -53,7 +53,7 @@
                 android:layout_width="0dp"
                 android:layout_height="130dp"
                 android:layout_columnWeight="1"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:orientation="horizontal">
                 <include layout="@layout/list_single"
                     android:id="@+id/your_plate"/>
@@ -63,7 +63,7 @@
                 android:layout_width="0dp"
                 android:layout_height="130dp"
                 android:layout_columnWeight="1"
-                android:layout_margin="10dp"
+                android:layout_margin="5dp"
                 android:orientation="horizontal">
                 <include layout="@layout/list_single"
                     android:id="@+id/other_plate"/>

@@ -37,10 +37,14 @@ import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.google.android.gms.common.images.WebImage;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseUser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -63,22 +67,33 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ProfileActivity extends Activity implements View.OnClickListener {
     private ImageSwitcher IDImageSwitcher, VehicleImageSwitcher;
     private LinearLayout photo_section;
+
     private RelativeLayout info_section, claim_section, phone_section, id_section, vehicle_section, add_id, add_vehicle;
     private Button view_doc_btn, file_claim_btn, claim_btn;
     private ImageButton phone_btn;
+
     private Animation animationLOut, animationLIn;
+
+    private TextView name_text, phone_text;
     private CircleImageView profile_photo;
     private ImageView switcherImageView, switcherImageView2;
     private static final int REQUEST_CAMERA = 0, SELECT_FILE = 1, MY_CAMERA_REQUEST_CODE = 1, MY_CALL_REQUEST_CODE = 2, PROFILE_PHOTO = 3, ID = 0, VEHICLE = 1;
     private List<Drawable> IDPicList, vehiclePicList;
     private int counter, ID_or_Vehicle;
-    private String userChoosenTask;
+    private byte[] imageByte = null;
+    private String userChoosenTask, claimID, vehicleID, user_name, phone_no, full_name;
     private View nav_bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        getData();
+
+        Bitmap profileImage = null;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        profileImage = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length, options);
 
         IDPicList = new ArrayList<Drawable>();
         vehiclePicList = new ArrayList<Drawable>();
@@ -101,10 +116,18 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
 
         nav_bar = findViewById(R.id.nav_layout);
 
+        profile_photo = (CircleImageView) findViewById(R.id.profile_photo);
+        profile_photo.setImageBitmap(profileImage);
+
         ImageView home_nav = (ImageView) nav_bar.findViewById(R.id.home_nav);
         ImageView claim_nav = (ImageView) nav_bar.findViewById(R.id.claims_nav);
         home_nav.setOnClickListener(this);
         claim_nav.setOnClickListener(this);
+
+        name_text = (TextView)findViewById(R.id.pro_name_text);
+        phone_text = (TextView)findViewById(R.id.pro_phone_text);
+        phone_text.setText(phone_no);
+        name_text.setText(full_name);
 
         IDImageSwitcher = (ImageSwitcher) findViewById(R.id.ID_switch);
         VehicleImageSwitcher = (ImageSwitcher) findViewById(R.id.vehicle_switch);
@@ -122,8 +145,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         view_doc_btn = (Button) findViewById(R.id.claim_button);
         file_claim_btn = (Button) findViewById(R.id.file_claim_button);
         phone_btn = (ImageButton) findViewById(R.id.assistance_phone_button);
-        profile_photo = (CircleImageView) findViewById(R.id.profile_photo);
-
 
         claim_btn.setOnClickListener(this);
         add_id.setOnClickListener(this);
@@ -265,7 +286,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                 startActivity(intent2);
                 break;
             case R.id.claim_button:
-                Intent intent3 = new Intent(this, ViewClaimsActivity.class);
+                Intent intent3 = new Intent(this, ViewClaimt.class);
                 intent3.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent3);
                 break;
@@ -415,6 +436,26 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             }
             else
                 Toast.makeText(this, "Calling permission denied", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void getData() {
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        final Bundle bundle = new Bundle();
+
+        full_name = (String)currentUser.get("lastName") + "," + (String)currentUser.get("firstName");
+        phone_no = (String)currentUser.get("phoneNo");
+
+        ParseFile bmp = null;
+        try {
+            bmp = currentUser.getParseFile("idImage");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            imageByte = bmp.getData();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
     }
 }

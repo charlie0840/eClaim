@@ -23,6 +23,7 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,9 +33,11 @@ import android.widget.Toast;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 import java.io.ByteArrayOutputStream;
@@ -102,17 +105,19 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                 if(resultCode == RESULT_OK){
                     Bitmap bm=null;
                     if (data != null) {
+                        //Utility.getCameraPhotoOrientation(getApplicationContext(), );
                         try {
                             bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
-                    Bitmap yourSelectedImage = Bitmap.createScaledBitmap(bm, bm.getWidth()/2, bm.getHeight()/2, true);
-                    picBinary = Bitmap.createScaledBitmap(bm, bm.getWidth()/2, bm.getHeight()/2, true);
+                    Bitmap yourSelectedImage = Bitmap.createScaledBitmap(bm, 300, 200, true);
+                    picBinary = Bitmap.createScaledBitmap(bm, 300, 200, true);
 
                     bm.recycle();
 
+                    Toast.makeText(getApplicationContext(), yourSelectedImage.getWidth() + " " + yourSelectedImage.getHeight(), Toast.LENGTH_LONG).show();
                     PHOTO.setImageBitmap(yourSelectedImage);
                 }
                 break;
@@ -186,11 +191,12 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                         CONFIRM_PASSWORD.setText("");
                     }
                     else {
-                        checkDuplicateUser(user_name);
+                        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        uploadImg();
                     }
                 }
-                //Intent intent1 = new Intent(getApplicationContext(), LoginActivity.class);
-                //startActivity(intent1);
+
                 break;
 
             case R.id.reg_cancel_btn:
@@ -206,20 +212,21 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
         }
     }
 
-    private void checkDuplicateUser(String user) {
-        ParseQuery<ParseUser> query = ParseUser.getQuery();
-        query.whereEqualTo("username", user_name);
-        query.findInBackground(new FindCallback<ParseUser>() {
+    private void uploadImg() {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        picBinary.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        final ParseFile file = new ParseFile("imageID", byteArray);
+        file.saveInBackground(new SaveCallback() {
             @Override
-            public void done(List<ParseUser> objects, ParseException e) {
-                if(e == null) {
-                    signUp();
-                }
+            public void done(ParseException e) {
+                if(e == null)
+                    signUp(file);
             }
         });
     }
 
-    private void signUp() {
+    private void signUp(ParseFile file) {
         ParseUser user = new ParseUser();
         user.setUsername(user_name);
         user.setPassword(user_password);
@@ -227,17 +234,18 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
         user.put("lastName", last_name);
         user.put("firstName", first_name);
         user.put("phoneNo", phone);
-
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        picBinary.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
-
-        user.put("idImage", byteArray);
+        user.put("idImage", file);
+        Toast.makeText(getApplicationContext(), "Start to signup!", Toast.LENGTH_LONG).show();
+        ParseUser currUser = ParseUser.getCurrentUser();
+        currUser.logOut();
         user.signUpInBackground(new SignUpCallback() {
             @Override
             public void done(ParseException e) {
                 if(e == null) {
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
+                    Toast.makeText(RegisterActivity.this, "registration done!", Toast.LENGTH_LONG).show();
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegisterActivity.this);
                     alertDialogBuilder.setMessage("Registration successful");
                             alertDialogBuilder.setPositiveButton("Return to Login page",
                                     new DialogInterface.OnClickListener() {
@@ -252,6 +260,10 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                     alertDialog.show();
                 }
                 else {
+                    e.printStackTrace();
+                    Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+
+                    Toast.makeText(RegisterActivity.this, "Registration failed!", Toast.LENGTH_LONG).show();
                     switch(e.getCode()) {
                         case ParseException.USERNAME_TAKEN:
                             Toast.makeText(getApplicationContext(), "User name has been taken!", Toast.LENGTH_LONG).show();
@@ -268,4 +280,6 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
             }
         });
     }
+
+
 }

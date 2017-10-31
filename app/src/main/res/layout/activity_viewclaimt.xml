@@ -15,6 +15,7 @@
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_above="@+id/nav_layout"
             android:columnCount="2">
             <ListView
                 android:id="@+id/vc_claim_list"
@@ -392,6 +393,9 @@
             </RelativeLayout>
 
         </GridLayout>
+
+        <include layout="@layout/navigation_bar"
+            android:id="@+id/nav_layout"/>
     </RelativeLayout>
 
 

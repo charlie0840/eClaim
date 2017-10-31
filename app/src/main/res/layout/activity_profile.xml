@@ -42,18 +42,17 @@
                         android:layout_width="wrap_content"
                         android:id="@+id/name_title"
                         android:text="Name:"
-                        android:textSize="20dp"
+                        android:textSize="15dp"
                         android:textColor="@color/colorBlack"/>
                     <TextView
-                        android:id="@+id/name_field"
+                        android:id="@+id/pro_name_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignTop="@+id/name_title"
                         android:layout_alignBottom="@+id/name_title"
                         android:layout_toRightOf="@+id/name_title"
-                        android:text="Charlie Yu"
                         android:textColor="@color/colorBlack"
-                        android:textSize="20dp"/>
+                        android:textSize="15dp"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -69,18 +68,17 @@
                         android:layout_width="wrap_content"
                         android:id="@+id/phone_title"
                         android:text="Phone #:"
-                        android:textSize="20dp"
+                        android:textSize="15dp"
                         android:textColor="@color/colorBlack" />
 
                     <TextView
-                        android:id="@+id/phone_field"
+                        android:id="@+id/pro_phone_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignTop="@+id/phone_title"
                         android:layout_alignBottom="@+id/phone_title"
                         android:layout_toRightOf="@+id/phone_title"
-                        android:text="888-333-9999"
-                        android:textSize="20dp"
+                        android:textSize="15dp"
                         android:textColor="@color/colorBlack"/>
                 </RelativeLayout>
             </RelativeLayout>
