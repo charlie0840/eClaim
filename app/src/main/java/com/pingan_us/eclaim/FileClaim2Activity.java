@@ -177,6 +177,8 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
                     Toast.makeText(getApplicationContext(), MyAppConstants.emptyOtherPlate_FC2, Toast.LENGTH_LONG).show();
                     break;
                 }
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 uploadImageGroup();
                 break;
         }
@@ -270,7 +272,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
 
             Bitmap bitmap = Bitmap.createScaledBitmap(bm, bm.getWidth() / 2, bm.getHeight() / 2, true);
             if(which_loc != MORE)
-                uploadImg(bitmap, which_loc);
+                uploadImg(bitmap, which_loc, false);
             bm.recycle();
             if(change_or_insert == CHANGE_IMAGE)
                 setList(bitmap);
@@ -284,7 +286,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
     private void onCaptureImageResult(Intent data) {
         Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        thumbnail.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         File destination = new File(Environment.getExternalStorageDirectory(),
                 System.currentTimeMillis() + ".jpg");
         FileOutputStream fo;
@@ -299,12 +301,13 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             e.printStackTrace();
         }
         Bitmap resBitmap = Bitmap.createScaledBitmap(thumbnail, thumbnail.getWidth()/2, thumbnail.getHeight()/2, true);
-        thumbnail.recycle();
+        if(which_loc != MORE)
+            uploadImg(thumbnail, which_loc, true);
         if(change_or_insert == INSERT_IMAGE)
             addToList(resBitmap);
-        else{
+        else
             setList(resBitmap);
-        }
+        //thumbnail.recycle();
     }
 
     @Override
@@ -352,10 +355,11 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    private void uploadImg(final Bitmap bmp, final int action) {
+    private void uploadImg(final Bitmap bmp, final int action, boolean recycle) {
         Toast.makeText(getApplicationContext(), "uploading image!!! action " + action, Toast.LENGTH_LONG).show();
+        final Bitmap bmp1 = Bitmap.createBitmap(Utility.compressImage(bmp, 1024, 768, getApplicationContext(), recycle));
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        bmp1.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] byteArray = stream.toByteArray();
         final ParseFile file = new ParseFile("imageID", byteArray);
         if(action == WHOLE)
@@ -368,6 +372,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             @Override
             public void done(ParseException e) {
                 if(e == null) {
+                    bmp1.recycle();
                     Toast.makeText(getApplicationContext(), "All good! start to upload data!!!", Toast.LENGTH_LONG).show();
                 }
                 else {
@@ -386,16 +391,17 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             if(i == 1)
                 continue;
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            Bitmap bmp1 = Bitmap.createBitmap(Utility.compressImage(bmp, 1024, 768, getApplicationContext(), false));
+            bmp1.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             byte[] byteArray = stream.toByteArray();
             byteList.add(byteArray);
+            bmp1.recycle();
         }
         uploadData();
     }
 
     public void uploadData() {
         Toast.makeText(getApplicationContext(), "uploading Data!!!", Toast.LENGTH_LONG).show();
-
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Claim");
         query.getInBackground(claim_id, new GetCallback<ParseObject>() {
             @Override

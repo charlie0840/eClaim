@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.provider.MediaStore;
@@ -78,7 +79,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
     private GoogleMap mMap;
     private View fg,dialogView;
-    private TextView loc_indicate_txt;
+    private TextView loc_indicate_txt, loc_indicate_txt_1;
     private SupportMapFragment mapFragment;
     private EditText other_driver_phone_txt;
     private GoogleApiClient googleApiClient;
@@ -115,6 +116,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 .build();
 
         loc_indicate_txt = (TextView) findViewById(R.id.loc_indicate_text);
+        loc_indicate_txt_1 = (TextView) findViewById(R.id.loc_indicate_text_1);
         other_driver_phone_txt = (EditText) findViewById(R.id.other_driver_phone);
 
         I_rbtn = (RadioButton) findViewById(R.id.I_pick_radiobutton);
@@ -137,6 +139,10 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         drivable_section = (RelativeLayout) findViewById(R.id.drivable_section);
 
         fg = (View) findViewById(R.id.map);
+
+        if(ParseUser.getCurrentUser() == null) {
+            this.finish();
+        }
 
         List<String> vehicleList = new ArrayList<String>(Utility.getVehicles(ParseUser.getCurrentUser()));
         vehicle_spinner = (Spinner) findViewById(R.id.vehicle_pick_spinner);
@@ -413,7 +419,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 latitude = currLoc.latitude;
                 Toast.makeText(getApplicationContext(), longitude + " " + latitude, Toast.LENGTH_LONG).show();
                 location_txt = getAddress(latitude, longitude);
-                loc_indicate_txt.setText(location_txt);
+                loc_indicate_txt_1.setText(location_txt);
                 moveMap();
             }
         }
@@ -455,6 +461,8 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         Geocoder geocoder = new Geocoder(this);
         try {
             List<Address> addresses = geocoder.getFromLocation(lat, lng, 1);
+            if(addresses.size() == 0)
+                return "No location selected, please click here to pick location";
             Address obj = addresses.get(0);
             String add = obj.getAddressLine(0);
             add = add + "\n" + obj.getCountryName();
@@ -555,8 +563,9 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         }
         Toast.makeText(getApplicationContext(), "uploading image!!! action " + action, Toast.LENGTH_LONG).show();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
+        Bitmap bmp1= Bitmap.createBitmap(Utility.compressImage(bmp, 1024, 768, getApplicationContext(), false));
+        bmp1.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        final byte[] byteArray = stream.toByteArray();
         final ParseFile file = new ParseFile("imageID", byteArray);
         if(action == 1)
             f1 = new ParseFile("imageID", byteArray);
@@ -564,6 +573,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
             f2 = new ParseFile("imageID", byteArray);
         else if(action == 3)
             f3 = new ParseFile("imageID", byteArray);
+        bmp1.recycle();
         file.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {

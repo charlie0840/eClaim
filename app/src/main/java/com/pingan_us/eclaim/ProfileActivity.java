@@ -118,6 +118,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         nav_bar = findViewById(R.id.nav_layout);
 
         profile_photo = (CircleImageView) findViewById(R.id.profile_photo);
+        profileImage = Bitmap.createBitmap(Utility.compressImage(profileImage, 640, 480, getApplicationContext(), false));
         profile_photo.setImageBitmap(profileImage);
 
         ImageView home_nav = (ImageView) nav_bar.findViewById(R.id.home_nav);

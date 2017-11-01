@@ -3,11 +3,15 @@ package com.pingan_us.eclaim;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ListViewCompat;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -32,19 +36,19 @@ import java.util.List;
 
 public class ViewClaimt extends AppCompatActivity implements View.OnClickListener{
     private int pos, limit = 5;
-    private boolean noClaim = true;
+    private boolean noClaim = true, slideIn = true;
     private List<String> claimList, claimIDList = new ArrayList<String>();
     private List<Bitmap> picList = new ArrayList<Bitmap>();
     private List<byte[]> byteList = new ArrayList<byte[]>();
     private ListView claim_list, pic_list;
-    private RelativeLayout list_section;
+    private RelativeLayout list_section, claim_section;
     private ClaimCustomList adapter;
     private CustomListt adapter_pic;
     private LinearLayout refresh_btn;
     private Button prev_btn, next_btn;
     private CheckBox injure_cb, drivable_cb, atScene_cb;
     private TextView vehicleNum_txt, time_txt, loc_txt, vehicleType_txt,
-                whoDrive_txt, phoneOfOther_txt;
+                whoDrive_txt, phoneOfOther_txt, claim_list_title;
     private ImageView driver_license_pic, other_license_pic, other_insurance_pic,
                 whole_scene_pic, your_plate_pic, other_plate_pic;
     private static ViewClaimt activity;
@@ -71,7 +75,49 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         profile_nav.setOnClickListener(this);
 
         list_section = (RelativeLayout) findViewById(R.id.vc_list_section);
-        list_section.setVisibility(View.GONE);
+        claim_section = (RelativeLayout) findViewById(R.id.vc_claim_section);
+        claim_list_title = (TextView) findViewById(R.id.vc_claim_list_title);
+        final ImageView imHide  = (ImageView) findViewById(R.id.vc_drawer_btn);
+        final Animation leftIn = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.slide_left_in);
+        final Animation rightOut = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.slide_right_in);
+        imHide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(slideIn) {
+                    slideIn = false;
+                    list_section.startAnimation(leftIn);
+
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            claim_list.setVisibility(View.GONE);
+                            refresh_btn.setVisibility(View.GONE);
+                            claim_list_title.setVisibility(View.GONE);
+                            imHide.setImageResource(R.drawable.drawerout);                        }
+                    }, 1500);
+
+
+                }
+                else {
+                    slideIn = true;
+                    claim_list.setVisibility(View.VISIBLE);
+                    refresh_btn.setVisibility(View.VISIBLE);
+                    claim_list_title.setVisibility(View.VISIBLE);
+                    list_section.startAnimation(rightOut);
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            imHide.setImageResource(R.drawable.drawerback);
+                        }
+                    }, 1500);
+                }
+            }
+        });
+
 
         driver_license_pic = (ImageView) findViewById(R.id.vc_person_license_pic);
         whole_scene_pic = (ImageView) findViewById(R.id.vc_whole_scene_pic);

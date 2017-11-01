@@ -51,6 +51,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:textSize="15dp"
+                        android:textStyle="bold"
                         android:textColor="@color/colorBlack"
                         android:text="Anyone injured"/>
                     <android.support.v7.widget.AppCompatCheckBox
@@ -70,6 +71,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:textSize="15dp"
+                        android:textStyle="bold"
                         android:textColor="@color/colorBlack"
                         android:text="Vehicle drivable"/>
                     <android.support.v7.widget.AppCompatCheckBox
@@ -89,6 +91,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:textSize="15dp"
+                        android:textStyle="bold"
                         android:textColor="@color/colorBlack"
                         android:text="Still at scene"/>
                     <android.support.v7.widget.AppCompatCheckBox
@@ -108,6 +111,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:textSize="15dp"
+                        android:textStyle="bold"
                         android:textColor="@color/colorBlack"
                         android:text="Number of vehicles"/>
                     <Spinner
@@ -141,6 +145,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:textSize="15dp"
+                        android:textStyle="bold"
                         android:textColor="@color/colorBlack"
                         android:layout_centerVertical="true"
                         android:text="Select time"/>
@@ -169,22 +174,36 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:textSize="15dp"
+                        android:textStyle="bold"
                         android:textColor="@color/colorBlack"
                         android:text="Select Location"/>
                     <TextView
                         android:id="@+id/loc_indicate_text"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/loc_pick_title"
-                        android:text="No location selected, please click the map"
-                        android:textSize="10dp"/>
+                        android:layout_centerHorizontal="true"
+                        android:text="Click here to pick location"
+                        android:layout_margin="10dp"
+                        android:background="@color/colorPrimary"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="20dp"/>
+                    <TextView
+                        android:id="@+id/loc_indicate_text_1"
+                        android:layout_below="@+id/loc_indicate_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:text="No location selected"
+                        android:textSize="12dp"/>
                     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                         xmlns:tools="http://schemas.android.com/tools"
                         android:id="@+id/map"
                         android:name="com.google.android.gms.maps.SupportMapFragment"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
-                        android:layout_below="@+id/loc_indicate_text"
+                        android:layout_below="@+id/loc_indicate_text_1"
                         tools:context="com.example.currentplacedetailsonmap.MapsActivityCurrentPlace" />
                 </RelativeLayout>
                 <RelativeLayout
