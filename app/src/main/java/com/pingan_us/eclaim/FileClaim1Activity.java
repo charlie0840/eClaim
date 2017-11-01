@@ -478,7 +478,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         return activity;
     }
 
-    public void uploadData() {
+    public void uploadData(final Bitmap bmp) {
         Toast.makeText(getApplicationContext(), "uploading Data!!!", Toast.LENGTH_LONG).show();
         final ParseUser currUser = ParseUser.getCurrentUser();
         final ParseObject Claim = new ParseObject("Claim");
@@ -517,6 +517,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                         @Override
                         public void done(ParseException e) {
                             if(e == null) {
+                                bmp.recycle();
                                 Toast.makeText(getApplicationContext(), "user update all good!!!!!!", Toast.LENGTH_LONG).show();
                                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                 Intent intent = new Intent(getApplicationContext(), FileClaim2Activity.class);
@@ -568,14 +569,12 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
             public void done(ParseException e) {
                 if(e == null) {
                     Toast.makeText(getApplicationContext(), "All good! start to upload data!!!", Toast.LENGTH_LONG).show();
-                    bmp.recycle();
                     if(action == 3)
-                        uploadData();
+                        uploadData(bmp);
                 }
                 else {
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     Toast.makeText(getApplicationContext(), "pic uploading went wrong!!! " + e.toString(), Toast.LENGTH_LONG).show();
-
                 }
             }
         });

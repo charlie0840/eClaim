@@ -15,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -25,6 +26,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,17 +50,25 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
     private ListView list;
     private List<Bitmap> picList;
     private List<String> titleList;
+    private List<ParseFile> fileList = new ArrayList<ParseFile>();
+    private List<byte[]> byteList = new ArrayList<byte[]>();
     private ArrayList<String> strList;
+
+
+    private ParseFile f1 = null, f2 = null, f3 = null;
     private int change_or_insert, pos, which_loc;
     private String resStr, userChoosenTask, claim_id;
-    private static final int REQUEST_CAMERA = 0, SELECT_FILE = 1, INSERT_IMAGE = 1, CHANGE_IMAGE = 2, MY_CAMERA_REQUEST_CODE = 1, WHOLE = 3, YOUR = 4, OTHER = 5, MORE = 6;
-    private CustomList adapter;
+    private static final int REQUEST_CAMERA = 0, SELECT_FILE = 1, INSERT_IMAGE = 1, CHANGE_IMAGE = 2,
+            MY_CAMERA_REQUEST_CODE = 1, WHOLE = 3, YOUR = 4, OTHER = 5, MORE = 6;
+
     private Button next_btn;
+    private View l1, l2, l3;
+    private CustomList adapter;
     private GridLayout default_grid;
     private LinearLayout p1, p2, p3;
     private ImageView whole_scene, your_plate, other_plate;
-    private View l1, l2, l3;
     private static FileClaim2Activity activity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,16 +79,6 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         activity = this;
 
         next_btn = (Button) findViewById(R.id.start_step3_button);
-        next_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), FileClaim3Activity.class);
-                startActivity(intent);
-            }
-        });
-
-
-
 
         default_grid = (GridLayout) findViewById(R.id.default_pic_grid);
 
@@ -99,6 +107,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         l1.setOnClickListener(this);
         l2.setOnClickListener(this);
         l3.setOnClickListener(this);
+        next_btn.setOnClickListener(this);
 
         picList = new ArrayList<Bitmap>();
         titleList = new ArrayList<String>();
@@ -119,14 +128,18 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
                 Toast.makeText(FileClaim2Activity.this, "position " + position + " You Clicked at " +titleList.get(+ position) + " position " + position + " size " + titleList.size(), Toast.LENGTH_SHORT).show();
                 pos = position;
                 if(position == 0){
-                    change_or_insert = INSERT_IMAGE;
-                    selectImage();
+                    if(picList.size() < 9) {
+                        change_or_insert = INSERT_IMAGE;
+                        selectImage();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "You can upload at most 9 extra pictures", Toast.LENGTH_LONG).show();
+                    }
                 }
                 else{
                     change_or_insert = CHANGE_IMAGE;
                     selectImage();
                 }
-
             }
         });
     }
@@ -150,6 +163,21 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
                 which_loc = OTHER;
                 change_or_insert = CHANGE_IMAGE;
                 selectImage();
+                break;
+            case R.id.start_step3_button:
+                if(f1 == null) {
+                    Toast.makeText(getApplicationContext(), MyAppConstants.emptyWholeScene_FC2, Toast.LENGTH_LONG).show();
+                    break;
+                }
+                if(f2 == null) {
+                    Toast.makeText(getApplicationContext(), MyAppConstants.emptyYourPlate_FC2, Toast.LENGTH_LONG).show();
+                    break;
+                }
+                if(f3 == null) {
+                    Toast.makeText(getApplicationContext(), MyAppConstants.emptyOtherPlate_FC2, Toast.LENGTH_LONG).show();
+                    break;
+                }
+                uploadImageGroup();
                 break;
         }
     }
@@ -230,8 +258,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         Uri uri = null;
 
         for(int i = 0; i < path.size(); i++) {
-            Toast.makeText(getApplicationContext(), "before this is " + path.get(i), Toast.LENGTH_SHORT).show();
-
+            //Toast.makeText(getApplicationContext(), "before this is " + path.get(i), Toast.LENGTH_SHORT).show();
             File image = new File(path.get(i));
 
             uri = Uri.fromFile(image);
@@ -242,6 +269,8 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             }
 
             Bitmap bitmap = Bitmap.createScaledBitmap(bm, bm.getWidth() / 2, bm.getHeight() / 2, true);
+            if(which_loc != MORE)
+                uploadImg(bitmap, which_loc);
             bm.recycle();
             if(change_or_insert == CHANGE_IMAGE)
                 setList(bitmap);
@@ -321,6 +350,83 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
                 other_plate.setImageBitmap(resBitmap);
                 break;
         }
+    }
+
+    private void uploadImg(final Bitmap bmp, final int action) {
+        Toast.makeText(getApplicationContext(), "uploading image!!! action " + action, Toast.LENGTH_LONG).show();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        final ParseFile file = new ParseFile("imageID", byteArray);
+        if(action == WHOLE)
+            f1 = new ParseFile("imageID", byteArray);
+        else if(action == YOUR)
+            f2 = new ParseFile("imageID", byteArray);
+        else if(action == OTHER)
+            f3 = new ParseFile("imageID", byteArray);
+        file.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e == null) {
+                    Toast.makeText(getApplicationContext(), "All good! start to upload data!!!", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    Toast.makeText(getApplicationContext(), "pic uploading went wrong!!! " + e.toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    private void uploadImageGroup() {
+        byteList = new ArrayList<byte[]>();
+        int i = 0;
+        for(Bitmap bmp:picList) {
+            i++;
+            if(i == 1)
+                continue;
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            byte[] byteArray = stream.toByteArray();
+            byteList.add(byteArray);
+        }
+        uploadData();
+    }
+
+    public void uploadData() {
+        Toast.makeText(getApplicationContext(), "uploading Data!!!", Toast.LENGTH_LONG).show();
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Claim");
+        query.getInBackground(claim_id, new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject object, ParseException e) {
+                if(e == null) {
+                    object.put("wholeScene", f1);
+                    object.put("yourPlate", f2);
+                    object.put("otherPlate", f3);
+                    object.put("morePictures", byteList);
+                    object.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if(e == null) {
+                                Toast.makeText(getApplicationContext(), "claim uploading all good!!!!!!!", Toast.LENGTH_LONG).show();
+                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                Intent intent = new Intent(getApplicationContext(), FileClaim3Activity.class);
+                                intent.putExtra("claimID", claim_id);
+                                startActivity(intent);
+                            }
+                            else {
+                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                Toast.makeText(getApplicationContext(), "claim uploading went wrong!!! " + e.toString(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     public static FileClaim2Activity getInstance() {

@@ -18,6 +18,7 @@
             android:layout_above="@+id/nav_layout"
             android:columnCount="2">
             <RelativeLayout
+                android:id="@+id/vc_list_section"
                 android:layout_height="match_parent"
                 android:layout_width="0dp"
                 android:divider="@android:color/transparent"
@@ -30,7 +31,7 @@
                     android:text="Your Claim List"
                     android:textSize="15dp"
                     android:textColor="@color/colorBlack"
-                    android:alpha="0.7"
+                    android:alpha="0.8"
                     android:textStyle="bold|italic"/>
                 <ListView
                     android:id="@+id/vc_claim_list"
@@ -45,7 +46,7 @@
                     android:layout_height="30dp"
                     android:layout_alignParentBottom="true"
                     android:orientation="horizontal"
-                    android:alpha="0.7"
+                    android:alpha="0.8"
                     android:background="@color/colorGray">
                     <ImageView
                         android:layout_width="30dp"
@@ -79,7 +80,7 @@
                         <RelativeLayout
                             android:id="@+id/vc_checkbox_section"
                             android:background="@drawable/cycle"
-                            android:alpha="0.6"
+                            android:alpha="0.8"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="20dp"
@@ -175,7 +176,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/vc_checkbox_section"
                             android:background="@drawable/cycle"
-                            android:alpha="0.6"
+                            android:alpha="0.8"
                             android:layout_marginLeft="20dp"
                             android:layout_marginRight="20dp"
                             android:layout_marginTop="10dp">
@@ -292,11 +293,11 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/vc_time_loc_section"
                             android:background="@drawable/cycle"
-                            android:alpha="0.6"
+                            android:alpha="0.8"
                             android:layout_marginLeft="20dp"
                             android:layout_marginRight="20dp"
                             android:layout_marginTop="10dp">
-                            <TextView
+                            <!--<TextView
                                 android:id="@+id/vc_other_driver_title"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -308,17 +309,17 @@
                                 android:textSize="15dp"
                                 android:textStyle="bold"
                                 android:textColor="@color/colorBlack"
-                                android:text="Information of other drivers"/>
+                                android:text="Information of other drivers"/> -->
                             <TextView
                                 android:id="@+id/vc_other_driver_license_pic_title"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@+id/vc_other_driver_title"
                                 android:layout_marginLeft="5dp"
                                 android:layout_marginRight="5dp"
                                 android:layout_marginBottom="10dp"
                                 android:textSize="15dp"
                                 android:textStyle="bold"
+                                android:textColor="@color/colorBlack"
                                 android:text="Driver license of other driver"
                                 />
                             <ImageView
@@ -341,6 +342,7 @@
                                 android:layout_marginBottom="10dp"
                                 android:textSize="15dp"
                                 android:textStyle="bold"
+                                android:textColor="@color/colorBlack"
                                 android:text="Insurance card of other driver"
                                 />
                             <ImageView
@@ -360,6 +362,7 @@
                                 android:layout_below="@+id/vc_other_insurance_card_pic"
                                 android:textSize="15dp"
                                 android:textStyle="bold"
+                                android:textColor="@color/colorBlack"
                                 android:text="Phone# of Other driver"/>
                             <TextView
                                 android:id="@+id/vc_other_driver_phone_text"
@@ -370,7 +373,7 @@
                                 android:layout_marginRight="5dp"
                                 android:layout_marginBottom="10dp"
                                 android:textSize="15dp"
-                                android:textStyle="bold"
+                                android:textColor="@color/colorBlack"
                                 android:text="858-888-8888"
                                 android:layout_below="@+id/vc_other_driver_phone_title"
                                 />
@@ -378,63 +381,100 @@
 
                         <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="1000dp"
+                            android:layout_height="1100dp"
+                            android:background="@drawable/cycle"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginTop="10dp"
+                            android:alpha="0.8"
                             android:layout_below="@+id/vc_other_driver_section">
-                            <GridLayout
-                                android:id="@+id/vc_default_pic_grid"
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:id="@+id/vc_default_pic_section"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerHorizontal="true"
-                                android:layout_margin="10dp"
-                                android:columnCount="3"
-                                android:rowCount="1"
-                                android:alpha="0.6">
+                                android:layout_height="wrap_content">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Whole Scene"
+                                    android:textSize="15dp"
+                                    android:textColor="@color/colorBlack"
+                                    android:textStyle="bold"/>
                                 <ImageView
-                                    android:id="@+id/vc_whole_scene_section"
-                                    android:layout_width="0dp"
-                                    android:layout_height="100dp"
-                                    android:layout_columnWeight="1"
-                                    android:layout_margin="10dp"
+                                    android:id="@+id/vc_whole_scene_pic"
+                                    android:layout_width="200dp"
+                                    android:layout_height="120dp"
+                                    android:layout_margin="5dp"
                                     android:layout_gravity="center_horizontal"
                                     android:src="@drawable/addphoto"
-                                    android:tooltipText="Whole scene"
                                     android:scaleType="fitCenter">
                                 </ImageView>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Your Plate"
+                                    android:textSize="15dp"
+                                    android:textColor="@color/colorBlack"
+                                    android:textStyle="bold"/>
                                 <ImageView
-                                    android:id="@+id/vc_your_plate_section"
-                                    android:layout_width="0dp"
-                                    android:layout_height="100dp"
-                                    android:layout_columnWeight="1"
-                                    android:layout_margin="10dp"
+                                    android:id="@+id/vc_your_plate_pic"
+                                    android:layout_width="200dp"
+                                    android:layout_height="120dp"
+                                    android:layout_margin="5dp"
                                     android:layout_gravity="center_horizontal"
                                     android:src="@drawable/addphoto"
-                                    android:tooltipText="Your plate"
                                     android:scaleType="fitCenter">
                                 </ImageView>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Other's Plate"
+                                    android:textSize="15dp"
+                                    android:textColor="@color/colorBlack"
+                                    android:textStyle="bold"/>
                                 <ImageView
-                                    android:id="@+id/vc_other_plate_section"
-                                    android:layout_width="0dp"
-                                    android:layout_height="100dp"
-                                    android:layout_columnWeight="1"
-                                    android:layout_margin="10dp"
+                                    android:id="@+id/vc_other_plate_pic"
+                                    android:layout_width="200dp"
+                                    android:layout_height="120dp"
+                                    android:layout_margin="5dp"
                                     android:layout_gravity="center_horizontal"
                                     android:src="@drawable/addphoto"
-                                    android:tooltipText="Other plate"
                                     android:scaleType="fitCenter">
                                 </ImageView>
-                            </GridLayout>
+                            </LinearLayout>
+
                             <ListView
                                 android:id="@+id/vc_photo_list"
                                 android:layout_width="match_parent"
                                 android:layout_height="fill_parent"
-                                android:layout_alignParentBottom="true"
-                                android:layout_alignParentStart="true"
-                                android:layout_margin="10dp"
-                                android:layout_below="@id/vc_default_pic_grid"
-                                android:divider="@android:color/transparent"
-                                android:dividerHeight="10dp"
-                                android:layout_marginBottom="34dp">
+                                android:drawSelectorOnTop="false"
+                                android:listSelector="@android:color/darker_gray"
+                                android:layout_above="@+id/vc_btn_section"
+                                android:layout_below="@id/vc_default_pic_section">
                             </ListView>
+                            <RelativeLayout
+                                android:id="@+id/vc_btn_section"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:layout_alignParentBottom="true">
+                                <Button
+                                    android:id="@+id/vc_prev_btn"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:background="@drawable/back"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginLeft="10dp"/>
+                                <Button
+                                    android:id="@+id/vc_next_btn"
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:background="@drawable/next"
+                                    android:layout_alignParentEnd="true"
+                                    android:layout_centerVertical="true"
+                                    android:layout_marginRight="10dp"/>
+                            </RelativeLayout>
                         </RelativeLayout>
 
                     </RelativeLayout>
