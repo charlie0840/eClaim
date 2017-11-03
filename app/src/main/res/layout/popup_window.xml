@@ -10,13 +10,18 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Type Your Message : "
+        android:text="Type Your Vehicle's Model/Make : "
+        android:textSize="20dp"
+        android:textStyle="bold"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <EditText
         android:id="@+id/editTextDialogUserInput"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textColor="@color/colorBlack"
+        android:hint="Model/Make">
         <requestFocus/>
 
     </EditText>

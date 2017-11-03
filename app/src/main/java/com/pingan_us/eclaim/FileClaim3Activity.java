@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Spinner;
 
-public class FileClaim3Activity extends AppCompatActivity {
+import java.util.List;
 
+public class FileClaim3Activity extends AppCompatActivity {
+    private ClaimBundle claim;
     private Button confirm_btn;
     private Spinner auto_repair_spinner;
     private static FileClaim3Activity activity;
@@ -18,6 +21,10 @@ public class FileClaim3Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fileclaim3);
 
+        claim = (ClaimBundle) getIntent().getParcelableExtra("ClaimBundle");
+
+        List<byte[]> list = (List<byte[]>) getIntent().getSerializableExtra("morePictures");
+
         activity = this;
 
         confirm_btn = (Button) findViewById(R.id.finish_step_button);
@@ -26,8 +33,10 @@ public class FileClaim3Activity extends AppCompatActivity {
         confirm_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ClaimFinishActivity.class);
-                startActivity(intent);
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                claim.uploadClaimBundle(getWindow(), getApplicationContext());
+//                Intent intent = new Intent(getApplicationContext(), ClaimFinishActivity.class);
+//                startActivity(intent);
             }
         });
     }

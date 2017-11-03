@@ -97,7 +97,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                             refresh_btn.setVisibility(View.GONE);
                             claim_list_title.setVisibility(View.GONE);
                             imHide.setImageResource(R.drawable.drawerout);                        }
-                    }, 1500);
+                    }, 1000);
 
 
                 }
@@ -113,7 +113,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                         public void run() {
                             imHide.setImageResource(R.drawable.drawerback);
                         }
-                    }, 1500);
+                    }, 1000);
                 }
             }
         });
@@ -159,7 +159,6 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                 claim_list.getChildAt(position).setBackgroundColor(getResources().getColor(R.color.colorGray));
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                Toast.makeText(ViewClaimt.this, "position " + position + " You Clicked at " +claimList.get(+ position) + " position " + position + " size " + claimList.size(), Toast.LENGTH_SHORT).show();
                 pos = position;
                 picList.clear();
                 adapter_pic.notifyDataSetChanged();
@@ -197,10 +196,8 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
     }
 
     public void fillClaim(int position) {
-        Toast.makeText(getApplicationContext(), "Clicked", Toast.LENGTH_LONG).show();
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Claim");
         query.whereEqualTo("objectId", claimIDList.get(position));
-        Toast.makeText(getApplicationContext(), "Looking for " + claimIDList.get(position), Toast.LENGTH_LONG).show();
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> currClaims, ParseException e) {
@@ -228,7 +225,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                     byte[] otherLicenseByte = new byte[0];
                     try {
                         otherLicenseByte = ((ParseFile)currClaim.get("otherLicense")).getData();
-                        fillImageView(otherLicenseByte, other_insurance_pic);
+                        fillImageView(otherLicenseByte, other_license_pic);
                     } catch (ParseException e1) {
                         e1.printStackTrace();
                     }

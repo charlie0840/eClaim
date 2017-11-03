@@ -106,14 +106,11 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                     Bitmap bm=null;
                     if (data != null) {
                         //Utility.getCameraPhotoOrientation(getApplicationContext(), );
-                        try {
-                            bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        bm = Utility.compressImageUri(data.getData(), 640, 480, getApplicationContext());
+                        //MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
                     }
                     Bitmap yourSelectedImage = Bitmap.createScaledBitmap(bm, 300, 200, true);
-                    picBinary = Bitmap.createScaledBitmap(bm, 300, 200, true);
+                    picBinary = Bitmap.createScaledBitmap(bm, bm.getWidth(), bm.getHeight(), true);
 
                     bm.recycle();
 

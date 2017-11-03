@@ -8,15 +8,19 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -131,23 +135,24 @@ public class Utility {
         return rotate;
     }
 
-    public static List<String> getVehicles(ParseUser user) {
+    public static List<String> getVehicles(ParseUser user, final ArrayAdapter<String> adapter) {
         final List<String> strList = new ArrayList<String>();
         List<String> vehicleIDList = new ArrayList<String>();
         if(user.get("vehicleID") != null)
             vehicleIDList = new ArrayList<String>((List<String>)user.get("vehicleID"));
-        ParseObject Vehicle = new ParseObject("Vehicle");
-
+        Log.d("testing!!!!!!!!!!!!!!!!", "id size is " + vehicleIDList.size());
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Vehicle");
         for(int i = 0; i < vehicleIDList.size(); i++) {
-            query.whereEqualTo("objectID", vehicleIDList.get(i));
+            query.whereEqualTo("objectId", vehicleIDList.get(i));
             query.getFirstInBackground(new GetCallback<ParseObject>() {
                 @Override
                 public void done(ParseObject object, ParseException e) {
                     if(e == null) {
                         if(object != null) {
-                            String name = (String)object.get("make") + " " + (String)object.get("model");
+                            String name = (String)object.get("modelMake");
                             strList.add(name);
+                            Log.d("testing!!!!!!!!!!!!!!!!", "car size is " + strList.size());
+                            notifyChange(adapter);
                         }
                     }
                 }
@@ -156,7 +161,7 @@ public class Utility {
         return strList;
     }
 
-    public static Bitmap compressImage(Bitmap bmp, int outWidth, int outHeight, Context context, boolean recycle) {
+    public static Bitmap compressImage(Uri uri, Bitmap bmp, int outWidth, int outHeight, Context context, boolean recycle) {
         //String srcImagePath = getFilePathFromUri(srcImageUri);
 
         //进行大小缩放来达到压缩的目的
@@ -215,11 +220,90 @@ public class Utility {
             scaledBitmap.recycle();
 
         //处理图片旋转问题
+        if(uri != null) {
+            String path = getRealPathFromURI(context, uri);
+            ExifInterface exif = null;
+            try {
+                Toast.makeText(context, path, Toast.LENGTH_LONG).show();
+                exif = new ExifInterface(path);
+                int orientation = exif.getAttributeInt(
+                        ExifInterface.TAG_ORIENTATION, 0);
+                Matrix matrix = new Matrix();
+                if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
+                    matrix.postRotate(90);
+                } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
+                    matrix.postRotate(180);
+                } else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+                    matrix.postRotate(270);
+                }
+                actualOutBitmap = Bitmap.createBitmap(actualOutBitmap, 0, 0,
+                        actualOutBitmap.getWidth(), actualOutBitmap.getHeight(), matrix, true);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        if(recycle)
+            bmp.recycle();
+        return actualOutBitmap;
+    }
+
+    public static Bitmap compressImageUri(Uri srcImageUri, int outWidth, int outHeight, Context context) {
+        String srcImagePath = getRealPathFromURI(context, srcImageUri);
+
+        //进行大小缩放来达到压缩的目的
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(srcImagePath, options);
+        //根据原始图片的宽高比和期望的输出图片的宽高比计算最终输出的图片的宽和高
+        float srcWidth = options.outWidth;
+        float srcHeight = options.outHeight;
+        float maxWidth = outWidth;
+        float maxHeight = outHeight;
+        float srcRatio = srcWidth / srcHeight;
+        float outRatio = maxWidth / maxHeight;
+        float actualOutWidth = srcWidth;
+        float actualOutHeight = srcHeight;
+
+        if (srcWidth > maxWidth || srcHeight > maxHeight) {
+            //如果输入比率小于输出比率,则最终输出的宽度以maxHeight为准()
+            //比如输入比为10:20 输出比是300:10 如果要保证输出图片的宽高比和原始图片的宽高比相同,则最终输出图片的高为10
+            //宽度为10/20 * 10 = 5  最终输出图片的比率为5:10 和原始输入的比率相同
+
+            //同理如果输入比率大于输出比率,则最终输出的高度以maxHeight为准()
+            //比如输入比为20:10 输出比是5:100 如果要保证输出图片的宽高比和原始图片的宽高比相同,则最终输出图片的宽为5
+            //高度需要根据输入图片的比率计算获得 为5 / 20/10= 2.5  最终输出图片的比率为5:2.5 和原始输入的比率相同
+            if (srcRatio < outRatio) {
+                actualOutHeight = maxHeight;
+                actualOutWidth = actualOutHeight * srcRatio;
+            } else if (srcRatio > outRatio) {
+                actualOutWidth = maxWidth;
+                actualOutHeight = actualOutWidth / srcRatio;
+            } else {
+                actualOutWidth = maxWidth;
+                actualOutHeight = maxHeight;
+            }
+        }
+        options.inSampleSize = computeSampleSize(options, actualOutWidth, actualOutHeight);
+        options.inJustDecodeBounds = false;
+        Bitmap scaledBitmap = null;
+        try {
+            scaledBitmap = BitmapFactory.decodeFile(srcImagePath, options);
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+        }
+        if (scaledBitmap == null) {
+            return null;//压缩失败
+        }
+        //生成最终输出的bitmap
+        Bitmap actualOutBitmap = Bitmap.createScaledBitmap(scaledBitmap, (int) actualOutWidth, (int) actualOutHeight, true);
+        if (actualOutBitmap != scaledBitmap)
+            scaledBitmap.recycle();
+
+        //处理图片旋转问题
         ExifInterface exif = null;
         try {
-            String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bmp, "Title", null);
-            Toast.makeText(context, path, Toast.LENGTH_LONG).show();
-            exif = new ExifInterface(path);
+            exif = new ExifInterface(srcImagePath);
             int orientation = exif.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION, 0);
             Matrix matrix = new Matrix();
@@ -236,10 +320,9 @@ public class Utility {
             e.printStackTrace();
             return null;
         }
-        if(recycle)
-            bmp.recycle();
         return actualOutBitmap;
     }
+
 
     private static int computeSampleSize(BitmapFactory.Options options, float reqWidth, float reqHeight) {
         float srcWidth = options.outWidth;//20
@@ -251,6 +334,36 @@ public class Utility {
             sampleSize = Math.min(withRatio, heightRatio);
         }
         return sampleSize;
+    }
+
+    private static String getRealPathFromURI(Context context, Uri uri) {
+        String filePath = "";
+        if (DocumentsContract.isDocumentUri(context, uri)) {
+            String wholeID = DocumentsContract.getDocumentId(uri);
+            // Split at colon, use second item in the array
+            String[] splits = wholeID.split(":");
+            if (splits.length == 2) {
+                String id = splits[1];
+
+                String[] column = {MediaStore.Images.Media.DATA};
+// where id is equal to
+                String sel = MediaStore.Images.Media._ID + "=?";
+                Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        column, sel, new String[]{id}, null);
+                int columnIndex = cursor.getColumnIndex(column[0]);
+                if (cursor.moveToFirst()) {
+                    filePath = cursor.getString(columnIndex);
+                }
+                cursor.close();
+            }
+        } else {
+            filePath = uri.getPath();
+        }
+        return filePath;
+    }
+
+    private static void notifyChange(ArrayAdapter<String> adapter) {
+        adapter.notifyDataSetChanged();
     }
 }
 

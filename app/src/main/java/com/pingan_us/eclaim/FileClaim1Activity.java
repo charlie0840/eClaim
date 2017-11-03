@@ -3,12 +3,18 @@ package com.pingan_us.eclaim;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.location.Address;
 import android.location.Geocoder;
+import android.media.ExifInterface;
+import android.net.Uri;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +22,7 @@ import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -52,8 +59,10 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -65,6 +74,10 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
     private static FileClaim1Activity activity;
+
+    private Window w;
+
+    private ClaimBundle claim = new ClaimBundle();
 
     protected Spinner vehicle_spinner, vehicle_num_spinner;
     protected RadioButton I_rbtn, other_rbtn;
@@ -88,6 +101,9 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
     private int vehicle_id;
     private long time;
+    private List<byte[]> byteList = new ArrayList<byte[]>();
+    private List<String> carIDList = new ArrayList<String>();
+    private List<String> carList = new ArrayList<String>();
     private String location_txt = "", time_txt = "", claim_id = "", phone_txt = "";
     private int drive_or_insur;
     private double longitude = 0, latitude = 0;
@@ -103,6 +119,9 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         setContentView(R.layout.activity_fileclaim1);
 
         activity = this;
+
+        for(int i = 0; i < 3; i++)
+            byteList.add(null);
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -144,10 +163,11 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
             this.finish();
         }
 
-        List<String> vehicleList = new ArrayList<String>(Utility.getVehicles(ParseUser.getCurrentUser()));
+        List<String> vehicleList = new ArrayList<String>();
         vehicle_spinner = (Spinner) findViewById(R.id.vehicle_pick_spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, vehicleList);
         vehicle_spinner.setAdapter(adapter);
+        vehicleList = new ArrayList<String>(Utility.getVehicles(ParseUser.getCurrentUser(), adapter));
 
         vehicle_num_spinner = (Spinner)findViewById(R.id.vehiclenum_spinner);
 
@@ -198,8 +218,8 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 alertDialog.dismiss();
             }
         });
-
         alertDialog.setView(dialogView);
+        w = getWindow();
     }
 
     @Override
@@ -236,17 +256,17 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                     Toast.makeText(getApplicationContext(), "Please select the location", Toast.LENGTH_LONG).show();
                     break;
                 }
-                if(f1 == null && other_rbtn.isChecked()) {
-                    Toast.makeText(getApplicationContext(), "Please select picture for driver license", Toast.LENGTH_LONG).show();
-                    break;
-                }
-                if(f2 == null) {
-                    Toast.makeText(getApplicationContext(), "Please select picture for driver license of other driver", Toast.LENGTH_LONG).show();
-                    break;
-                }
+//                if(f1 == null && other_rbtn.isChecked()) {
+//                    Toast.makeText(getApplicationContext(), "Please select picture for driver license", Toast.LENGTH_LONG).show();
+//                    break;
+//                }
+//                if(f2 == null) {
+//                    Toast.makeText(getApplicationContext(), "Please select picture for driver license of other driver", Toast.LENGTH_LONG).show();
+//                    break;
+//                }
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                uploadImg(p3, 3);
+                uploadData();
                 break;
             case R.id.drivable_section:
                 if (!drivable_box.isChecked())
@@ -368,7 +388,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
          */
         LatLng latLng = new LatLng(latitude, longitude);
         if(mMap == null){
-            Toast.makeText(getApplicationContext(), "map null!!!!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "map null!!!!", Toast.LENGTH_LONG).show();
             return;
         }
         mMap.addMarker(new MarkerOptions()
@@ -409,7 +429,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Toast.makeText(getApplicationContext(), "REQUEST CODE IS       " + requestCode, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "REQUEST CODE IS       " + requestCode, Toast.LENGTH_SHORT).show();
         if(requestCode == GET_LOC_REQUEST) {
             if(resultCode == RESULT_OK) {
                 LatLng currLoc = null;
@@ -417,7 +437,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 currLoc = (LatLng) bundle.getParcelable("LatLng");
                 longitude = currLoc.longitude;
                 latitude = currLoc.latitude;
-                Toast.makeText(getApplicationContext(), longitude + " " + latitude, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), longitude + " " + latitude, Toast.LENGTH_LONG).show();
                 location_txt = getAddress(latitude, longitude);
                 loc_indicate_txt_1.setText(location_txt);
                 moveMap();
@@ -427,20 +447,26 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
             if(resultCode == RESULT_OK){
                 Bitmap bm=null;
                 if (data != null) {
-                    try {
-                        bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        bm = Utility.compressImageUri(data.getData(), 1024, 768, getApplicationContext());
+                        //MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+                    if(bm == null) {
+                        Toast.makeText(getApplicationContext(), "Wrong !!!!!!!", Toast.LENGTH_LONG).show();
                     }
                 }
                 if(drive_or_insur == DRIVE) {
-                    p2 = Bitmap.createScaledBitmap(bm, bm.getWidth(), bm.getHeight(), true);
-                    uploadImg(p2, 2);
-                    Bitmap yourSelectedImage = Bitmap.createScaledBitmap(bm, bm.getWidth()/2, bm.getHeight()/2, true);
-                    other_drive_pic.setImageBitmap(yourSelectedImage);
+                    if(bm == null) {
+                        Toast.makeText(getApplicationContext(), "Wrong !!!!!!!", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        p2 = Bitmap.createScaledBitmap(bm, bm.getWidth(), bm.getHeight(), true);
+                        uploadImg(p2, 2);
+                        Bitmap yourSelectedImage = Bitmap.createScaledBitmap(bm, bm.getWidth() / 2, bm.getHeight() / 2, true);
+                        other_drive_pic.setImageBitmap(yourSelectedImage);
+                    }
                 }
                 else if(drive_or_insur == INSUR) {
                     p3 = Bitmap.createScaledBitmap(bm, bm.getWidth() / 2, bm.getHeight() / 2, true);
+                    uploadImg(p3, 3);
                     Bitmap yourSelectedImage = Bitmap.createScaledBitmap(bm, bm.getWidth()/2, bm.getHeight()/2, true);
                     other_insur_pic.setImageBitmap(yourSelectedImage);
                 }
@@ -451,7 +477,6 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                     add_person_pic.setVisibility(View.VISIBLE);
                     add_person_pic.setImageBitmap(yourSelectedImage);
                 }
-                bm.recycle();
             }
         }
     }
@@ -486,74 +511,80 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         return activity;
     }
 
-    public void uploadData(final Bitmap bmp) {
-        Toast.makeText(getApplicationContext(), "uploading Data!!!", Toast.LENGTH_LONG).show();
-        final ParseUser currUser = ParseUser.getCurrentUser();
-        final ParseObject Claim = new ParseObject("Claim");
+    public void uploadData() {//final Bitmap bmp) {
+//        Toast.makeText(getApplicationContext(), "uploading Data!!!", Toast.LENGTH_LONG).show();
+//        final ParseUser currUser = ParseUser.getCurrentUser();
+//        final ParseObject Claim = new ParseObject("Claim");
+//
+//        Claim.put("injured", injure_box.isChecked());
+//        Claim.put("drivable", drivable_box.isChecked());
+//        Claim.put("atScene", present_box.isChecked());
+//        Claim.put("vehicleNum", vehicle_num_spinner.getSelectedItem().toString());
+//        Claim.put("time", time_txt);
+//        Claim.put("person", I_rbtn.isChecked());
+//        Claim.put("location", location_txt);
+//        Claim.put("vehicleID", vehicle_id);
+//        Claim.put("phoneOther", phone_txt);
+//        if(f1 != null)
+//            Claim.put("driverLicense", f1);
+//        Claim.put("otherLicense", f2);
+//        Claim.put("otherInsurance", f3);
+//
+//        Claim.saveInBackground(new SaveCallback() {
+//            @Override
+//            public void done(ParseException e) {
+//                if(e == null) {
+//                    Toast.makeText(getApplicationContext(), "claim uploading all good!!!!!!!", Toast.LENGTH_LONG).show();
+//                    final String objectID = Claim.getObjectId();
+//                    List<String> claimList = new ArrayList<String>();
+//                    if(currUser.get("claimID") != null) {
+//                        try {
+//                            claimList = new ArrayList<String>((List<String>) currUser.get("claimID"));
+//                        }
+//                        catch (ClassCastException e1) {
+//                        }
+//                    }
+//                    claimList.add(objectID);
+//                    currUser.put("claimID", claimList);
+//                    currUser.saveInBackground(new SaveCallback() {
+//                        @Override
+//                        public void done(ParseException e) {
+//                            if(e == null) {
+//                                Toast.makeText(getApplicationContext(), "user update all good!!!!!!", Toast.LENGTH_LONG).show();
+//                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                                Intent intent = new Intent(getApplicationContext(), FileClaim2Activity.class);
+//                                intent.putExtra("claimID", objectID);
+//                                startActivity(intent);
+//                            }
+//                            else{
+//                                ParseQuery<ParseObject> query = ParseQuery.getQuery("Claim");
+//                                query.whereEqualTo("objectID", objectID);
+//                                query.getInBackground(objectID, new GetCallback<ParseObject>() {
+//                                    public void done(ParseObject object, ParseException e) {
+//                                        if (e == null) {
+//                                            object.deleteInBackground();
+//                                        }
+//                                    }
+//                                });
+//                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                                Toast.makeText(getApplicationContext(), "user update went wrong!!! " + e.toString(), Toast.LENGTH_LONG).show();
+//                            }
+//                        }
+//                    });
+//                }
+//                else {
+//                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                    Toast.makeText(getApplicationContext(), "claim uploading went wrong!!! " + e.toString(), Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
+        claim.setStep1Bundle(injure_box.isChecked(), drivable_box.isChecked(), present_box.isChecked(), I_rbtn.isChecked(),
+                time_txt, location_txt, "", vehicle_num_spinner.getSelectedItem().toString(), phone_txt);
+        claim.uploadStep1Image(byteList, w, getApplicationContext());
 
-        Claim.put("injured", injure_box.isChecked());
-        Claim.put("drivable", drivable_box.isChecked());
-        Claim.put("atScene", present_box.isChecked());
-        Claim.put("vehicleNum", vehicle_num_spinner.getSelectedItem().toString());
-        Claim.put("time", time_txt);
-        Claim.put("person", I_rbtn.isChecked());
-        Claim.put("location", location_txt);
-        Claim.put("vehicleID", vehicle_id);
-        Claim.put("phoneOther", phone_txt);
-        if(f1 != null)
-            Claim.put("driverLicense", f1);
-        Claim.put("otherLicense", f2);
-        Claim.put("otherInsurance", f3);
-
-        Claim.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if(e == null) {
-                    Toast.makeText(getApplicationContext(), "claim uploading all good!!!!!!!", Toast.LENGTH_LONG).show();
-                    final String objectID = Claim.getObjectId();
-                    List<String> claimList = new ArrayList<String>();
-                    if(currUser.get("claimID") != null) {
-                        try {
-                            claimList = new ArrayList<String>((List<String>) currUser.get("claimID"));
-                        }
-                        catch (ClassCastException e1) {
-                        }
-                    }
-                    claimList.add(objectID);
-                    currUser.put("claimID", claimList);
-                    currUser.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if(e == null) {
-                                bmp.recycle();
-                                Toast.makeText(getApplicationContext(), "user update all good!!!!!!", Toast.LENGTH_LONG).show();
-                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                Intent intent = new Intent(getApplicationContext(), FileClaim2Activity.class);
-                                intent.putExtra("claimID", objectID);
-                                startActivity(intent);
-                            }
-                            else{
-                                ParseQuery<ParseObject> query = ParseQuery.getQuery("Claim");
-                                query.whereEqualTo("objectID", objectID);
-                                query.getInBackground(objectID, new GetCallback<ParseObject>() {
-                                    public void done(ParseObject object, ParseException e) {
-                                        if (e == null) {
-                                            object.deleteInBackground();
-                                        }
-                                    }
-                                });
-                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                Toast.makeText(getApplicationContext(), "user update went wrong!!! " + e.toString(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                }
-                else {
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    Toast.makeText(getApplicationContext(), "claim uploading went wrong!!! " + e.toString(), Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+ //       Intent intent = new Intent(getApplicationContext(), FileClaim2Activity.class);
+   //     intent.putExtra("ClaimBundle", claim);
+     //   startActivity(intent);
     }
 
     private void uploadImg(final Bitmap bmp, final int action) {
@@ -561,33 +592,18 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
             Toast.makeText(getApplicationContext(), "Please select picture of insurance card of other driver", Toast.LENGTH_LONG).show();
             return;
         }
-        Toast.makeText(getApplicationContext(), "uploading image!!! action " + action, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(), "uploading image!!! action " + action, Toast.LENGTH_LONG).show();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Bitmap bmp1= Bitmap.createBitmap(Utility.compressImage(bmp, 1024, 768, getApplicationContext(), false));
-        bmp1.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-        final byte[] byteArray = stream.toByteArray();
-        final ParseFile file = new ParseFile("imageID", byteArray);
+        //Bitmap bmp1= Bitmap.createBitmap(Utility.compressImage(bmp, 1024, 768, getApplicationContext(), false));
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+
+        byte[] byteArray = stream.toByteArray();
         if(action == 1)
-            f1 = new ParseFile("imageID", byteArray);
+            byteList.add(0, byteArray);
         else if(action == 2)
-            f2 = new ParseFile("imageID", byteArray);
+            byteList.add(1, byteArray);
         else if(action == 3)
-            f3 = new ParseFile("imageID", byteArray);
-        bmp1.recycle();
-        file.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if(e == null) {
-                    Toast.makeText(getApplicationContext(), "All good! start to upload data!!!", Toast.LENGTH_LONG).show();
-                    if(action == 3)
-                        uploadData(bmp);
-                }
-                else {
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    Toast.makeText(getApplicationContext(), "pic uploading went wrong!!! " + e.toString(), Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+            byteList.add(2, byteArray);
     }
 
     @Override
