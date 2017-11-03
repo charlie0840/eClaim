@@ -91,6 +91,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     private ImageView switcherImageView, switcherImageView2;
     private static final int REQUEST_CAMERA = 0, SELECT_FILE = 1, MY_CAMERA_REQUEST_CODE = 1, MY_CALL_REQUEST_CODE = 2, PROFILE_PHOTO = 3, ID = 0, VEHICLE = 1;
     private List<Drawable> IDPicList, vehiclePicList;
+    private ArrayList<String> carList;
     private int counter, ID_or_Vehicle;
     private byte[] imageByte = null;
     private String userChoosenTask, claimID, vehicleID, user_name, phone_no, full_name, vehicleName;
@@ -193,7 +194,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         IDImageSwitcher.setInAnimation(animationLIn);
         VehicleImageSwitcher.setOutAnimation(animationLOut);
         VehicleImageSwitcher.setInAnimation(animationLIn);
-
 
         //准备把左右滑动加上
 
@@ -315,12 +315,13 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.file_claim_button:
                 Intent intent2 = new Intent(getApplicationContext(), FileClaim1Activity.class); //fixed
+                intent2.putStringArrayListExtra("vehicleList", carList);
                 startActivity(intent2);
                 break;
             case R.id.claim_button:
                 Intent intent3 = new Intent(this, ViewClaimt.class);
                 intent3.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent3);
+                startActivity(intent3.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                 break;
         }
     }

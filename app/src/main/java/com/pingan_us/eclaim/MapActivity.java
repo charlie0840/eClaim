@@ -89,7 +89,7 @@ public class MapActivity extends FragmentActivity implements View.OnClickListene
             public void run() {
                 getCurrentLocation();
             }
-        }, 1500);
+        }, 500);
 
     }
 

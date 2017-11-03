@@ -14,12 +14,14 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Message;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -50,6 +52,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.location.LocationServices;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -68,6 +71,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Handler;
 
 public class FileClaim1Activity extends FragmentActivity implements View.OnClickListener, View.OnKeyListener,
         OnMapReadyCallback,
@@ -101,9 +105,10 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
     private int vehicle_id;
     private long time;
+    private ArrayAdapter<String> adapter;
     private List<byte[]> byteList = new ArrayList<byte[]>();
     private List<String> carIDList = new ArrayList<String>();
-    private List<String> carList = new ArrayList<String>();
+    private List<String> vehicleList = new ArrayList<String>();
     private String location_txt = "", time_txt = "", claim_id = "", phone_txt = "";
     private int drive_or_insur;
     private double longitude = 0, latitude = 0;
@@ -160,14 +165,16 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         fg = (View) findViewById(R.id.map);
 
         if(ParseUser.getCurrentUser() == null) {
-            this.finish();
+            getInstance().finish();
         }
 
-        List<String> vehicleList = new ArrayList<String>();
+        vehicleList = new ArrayList<String>();
         vehicle_spinner = (Spinner) findViewById(R.id.vehicle_pick_spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, vehicleList);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, vehicleList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vehicle_spinner.setAdapter(adapter);
-        vehicleList = new ArrayList<String>(Utility.getVehicles(ParseUser.getCurrentUser(), adapter));
+
+        getVehicles();
 
         vehicle_num_spinner = (Spinner)findViewById(R.id.vehiclenum_spinner);
 
@@ -437,7 +444,6 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 currLoc = (LatLng) bundle.getParcelable("LatLng");
                 longitude = currLoc.longitude;
                 latitude = currLoc.latitude;
-                //Toast.makeText(getApplicationContext(), longitude + " " + latitude, Toast.LENGTH_LONG).show();
                 location_txt = getAddress(latitude, longitude);
                 loc_indicate_txt_1.setText(location_txt);
                 moveMap();
@@ -579,9 +585,8 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 //            }
 //        });
         claim.setStep1Bundle(injure_box.isChecked(), drivable_box.isChecked(), present_box.isChecked(), I_rbtn.isChecked(),
-                time_txt, location_txt, "", vehicle_num_spinner.getSelectedItem().toString(), phone_txt);
+                time_txt, location_txt, vehicle_spinner.getSelectedItem().toString(), vehicle_num_spinner.getSelectedItem().toString(), phone_txt);
         claim.uploadStep1Image(byteList, w, getApplicationContext());
-
  //       Intent intent = new Intent(getApplicationContext(), FileClaim2Activity.class);
    //     intent.putExtra("ClaimBundle", claim);
      //   startActivity(intent);
@@ -592,9 +597,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
             Toast.makeText(getApplicationContext(), "Please select picture of insurance card of other driver", Toast.LENGTH_LONG).show();
             return;
         }
-        //Toast.makeText(getApplicationContext(), "uploading image!!! action " + action, Toast.LENGTH_LONG).show();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        //Bitmap bmp1= Bitmap.createBitmap(Utility.compressImage(bmp, 1024, 768, getApplicationContext(), false));
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 
         byte[] byteArray = stream.toByteArray();
@@ -607,6 +610,58 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
     }
 
     @Override
-    public void onBackPressed(){
+    public void onBackPressed(){}
+
+    private class ReceiverThread implements Runnable {
+        //private ArrayAdapter<String> adapter1;
+        private Message msg;
+        public ReceiverThread(Message msg) {
+            this.msg = msg;
+        }
+        public void run() {
+            synchronized (msg) {
+                try {
+                    Log.d("threading!!!!!!!!!!!", "thread waits to update list");
+                    msg.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                        Log.d("threading!!!!!!!!!!!", "thread updated list " + adapter.getCount());
+                    }
+                });
+            }
+
+        }
+
+    }
+
+    public void getVehicles() {
+        ParseUser user = ParseUser.getCurrentUser();
+        final List<String> strList = new ArrayList<String>();
+        List<String> vehicleIDList = new ArrayList<String>();
+        if(user.get("vehicleID") != null)
+            vehicleIDList = new ArrayList<String>((List<String>)user.get("vehicleID"));
+        Log.d("testing!!!!!!!!!!!!!!!!", "id size is " + vehicleIDList.size());
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Vehicle");
+        query.whereContainedIn("objectId", vehicleIDList);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if(e == null) {
+                    if(objects != null) {
+                        for(ParseObject object:objects) {
+                            String name = (String) object.get("modelMake");
+                            vehicleList.add(name);
+                            Log.d("testing!!!!!!!!!!!!!!!!", "car size is " + strList.size());
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
     }
 }

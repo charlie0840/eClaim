@@ -78,6 +78,11 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         claim_section = (RelativeLayout) findViewById(R.id.vc_claim_section);
         claim_list_title = (TextView) findViewById(R.id.vc_claim_list_title);
         final ImageView imHide  = (ImageView) findViewById(R.id.vc_drawer_btn);
+        claim_list.setVisibility(View.GONE);
+        refresh_btn.setVisibility(View.GONE);
+        claim_list_title.setVisibility(View.GONE);
+        imHide.setImageResource(R.drawable.drawerout);
+        final LinearLayout vc_background = (LinearLayout) findViewById(R.id.vc_background);
         final Animation leftIn = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.slide_left_in);
         final Animation rightOut = AnimationUtils.loadAnimation(getApplicationContext(),
@@ -88,7 +93,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                 if(slideIn) {
                     slideIn = false;
                     list_section.startAnimation(leftIn);
-
+                    vc_background.setVisibility(View.INVISIBLE);
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -96,13 +101,14 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                             claim_list.setVisibility(View.GONE);
                             refresh_btn.setVisibility(View.GONE);
                             claim_list_title.setVisibility(View.GONE);
-                            imHide.setImageResource(R.drawable.drawerout);                        }
+                            imHide.setImageResource(R.drawable.drawerout);
+
+                        }
                     }, 1000);
-
-
                 }
                 else {
                     slideIn = true;
+                    vc_background.setVisibility(View.VISIBLE);
                     claim_list.setVisibility(View.VISIBLE);
                     refresh_btn.setVisibility(View.VISIBLE);
                     claim_list_title.setVisibility(View.VISIBLE);
@@ -117,6 +123,8 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                 }
             }
         });
+        slideIn = false;
+        imHide.performClick();
 
 
         driver_license_pic = (ImageView) findViewById(R.id.vc_person_license_pic);
@@ -176,12 +184,12 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
             case R.id.home_nav:
                 Intent intent = new Intent(this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
+                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                 break;
             case R.id.profile_nav:
                 Intent intent1 = new Intent(this, ProfileActivity.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent1);
+                startActivity(intent1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                 break;
             case R.id.vc_refresh_btn:
                 getClaimList();

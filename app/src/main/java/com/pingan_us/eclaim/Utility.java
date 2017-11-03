@@ -135,30 +135,28 @@ public class Utility {
         return rotate;
     }
 
-    public static List<String> getVehicles(ParseUser user, final ArrayAdapter<String> adapter) {
+    public static void getVehicles(ParseUser user) {
         final List<String> strList = new ArrayList<String>();
         List<String> vehicleIDList = new ArrayList<String>();
         if(user.get("vehicleID") != null)
             vehicleIDList = new ArrayList<String>((List<String>)user.get("vehicleID"));
         Log.d("testing!!!!!!!!!!!!!!!!", "id size is " + vehicleIDList.size());
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Vehicle");
-        for(int i = 0; i < vehicleIDList.size(); i++) {
-            query.whereEqualTo("objectId", vehicleIDList.get(i));
-            query.getFirstInBackground(new GetCallback<ParseObject>() {
-                @Override
-                public void done(ParseObject object, ParseException e) {
-                    if(e == null) {
-                        if(object != null) {
-                            String name = (String)object.get("modelMake");
+        query.whereEqualTo("objectId", vehicleIDList);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                if(e == null) {
+                    if(objects != null) {
+                        for(ParseObject object:objects) {
+                            String name = (String) object.get("modelMake");
                             strList.add(name);
                             Log.d("testing!!!!!!!!!!!!!!!!", "car size is " + strList.size());
-                            notifyChange(adapter);
                         }
                     }
                 }
-            });
-        }
-        return strList;
+            }
+        });
     }
 
     public static Bitmap compressImage(Uri uri, Bitmap bmp, int outWidth, int outHeight, Context context, boolean recycle) {

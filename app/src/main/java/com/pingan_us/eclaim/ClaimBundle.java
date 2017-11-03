@@ -78,12 +78,9 @@ public class ClaimBundle implements Parcelable{
             int size = in.readInt();
             morePictures = new ArrayList<byte[]>();
             for(int i = 0; i < size; i++) {
-                //byte[] array = Base64.getDecoder().decode(s);
-                        //Base64.getDecoder().decode(s);
                 int length = in.readInt();
                 byte[] array = new byte[length];
                 in.readByteArray(array);
-                Log.d("byte", "byte size is " + array.length);
                 morePictures.add(array);
             }
         }
@@ -311,7 +308,6 @@ public class ClaimBundle implements Parcelable{
         if(i == 3) {
             Log.d("error", "several failed");
         }
-        final int count = 0;
         file.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {

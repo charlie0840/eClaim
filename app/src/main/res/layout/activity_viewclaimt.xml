@@ -432,6 +432,13 @@
                     </RelativeLayout>
                 </ScrollView>
             </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/vc_background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorBlack"
+                android:alpha="0.35">
+            </LinearLayout>
             <RelativeLayout
                 android:id="@+id/vc_list_section"
                 android:layout_height="match_parent"

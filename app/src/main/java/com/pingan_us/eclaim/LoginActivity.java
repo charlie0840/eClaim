@@ -106,12 +106,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.profile_nav:
                 Intent intent = new Intent(this, ProfileActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
+                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                 break;
             case R.id.claims_nav:
                 Intent intent1 = new Intent(this, ViewClaimt.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent1);
+                startActivity(intent1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                 break;
         }
     }
@@ -158,7 +158,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivity(intent);
+                    startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                 }
                 if(e != null) {
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
