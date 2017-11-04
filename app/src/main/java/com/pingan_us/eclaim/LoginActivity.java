@@ -156,7 +156,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     register.setVisibility(View.GONE);
                     nav_bar.setVisibility(View.VISIBLE);
 
-                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                 }

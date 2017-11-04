@@ -42,7 +42,7 @@
             android:configChanges="orientation"
             android:label="eClaim"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog"></activity>
+            android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name=".RegisterActivity"
             android:configChanges="orientation"
@@ -99,7 +99,8 @@
             android:name="com.parse.CLIENT_KEY"
             android:value="@string/back4app_client_key" />
 
-        <activity android:name=".ViewClaimt"></activity>
+        <activity android:name=".ViewClaimt" />
+        <activity android:name=".HomeActivity"></activity>
     </application>
 
 </manifest>

@@ -6,8 +6,6 @@
     android:layout_alignParentBottom="true"
     android:columnCount="3"
     android:rowCount="1"
-    android:alpha="0.7"
-
     android:background="@color/colorPrimaryDark">
 
     <ImageView

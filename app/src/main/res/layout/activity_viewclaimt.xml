@@ -432,20 +432,20 @@
                     </RelativeLayout>
                 </ScrollView>
             </RelativeLayout>
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/vc_background"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/colorBlack"
                 android:alpha="0.35">
-            </LinearLayout>
+            </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/vc_list_section"
                 android:layout_height="match_parent"
                 android:layout_width="230dp">
                 <ImageView
                     android:id="@+id/vc_drawer_btn"
-                    android:layout_width="30dp"
+                    android:layout_width="25dp"
                     android:layout_height="100dp"
                     android:layout_toRightOf="@+id/vc_claim_list"
                     android:layout_centerVertical="true"
@@ -460,7 +460,6 @@
                     android:text="Your Claim List"
                     android:textSize="20dp"
                     android:textColor="@color/colorBlack"
-                    android:alpha="0.8"
                     android:textStyle="bold|italic"/>
                 <ListView
                     android:id="@+id/vc_claim_list"
@@ -477,7 +476,6 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignRight="@+id/vc_claim_list"
                     android:orientation="horizontal"
-                    android:alpha="0.8"
                     android:background="@color/colorGray">
                     <ImageView
                         android:layout_width="30dp"

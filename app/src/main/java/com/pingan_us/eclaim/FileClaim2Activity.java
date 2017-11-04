@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -25,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,6 +73,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
     private CustomList adapter;
     private GridLayout default_grid;
     private LinearLayout p1, p2, p3;
+    private RelativeLayout background;
     private ImageView whole_scene, your_plate, other_plate;
     private static FileClaim2Activity activity;
 
@@ -93,6 +96,8 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         next_btn = (Button) findViewById(R.id.start_step3_button);
 
         default_grid = (GridLayout) findViewById(R.id.default_pic_grid);
+
+        background = (RelativeLayout) findViewById(R.id.fc2_background);
 
         p1 = (LinearLayout) default_grid.findViewById(R.id.whole_scene_section);
         p2 = (LinearLayout) default_grid.findViewById(R.id.your_plate_section);
@@ -194,13 +199,9 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
                     break;
                 }
                 //getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                new Thread() {
-                    @Override
-                    public void run() {
-                        uploadImageGroup();
-                    }
-                }.start();
-                claim.uploadStep2Image(singleByteList, w, getApplicationContext());
+                background.setAlpha((float) 0.5);
+                uploadImageGroup();
+                //claim.uploadStep2Image(singleByteList, w, getApplicationContext());
 //                Intent intent = new Intent(getApplicationContext(), FileClaim3Activity.class);
 //                intent.putExtra("ClaimBundle", claim);
 //                startActivity(intent);
@@ -286,9 +287,23 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         for(int i = 0; i < path.size(); i++) {
             //Toast.makeText(getApplicationContext(), "before this is " + path.get(i), Toast.LENGTH_SHORT).show();
             File image = new File(path.get(i));
+            final Uri currUri = Uri.fromFile(image);
 
-            uri = Uri.fromFile(image);
-            bm = Bitmap.createBitmap(Utility.compressImageUri(uri, 1024, 768, getApplicationContext()));
+            //bm = Bitmap.createBitmap(Utility.compressImageUri(currUri, 1024, 768, getApplicationContext()));
+
+            /*testing codes*/
+            ReceiverThread thread = new ReceiverThread(currUri, 900, 700, getApplicationContext());
+            Thread th = new Thread(thread);
+            th.start();
+            try {
+                th.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            bm = Bitmap.createBitmap(thread.getBitmap());
+            /*end of testing codes*/
+
                         //BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
 
             Bitmap bitmap = Bitmap.createScaledBitmap(bm, bm.getWidth() / 2, bm.getHeight() / 2, true);
@@ -332,7 +347,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             e.printStackTrace();
         }
         Bitmap resBitmap = Bitmap.createScaledBitmap(thumbnail, thumbnail.getWidth()/2, thumbnail.getHeight()/2, true);
-        Bitmap bmp = Bitmap.createBitmap(Utility.compressImage(uri, thumbnail, 1024, 768, getApplicationContext(), true));
+        Bitmap bmp = Bitmap.createBitmap(Utility.compressImage(uri, thumbnail, 900, 700, getApplicationContext(), true));
         if(which_loc != MORE)
             uploadImg(bmp, which_loc);
         if(change_or_insert == INSERT_IMAGE)
@@ -434,13 +449,14 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             if(i == 1)
                 continue;
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            Bitmap bmp1 = Bitmap.createBitmap(Utility.compressImage(null, bmp, 1024, 768, getApplicationContext(), false));
+            Bitmap bmp1 = Bitmap.createBitmap(Utility.compressImage(null, bmp, 900, 700, getApplicationContext(), false));
             bmp1.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             byte[] byteArray = stream.toByteArray();
             byteList.add(byteArray);
             bmp1.recycle();
         }
-        claim.setStep2Bundle(byteList);
+        claim.setStep2Bundle(singleByteList, w, byteList, getApplicationContext());
+        //claim.setStep2Bundle(byteList);
     }
 
 //    public void uploadData() {

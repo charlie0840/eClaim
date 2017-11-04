@@ -101,7 +101,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
     private EditText other_driver_phone_txt;
     private GoogleApiClient googleApiClient;
     private ImageView other_drive_pic, other_insur_pic, add_person_pic;
-    private RelativeLayout injure_section, present_section, drivable_section, loc_section;
+    private RelativeLayout injure_section, present_section, drivable_section, loc_section, background;
 
     private int vehicle_id;
     private long time;
@@ -157,6 +157,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         present_box = (CheckBox) findViewById(R.id.atscene_checkbox);
         drivable_box = (CheckBox) findViewById(R.id.drivable_checkbox);
 
+        background = (RelativeLayout) findViewById(R.id.fc1_background);
         loc_section = (RelativeLayout) findViewById(R.id.loc_section);
         injure_section = (RelativeLayout) findViewById(R.id.injure_section);
         present_section = (RelativeLayout) findViewById(R.id.atscene_section);
@@ -251,6 +252,8 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 break;
             case R.id.start_step2_button:
                 phone_txt = other_driver_phone_txt.getText().toString();
+                InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 if(phone_txt.equals("")) {
                     Toast.makeText(getApplicationContext(), "Please input the phone number", Toast.LENGTH_LONG).show();
                     break;
@@ -273,6 +276,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 //                }
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+
                 uploadData();
                 break;
             case R.id.drivable_section:
@@ -586,7 +590,8 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 //        });
         claim.setStep1Bundle(injure_box.isChecked(), drivable_box.isChecked(), present_box.isChecked(), I_rbtn.isChecked(),
                 time_txt, location_txt, vehicle_spinner.getSelectedItem().toString(), vehicle_num_spinner.getSelectedItem().toString(), phone_txt);
-        claim.uploadStep1Image(byteList, w, getApplicationContext());
+        background.setAlpha((float) 0.5);
+        claim.uploadStep1Image(byteList, w, getApplicationContext(), background);
  //       Intent intent = new Intent(getApplicationContext(), FileClaim2Activity.class);
    //     intent.putExtra("ClaimBundle", claim);
      //   startActivity(intent);
@@ -612,40 +617,14 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
     @Override
     public void onBackPressed(){}
 
-    private class ReceiverThread implements Runnable {
-        //private ArrayAdapter<String> adapter1;
-        private Message msg;
-        public ReceiverThread(Message msg) {
-            this.msg = msg;
-        }
-        public void run() {
-            synchronized (msg) {
-                try {
-                    Log.d("threading!!!!!!!!!!!", "thread waits to update list");
-                    msg.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                        Log.d("threading!!!!!!!!!!!", "thread updated list " + adapter.getCount());
-                    }
-                });
-            }
-
-        }
-
-    }
-
     public void getVehicles() {
         ParseUser user = ParseUser.getCurrentUser();
         final List<String> strList = new ArrayList<String>();
         List<String> vehicleIDList = new ArrayList<String>();
+
         if(user.get("vehicleID") != null)
             vehicleIDList = new ArrayList<String>((List<String>)user.get("vehicleID"));
-        Log.d("testing!!!!!!!!!!!!!!!!", "id size is " + vehicleIDList.size());
+
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Vehicle");
         query.whereContainedIn("objectId", vehicleIDList);
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -656,7 +635,6 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                         for(ParseObject object:objects) {
                             String name = (String) object.get("modelMake");
                             vehicleList.add(name);
-                            Log.d("testing!!!!!!!!!!!!!!!!", "car size is " + strList.size());
                         }
                         adapter.notifyDataSetChanged();
                     }

@@ -46,6 +46,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
     private CustomListt adapter_pic;
     private LinearLayout refresh_btn;
     private Button prev_btn, next_btn;
+    private ImageView imHide;
     private CheckBox injure_cb, drivable_cb, atScene_cb;
     private TextView vehicleNum_txt, time_txt, loc_txt, vehicleType_txt,
                 whoDrive_txt, phoneOfOther_txt, claim_list_title;
@@ -77,12 +78,12 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         list_section = (RelativeLayout) findViewById(R.id.vc_list_section);
         claim_section = (RelativeLayout) findViewById(R.id.vc_claim_section);
         claim_list_title = (TextView) findViewById(R.id.vc_claim_list_title);
-        final ImageView imHide  = (ImageView) findViewById(R.id.vc_drawer_btn);
+        imHide  = (ImageView) findViewById(R.id.vc_drawer_btn);
         claim_list.setVisibility(View.GONE);
         refresh_btn.setVisibility(View.GONE);
         claim_list_title.setVisibility(View.GONE);
         imHide.setImageResource(R.drawable.drawerout);
-        final LinearLayout vc_background = (LinearLayout) findViewById(R.id.vc_background);
+        final RelativeLayout vc_background = (RelativeLayout) findViewById(R.id.vc_background);
         final Animation leftIn = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.slide_left_in);
         final Animation rightOut = AnimationUtils.loadAnimation(getApplicationContext(),
@@ -93,7 +94,6 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                 if(slideIn) {
                     slideIn = false;
                     list_section.startAnimation(leftIn);
-                    vc_background.setVisibility(View.INVISIBLE);
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -102,7 +102,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                             refresh_btn.setVisibility(View.GONE);
                             claim_list_title.setVisibility(View.GONE);
                             imHide.setImageResource(R.drawable.drawerout);
-
+                            vc_background.setVisibility(View.INVISIBLE);
                         }
                     }, 1000);
                 }
@@ -175,6 +175,8 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         });
         getClaimList();
 
+        doAnimation();
+
         activity = this;
     }
 
@@ -182,9 +184,12 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.home_nav:
-                Intent intent = new Intent(this, LoginActivity.class);
+                Intent intent = new Intent(this, HomeActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+                claim_list.setVisibility(View.GONE);
+                refresh_btn.setVisibility(View.GONE);
+                claim_list_title.setVisibility(View.GONE);
                 break;
             case R.id.profile_nav:
                 Intent intent1 = new Intent(this, ProfileActivity.class);
@@ -275,8 +280,18 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                     }
                     byteList = new ArrayList<byte[]>();
                     try {
-                        if(currClaim.get("morePictures") != null)
-                            byteList = new ArrayList<byte[]>((List<byte[]>) currClaim.get("morePictures"));
+                        if(currClaim.get("morePicturesID") != null) {
+                            ImageGetterThread th = new ImageGetterThread((String)currClaim.get("morePicturesID"));
+                            Thread thread = new Thread(th);
+                            thread.start();
+                            try {
+                                thread.join();
+                            } catch (InterruptedException e1) {
+                                e1.printStackTrace();
+                            }
+                            byteList = new ArrayList<byte[]>(th.getList());
+                        }
+                            //byteList = new ArrayList<byte[]>((List<byte[]>) currClaim.get("morePictures"));
                     } catch (ClassCastException e1) {
                         e1.printStackTrace();
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -348,12 +363,22 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
             noClaim = false;
         claimList.clear();
         for(int i = 0; i < claimIDList.size(); i++) {
-            claimList.add("claim " + Integer.toString(i + 1));
+            claimList.add("CLAIM " + claimIDList.get(i));
         }
         adapter.notifyDataSetChanged();
     }
 
     public static ViewClaimt getInstance() {
         return activity;
+    }
+
+    public void doAnimation() {
+        slideIn = false;
+        imHide.performClick();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(getApplicationContext(), "Back Pressed!!!", Toast.LENGTH_LONG).show();
     }
 }

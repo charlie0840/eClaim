@@ -302,7 +302,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             case R.id.claims_nav:
                 Intent intent1 = new Intent(this, ViewClaimt.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent1);
+                startActivity(intent1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                 break;
             case R.id.assistance_phone_button:
                 if (ActivityCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -315,7 +315,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.file_claim_button:
                 Intent intent2 = new Intent(getApplicationContext(), FileClaim1Activity.class); //fixed
-                intent2.putStringArrayListExtra("vehicleList", carList);
+                intent2.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent2);
                 break;
             case R.id.claim_button:

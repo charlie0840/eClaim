@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/profilebackground">
-
     <ScrollView
         android:id="@+id/entire_scroll_section"
         android:layout_width="match_parent"
@@ -344,7 +343,13 @@
         android:alpha="0.6"
         android:textSize="20dp"
         android:text="next step" />
-
+    <RelativeLayout
+        android:id="@+id/fc1_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBlack"
+        android:alpha="0">
+    </RelativeLayout>
 </RelativeLayout>
 
 <!--
