@@ -20,6 +20,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,8 +44,9 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
     private List<Bitmap> picList = new ArrayList<Bitmap>();
     private List<String> byteList = new ArrayList<>();
     private ListView claim_list, pic_list;
-    private RelativeLayout list_section, claim_section;
+    private RelativeLayout list_section, claim_section, background, other_driver_section;
     private ClaimCustomList adapter;
+    private ProgressBar progressBar;
     private CustomListt adapter_pic;
     private LinearLayout refresh_btn;
     private Button prev_btn, next_btn;
@@ -60,6 +62,10 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewclaimt);
+
+        progressBar = (ProgressBar) findViewById(R.id.vc_progressBar);
+        background = (RelativeLayout) findViewById(R.id.vc_background1);
+        progressBar.setVisibility(View.GONE);
 
         claim_list = (ListView) findViewById(R.id.vc_claim_list);
         pic_list = (ListView) findViewById(R.id.vc_photo_list);
@@ -79,6 +85,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
 
         list_section = (RelativeLayout) findViewById(R.id.vc_list_section);
         claim_section = (RelativeLayout) findViewById(R.id.vc_claim_section);
+        other_driver_section = (RelativeLayout) findViewById(R.id.vc_other_driver_section);
         claim_list_title = (TextView) findViewById(R.id.vc_claim_list_title);
         imHide  = (ImageView) findViewById(R.id.vc_drawer_btn);
         claim_list.setVisibility(View.GONE);
@@ -176,6 +183,8 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                 picList.clear();
                 adapter_pic.notifyDataSetChanged();
                 fillClaim(position);
+                background.setAlpha((float) 0.5);
+                progressBar.setVisibility(View.VISIBLE);
             }
         });
         getClaimList();
@@ -227,25 +236,37 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                     boolean drivable = (boolean)currClaim.get("drivable");
                     boolean atScene = (boolean)currClaim.get("atScene");
                     boolean person = (boolean)currClaim.get("person");
+                    boolean multiVehicle =false;
 
                     String vehicleNum = (String)currClaim.get("vehicleNum");
+                    if(vehicleNum.equals("1")) {
+                        multiVehicle = false;
+                    }
+                    else
+                        multiVehicle = true;
                     String time = (String)currClaim.get("time");
                     String location = (String)currClaim.get("location");
                     String phone = (String)currClaim.get("phoneOther");
 
-                    byte[] otherInsurByte = new byte[0];
-                    try {
-                        otherInsurByte = ((ParseFile)currClaim.get("otherInsurance")).getData();
-                        fillImageView(otherInsurByte, other_insurance_pic);
-                    } catch (ParseException e1) {
-                        e1.printStackTrace();
+                    if(multiVehicle) {
+                        other_driver_section.setVisibility(View.VISIBLE);
+                        byte[] otherInsurByte = new byte[0];
+                        try {
+                            otherInsurByte = ((ParseFile) currClaim.get("otherInsurance")).getData();
+                            fillImageView(otherInsurByte, other_insurance_pic);
+                        } catch (ParseException e1) {
+                            e1.printStackTrace();
+                        }
+                        byte[] otherLicenseByte = new byte[0];
+                        try {
+                            otherLicenseByte = ((ParseFile) currClaim.get("otherLicense")).getData();
+                            fillImageView(otherLicenseByte, other_license_pic);
+                        } catch (ParseException e1) {
+                            e1.printStackTrace();
+                        }
                     }
-                    byte[] otherLicenseByte = new byte[0];
-                    try {
-                        otherLicenseByte = ((ParseFile)currClaim.get("otherLicense")).getData();
-                        fillImageView(otherLicenseByte, other_license_pic);
-                    } catch (ParseException e1) {
-                        e1.printStackTrace();
+                    else {
+                        other_driver_section.setVisibility(View.GONE);
                     }
                     byte[] driverLicenseByte = new byte[0];
                     if(!person) {
@@ -348,6 +369,8 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
             picList.add(finalBmp);
         }
         adapter_pic.notifyDataSetChanged();
+        background.setAlpha((float) 0);
+        progressBar.setVisibility(View.GONE);
     }
 
     public void fillImageView(byte[] bytes, ImageView view) {

@@ -368,6 +368,14 @@
         android:layout_height="match_parent"
         android:background="@color/colorBlack"
         android:alpha="0">
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/fc1_progressBar"
+            android:progressDrawable="@drawable/circular_progress_bar"/>
     </RelativeLayout>
 </RelativeLayout>
 

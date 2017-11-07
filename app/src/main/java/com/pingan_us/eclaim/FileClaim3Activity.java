@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class FileClaim3Activity extends AppCompatActivity implements View.OnClickListener{
     private ClaimBundle claim;
+    private ProgressBar progressBar;
     private RelativeLayout background;
     private Spinner auto_repair_spinner;
     private Button confirm_btn, cancel_btn;
@@ -29,7 +31,9 @@ public class FileClaim3Activity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fileclaim3);
 
+        progressBar = (ProgressBar) findViewById(R.id.fc3_progressBar);
         background = (RelativeLayout) findViewById(R.id.fc3_background);
+        progressBar.setVisibility(View.GONE);
 
         claim = (ClaimBundle) getIntent().getParcelableExtra("ClaimBundle");
 
@@ -49,6 +53,7 @@ public class FileClaim3Activity extends AppCompatActivity implements View.OnClic
         switch(v.getId()) {
             case R.id.finish_step_button:
                 background.setAlpha((float) 0.5);
+                progressBar.setVisibility(View.VISIBLE);
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 claim.uploadClaimBundle(getWindow(), getApplicationContext());
                 break;

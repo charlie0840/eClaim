@@ -42,39 +42,74 @@
             android:layout_margin="10dp"
             android:columnCount="3"
             android:rowCount="1"
-            android:alpha="0.6">
+            android:alpha="1">
 
             <LinearLayout
                 android:id="@+id/whole_scene_section"
                 android:layout_width="0dp"
-                android:layout_height="130dp"
+                android:layout_height="150dp"
                 android:layout_columnWeight="1"
                 android:layout_margin="5dp"
-                android:orientation="horizontal">
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorWhite"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Whole Scene"/>
                 <include layout="@layout/list_single"
                     android:id="@+id/whole_scene" />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/your_plate_section"
                 android:layout_width="0dp"
-                android:layout_height="130dp"
+                android:layout_height="150dp"
                 android:layout_columnWeight="1"
                 android:layout_margin="5dp"
-                android:orientation="horizontal">
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorWhite"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Your Plate"/>
                 <include layout="@layout/list_single"
                     android:id="@+id/your_plate"/>
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/other_plate_section"
                 android:layout_width="0dp"
-                android:layout_height="130dp"
+                android:layout_height="150dp"
                 android:layout_columnWeight="1"
                 android:layout_margin="5dp"
-                android:orientation="horizontal">
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorWhite"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Other Plate"/>
                 <include layout="@layout/list_single"
                     android:id="@+id/other_plate"/>
             </LinearLayout>
         </GridLayout>
+        <TextView
+            android:id="@+id/fc2_more_pic_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_below="@+id/default_pic_grid"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:textColor="@color/colorWhite"
+            android:text="More pictures(At most 9)" />
         <ListView
             android:id="@+id/photo_list"
             android:layout_width="match_parent"
@@ -82,7 +117,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
             android:layout_margin="10dp"
-            android:layout_below="@id/default_pic_grid"
+            android:layout_below="@id/fc2_more_pic_title"
             android:divider="@android:color/transparent"
             android:dividerHeight="10dp"
             android:layout_marginBottom="34dp">
@@ -117,5 +152,13 @@
         android:layout_height="match_parent"
         android:background="@color/colorBlack"
         android:alpha="0">
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/fc2_progressBar"
+            android:progressDrawable="@drawable/circular_progress_bar"/>
     </RelativeLayout>
 </RelativeLayout>

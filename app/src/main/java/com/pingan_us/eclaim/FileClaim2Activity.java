@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,6 +75,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
     private View l1, l2, l3;
     private CustomList adapter;
     private GridLayout default_grid;
+    private ProgressBar progressBar;
     private LinearLayout p1, p2, p3;
     private RelativeLayout background;
     private Button next_btn, cancel_btn;
@@ -101,7 +103,9 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
 
         default_grid = (GridLayout) findViewById(R.id.default_pic_grid);
 
+        progressBar = (ProgressBar) findViewById(R.id.fc2_progressBar);
         background = (RelativeLayout) findViewById(R.id.fc2_background);
+        progressBar.setVisibility(View.GONE);
 
         p1 = (LinearLayout) default_grid.findViewById(R.id.whole_scene_section);
         p2 = (LinearLayout) default_grid.findViewById(R.id.your_plate_section);
@@ -203,6 +207,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
                     Toast.makeText(getApplicationContext(), MyAppConstants.emptyOtherPlate_FC2, Toast.LENGTH_LONG).show();
                     break;
                 }
+                progressBar.setVisibility(View.VISIBLE);
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 background.setAlpha((float) 0.5);
                 uploadImageGroup();

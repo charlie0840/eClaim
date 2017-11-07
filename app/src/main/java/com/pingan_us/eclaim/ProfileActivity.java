@@ -81,7 +81,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     private LinearLayout photo_section;
 
     private RelativeLayout info_section, claim_section, phone_section, id_section, vehicle_section, add_id, add_vehicle;
-    private Button view_doc_btn, file_claim_btn, claim_btn;
+    private Button view_doc_btn, logout_btn, claim_btn;
     private ImageButton phone_btn;
 
     private Animation animationLOut, animationLIn;
@@ -151,14 +151,14 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
 
         claim_btn = (Button) findViewById(R.id.claim_button);
         view_doc_btn = (Button) findViewById(R.id.claim_button);
-        file_claim_btn = (Button) findViewById(R.id.file_claim_button);
+        logout_btn = (Button) findViewById(R.id.profile_logout_button);
         phone_btn = (ImageButton) findViewById(R.id.assistance_phone_button);
 
         claim_btn.setOnClickListener(this);
         add_id.setOnClickListener(this);
         add_vehicle.setOnClickListener(this);
         phone_btn.setOnClickListener(this);
-        file_claim_btn.setOnClickListener(this);
+        logout_btn.setOnClickListener(this);
         profile_photo.setOnClickListener(this);
 
         IDImageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
@@ -295,7 +295,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                 selectImage();
                 break;
             case R.id.home_nav:
-                Intent intent = new Intent(this, LoginActivity.class);
+                Intent intent = new Intent(this, HomeActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                 break;
@@ -313,10 +313,12 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                     startActivity(callIntent);
                 }
                 break;
-            case R.id.file_claim_button:
-                Intent intent2 = new Intent(getApplicationContext(), FileClaim1Activity.class); //fixed
-                intent2.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent2);
+            case R.id.profile_logout_button:
+                ParseUser currUser = ParseUser.getCurrentUser();
+                currUser.logOut();
+                Intent intent2 = new Intent(getApplicationContext(), LoginActivity.class); //fixed
+                intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent2.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                 break;
             case R.id.claim_button:
                 Intent intent3 = new Intent(this, ViewClaimt.class);

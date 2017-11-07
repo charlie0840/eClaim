@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -39,7 +40,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button login, register, logout;
     private EditText username, password;
     private String user_name, user_password;
-    private LinearLayout background;
+    private RelativeLayout background;
+    private ProgressBar progressBar;
     private boolean enabled = false;
 
     @Override
@@ -54,7 +56,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         createShortCut();
 
-        background = (LinearLayout) findViewById(R.id.login_background);
+        background = (RelativeLayout) findViewById(R.id.login_background);
+        progressBar = (ProgressBar) findViewById(R.id.login_progressBar);
 
         login=(Button)findViewById(R.id.loginbutton);
         register = (Button)findViewById(R.id.registerbutton);
@@ -77,6 +80,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         ImageView claim_nav = (ImageView) nav_bar.findViewById(R.id.claims_nav);
         profile_nav.setOnClickListener(this);
         claim_nav.setOnClickListener(this);
+        progressBar.setVisibility(View.GONE);
         nav_bar.setVisibility(View.GONE);
     }
 
@@ -91,6 +95,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     return;
                 }
                 background.setAlpha((float) 0.5);
+                progressBar.setVisibility(View.VISIBLE);
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 logIn();

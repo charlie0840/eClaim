@@ -27,12 +27,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -96,12 +98,13 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
     private GoogleMap mMap;
     private View fg,dialogView;
-    private TextView loc_indicate_txt, loc_indicate_txt_1;
+    private ProgressBar spinner;
     private SupportMapFragment mapFragment;
     private EditText other_driver_phone_txt;
     private GoogleApiClient googleApiClient;
+    private TextView loc_indicate_txt, loc_indicate_txt_1;
     private ImageView other_drive_pic, other_insur_pic, add_person_pic;
-    private RelativeLayout injure_section, present_section, drivable_section, loc_section, background;
+    private RelativeLayout injure_section, present_section, drivable_section, loc_section, background, other_driver_section;
 
     private int vehicle_id;
     private long time;
@@ -139,6 +142,9 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 .addApi(LocationServices.API)
                 .build();
 
+        spinner = (ProgressBar) findViewById(R.id.fc1_progressBar);
+        spinner.setVisibility(View.GONE);
+
         loc_indicate_txt = (TextView) findViewById(R.id.loc_indicate_text);
         loc_indicate_txt_1 = (TextView) findViewById(R.id.loc_indicate_text_1);
         other_driver_phone_txt = (EditText) findViewById(R.id.other_driver_phone);
@@ -163,6 +169,8 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         injure_section = (RelativeLayout) findViewById(R.id.injure_section);
         present_section = (RelativeLayout) findViewById(R.id.atscene_section);
         drivable_section = (RelativeLayout) findViewById(R.id.drivable_section);
+        other_driver_section = (RelativeLayout) findViewById(R.id.other_driver_section);
+        other_driver_section.setVisibility(View.GONE);
 
         fg = (View) findViewById(R.id.map);
 
@@ -180,7 +188,32 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
         getVehicles();
 
+        List<String> numList = new ArrayList<String>();
+        numList.add("1");
+        numList.add("2");
+        numList.add("3");
         vehicle_num_spinner = (Spinner)findViewById(R.id.vehiclenum_spinner);
+        //ArrayAdapter<String> num_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, numList);
+        //num_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //vehicle_num_spinner.setAdapter(num_adapter);
+        vehicle_num_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if(position == 0) {
+                    other_driver_section.setVisibility(View.GONE);
+                }
+                else {
+                    other_driver_section.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+                other_driver_section.setVisibility(View.GONE);
+            }
+        });
 
         add_person_pic.setVisibility(View.GONE);
         add_person_btn.setVisibility(View.GONE);
@@ -257,7 +290,8 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
             case R.id.start_step2_button:
                 phone_txt = other_driver_phone_txt.getText().toString();
                 InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                if(this.getCurrentFocus() != null)
+                    inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 if(phone_txt.equals("")) {
                     Toast.makeText(getApplicationContext(), "Please input the phone number", Toast.LENGTH_LONG).show();
                     break;
@@ -280,7 +314,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 //                }
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-
+                spinner.setVisibility(View.VISIBLE);
                 uploadData();
                 break;
             case R.id.step1_cancel_button:
@@ -310,7 +344,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
             case R.id.I_pick_radiobutton:
                 add_person_btn.setVisibility(View.GONE);
                 add_person_pic.setVisibility(View.GONE);
-                byteList.set(0, null);
+                //byteList.set(0, null);
                 if (other_rbtn.isChecked())
                     other_rbtn.setChecked(false);
                 break;

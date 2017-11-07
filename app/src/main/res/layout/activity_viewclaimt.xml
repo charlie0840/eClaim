@@ -496,6 +496,22 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/vc_background1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorBlack"
+            android:alpha="0">
+            <ProgressBar
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/vc_progressBar"
+                android:progressDrawable="@drawable/circular_progress_bar"/>
+        </RelativeLayout>
+
         <include layout="@layout/navigation_bar"
             android:id="@+id/nav_layout"/>
     </RelativeLayout>
