@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import android.content.Intent;
 import android.os.Parcelable;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -16,6 +17,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -36,6 +39,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button login, register, logout;
     private EditText username, password;
     private String user_name, user_password;
+    private LinearLayout background;
     private boolean enabled = false;
 
     @Override
@@ -49,6 +53,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
         createShortCut();
+
+        background = (LinearLayout) findViewById(R.id.login_background);
 
         login=(Button)findViewById(R.id.loginbutton);
         register = (Button)findViewById(R.id.registerbutton);
@@ -84,6 +90,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(getApplicationContext(), "please enter user name", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                background.setAlpha((float) 0.5);
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 logIn();
@@ -144,6 +151,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         ParseUser.logInInBackground(user_name, user_password, new LogInCallback() {
             @Override
             public void done(ParseUser user, ParseException e) {
+                background.setAlpha((float) 0);
                 if (user == null) {
                     Toast.makeText(getApplicationContext(), "User name or password incorrect!", Toast.LENGTH_LONG).show();
                 } else {

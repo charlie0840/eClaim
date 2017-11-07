@@ -297,7 +297,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             case R.id.home_nav:
                 Intent intent = new Intent(this, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
+                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                 break;
             case R.id.claims_nav:
                 Intent intent1 = new Intent(this, ViewClaimt.class);
@@ -470,6 +470,17 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     }
 
     public void getData() {
+        try {
+            if (ParseUser.getCurrentUser() == null) {
+                Intent intent = new Intent(this, HomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+            }
+        } catch ( NullPointerException e) {
+            Intent intent = new Intent(this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+        }
         ParseUser currentUser = ParseUser.getCurrentUser();
         final Bundle bundle = new Bundle();
 

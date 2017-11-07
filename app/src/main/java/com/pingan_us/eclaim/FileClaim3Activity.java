@@ -9,13 +9,19 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
 import java.util.List;
 
-public class FileClaim3Activity extends AppCompatActivity {
+public class FileClaim3Activity extends AppCompatActivity implements View.OnClickListener{
     private ClaimBundle claim;
-    private Button confirm_btn;
-    private Spinner auto_repair_spinner;
     private RelativeLayout background;
+    private Spinner auto_repair_spinner;
+    private Button confirm_btn, cancel_btn;
     private static FileClaim3Activity activity;
 
     @Override
@@ -27,26 +33,29 @@ public class FileClaim3Activity extends AppCompatActivity {
 
         claim = (ClaimBundle) getIntent().getParcelableExtra("ClaimBundle");
 
-        List<byte[]> list = (List<byte[]>) getIntent().getSerializableExtra("morePictures");
-
         activity = this;
 
         confirm_btn = (Button) findViewById(R.id.finish_step_button);
+        cancel_btn = (Button) findViewById(R.id.step3_cancel_button);
+
         auto_repair_spinner = (Spinner) findViewById(R.id.auto_repair_spinner);
 
-        confirm_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        cancel_btn.setOnClickListener(this);
+        confirm_btn.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.finish_step_button:
                 background.setAlpha((float) 0.5);
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-
-
-
                 claim.uploadClaimBundle(getWindow(), getApplicationContext());
-//                Intent intent = new Intent(getApplicationContext(), ClaimFinishActivity.class);
-//                startActivity(intent);
-            }
-        });
+                break;
+            case R.id.step3_cancel_button:
+                deleteImageList();
+                break;
+        }
     }
 
     public static FileClaim3Activity getInstance() {
@@ -55,4 +64,24 @@ public class FileClaim3Activity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {}
+
+    public void deleteImageList() {
+        String id = claim.getImageListID();
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("ImageList");
+        query.whereEqualTo("ObjectId", id);
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject object, ParseException e) {
+                if(e == null)
+                    try {
+                        object.delete();
+                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    } catch (ParseException e1) {
+                        e1.printStackTrace();
+                    }
+            }
+        });
+    }
 }

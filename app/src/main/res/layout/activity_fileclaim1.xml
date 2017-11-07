@@ -3,7 +3,14 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/profilebackground">
+    android:background="@drawable/regbackground">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBlack"
+        android:alpha="0.3">
+    </LinearLayout>
     <ScrollView
         android:id="@+id/entire_scroll_section"
         android:layout_width="match_parent"
@@ -335,14 +342,26 @@
 
     <Button
         android:id="@+id/start_step2_button"
-        android:layout_width="match_parent"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/btn_background"
+        android:alpha="0.6"
+        android:textSize="15dp"
+        android:text="next step" />
+    <Button
+        android:id="@+id/step1_cancel_button"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
         android:background="@drawable/cycle"
         android:alpha="0.6"
-        android:textSize="20dp"
-        android:text="next step" />
+        android:textSize="15dp"
+        android:text="Cancel" />
     <RelativeLayout
         android:id="@+id/fc1_background"
         android:layout_width="match_parent"

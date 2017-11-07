@@ -85,7 +85,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
     protected Spinner vehicle_spinner, vehicle_num_spinner;
     protected RadioButton I_rbtn, other_rbtn;
-    protected Button next_btn, time_btn, set_btn, add_person_btn;
+    protected Button next_btn, cancel_btn, time_btn, set_btn, add_person_btn;
     protected CheckBox injure_box, present_box, drivable_box;
 
 
@@ -147,6 +147,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         other_rbtn = (RadioButton) findViewById(R.id.other_pick_radiobutton);
         add_person_btn = (Button) findViewById(R.id.add_person_pick_button);
         next_btn = (Button) findViewById(R.id.start_step2_button);
+        cancel_btn = (Button) findViewById(R.id.step1_cancel_button);
         time_btn = (Button) findViewById(R.id.time_picker_btn);
 
         other_drive_pic = (ImageView) findViewById(R.id.other_driver_license_pic);
@@ -166,7 +167,9 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         fg = (View) findViewById(R.id.map);
 
         if(ParseUser.getCurrentUser() == null) {
-            getInstance().finish();
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
 
         vehicleList = new ArrayList<String>();
@@ -185,6 +188,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         other_driver_phone_txt.setOnKeyListener(this);
 
         next_btn.setOnClickListener(this);
+        cancel_btn.setOnClickListener(this);
         I_rbtn.setOnClickListener(this);
         other_rbtn.setOnClickListener(this);
         time_btn.setOnClickListener(this);
@@ -279,6 +283,12 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
                 uploadData();
                 break;
+            case R.id.step1_cancel_button:
+                Intent intent = new Intent(this, HomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                this.finish();
+                break;
             case R.id.drivable_section:
                 if (!drivable_box.isChecked())
                     drivable_box.setChecked(true);
@@ -300,6 +310,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
             case R.id.I_pick_radiobutton:
                 add_person_btn.setVisibility(View.GONE);
                 add_person_pic.setVisibility(View.GONE);
+                byteList.set(0, null);
                 if (other_rbtn.isChecked())
                     other_rbtn.setChecked(false);
                 break;
@@ -592,7 +603,8 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 time_txt, location_txt, vehicle_spinner.getSelectedItem().toString(), vehicle_num_spinner.getSelectedItem().toString(), phone_txt);
         background.setAlpha((float) 0.5);
         claim.uploadStep1Image(byteList, w, getApplicationContext(), background);
- //       Intent intent = new Intent(getApplicationContext(), FileClaim2Activity.class);
+
+        //       Intent intent = new Intent(getApplicationContext(), FileClaim2Activity.class);
    //     intent.putExtra("ClaimBundle", claim);
      //   startActivity(intent);
     }

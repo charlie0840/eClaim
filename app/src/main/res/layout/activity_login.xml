@@ -118,6 +118,14 @@ android:weightSum="1">
 
         </LinearLayout>
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/login_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBlack"
+        android:orientation="horizontal"
+        android:alpha="0.0">
+    </LinearLayout>
     <include layout="@layout/navigation_bar"
         android:id="@+id/nav_layout" />
 </RelativeLayout>

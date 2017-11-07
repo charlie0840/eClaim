@@ -3,7 +3,6 @@ package com.pingan_us.eclaim;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -21,7 +20,6 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 /**
@@ -50,7 +48,7 @@ public class ClaimBundle implements Parcelable{
     private ParseFile otherLicense;
     private ParseFile otherInsurance;
 
-    private List<byte[]> morePictures;
+    private List<String> morePictures;
 
     @TargetApi(26)
     private ClaimBundle(Parcel in) {
@@ -58,14 +56,16 @@ public class ClaimBundle implements Parcelable{
         boolean[] boolArray = new boolean[4];
         boolean[] nullCheck = new boolean[7];
         in.readBooleanArray(boolArray);
-        Log.d("Debuging!!!!!!!!!!!", "start to get list");
+        injured = boolArray[0];
+        drivable = boolArray[1];
+        atScene = boolArray[2];
+        person = boolArray[3];
 
         time = in.readString();
         location = in.readString();
         vehicleNum = in.readString();
         vehicleID = in.readString();
         phoneOther = in.readString();
-        Log.d("Debuging!!!!!!!!!!!", "start to get list");
 
         in.readBooleanArray(nullCheck);
         if(nullCheck[0])
@@ -81,29 +81,14 @@ public class ClaimBundle implements Parcelable{
         if(nullCheck[5])
             otherPlate = (ParseFile) in.readValue(cl);
         if(nullCheck[6]) {
-//            Log.d("Debuging!!!!!!!!!!!", "start to get list");
-//
-//            int size = in.readInt();
-//            morePictures = new ArrayList<byte[]>();
-//            for(int i = 0; i < size; i++) {
-//                Log.d("Debuging!!!!!!!!!!!", "list");
-//
-//                int length = in.readInt();
-//                byte[] array = new byte[length];
-//                in.readByteArray(array);
-//                morePictures.add(array);
-//            }
-//            Log.d("Debuging!!!!!!!!!!!", "start to get list");
             imageListID = in.readString();
         }
-
     }
 
     public ClaimBundle(){
         this.driverLicense = null;
         this.otherLicense = null;
         this.otherInsurance = null;
-
     }
 
 //    public void uploadStepImage(byte[] file, Window w, int id) {
@@ -133,7 +118,7 @@ public class ClaimBundle implements Parcelable{
 //        }
 //    }
 
-    public void uploadStep1Image(List<byte[]> list, final Window w, final Context context, RelativeLayout background) {
+    public void uploadStep1Image(List<byte[]> list, final Window w, final Context context, final RelativeLayout background) {
         byte[] file = null;
         file = list.get(0);
         if(file != null)
@@ -160,6 +145,7 @@ public class ClaimBundle implements Parcelable{
                                         @Override
                                         public void done(ParseException e) {
                                             w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                            background.setAlpha((float) 0);
                                             Intent intent = new Intent(context, FileClaim2Activity.class);
                                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                             intent.putExtra("ClaimBundle", getThisClaim());
@@ -169,6 +155,7 @@ public class ClaimBundle implements Parcelable{
                                 }
                                 else {
                                     w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                    background.setAlpha((float) 0);
                                     Intent intent = new Intent(context, FileClaim2Activity.class);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     intent.putExtra("ClaimBundle", getThisClaim());
@@ -178,6 +165,7 @@ public class ClaimBundle implements Parcelable{
                                 Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
                                 Log.d("error!!!!!!!!!!!", e.toString());
                                 w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                background.setAlpha((float) 0);
                             }
                         }
                     });
@@ -185,6 +173,7 @@ public class ClaimBundle implements Parcelable{
                     Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
                     Log.d("error!!!!!!!!!!!", e.toString());
                     w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    background.setAlpha((float) 0);
                 }
             }
         });
@@ -230,11 +219,9 @@ public class ClaimBundle implements Parcelable{
 //                    }
 //                }
 //            });
-
-
     }
 
-    public void uploadStep2Image(List<byte[]> list, final Window w, final Context context) {
+    public void uploadStep2Image(List<byte[]> list, final Window w, final Context context, final RelativeLayout background) {
         byte[] file = null;
         file = list.get(0);
         if(file != null)
@@ -259,6 +246,7 @@ public class ClaimBundle implements Parcelable{
                                     @Override
                                     public void done(ParseException e) {
                                         if(e == null) {
+                                            background.setAlpha((float) 0);
                                             w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                             Intent intent = new Intent(context, FileClaim3Activity.class);
                                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -268,6 +256,7 @@ public class ClaimBundle implements Parcelable{
                                         else {
                                             Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
                                             Log.d("error!!!!!!!!!!!", e.toString());
+                                            background.setAlpha((float) 0);
                                             w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                         }
                                     }
@@ -276,6 +265,7 @@ public class ClaimBundle implements Parcelable{
                             else {
                                 Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
                                 Log.d("error!!!!!!!!!!!", e.toString());
+                                background.setAlpha((float) 0);
                                 w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             }
                         }
@@ -284,11 +274,11 @@ public class ClaimBundle implements Parcelable{
                 else {
                     Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
                     Log.d("error!!!!!!!!!!!", e.toString());
+                    background.setAlpha((float) 0);
                     w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 }
             }
         });
-
     }
 
     public void setStep1Bundle(boolean injured, boolean drivable, boolean atScene, boolean person,
@@ -304,18 +294,24 @@ public class ClaimBundle implements Parcelable{
         this.phoneOther = phoneOther;
     }
 
-    public void setStep2Bundle(final List<byte[]> singleList, final Window w, List<byte[]> list, final Context context) {
-        this.morePictures = new ArrayList<byte[]>(list);
+    public void setStep2Bundle(final List<byte[]> singleList, final Window w, List<String> list, byte[] sample, final Context context, final RelativeLayout background) {
+        this.morePictures = new ArrayList<String>(list);
         if(list.size() == 0)
             return;
         final ParseObject imageList = new ParseObject("ImageList");
         imageList.put("list", list);
+        imageList.put("sample", android.util.Base64.encodeToString(sample, android.util.Base64.DEFAULT));
         imageList.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if(e == null) {
                     imageListID = imageList.getObjectId();
-                    uploadStep2Image(singleList, w, context);
+                    uploadStep2Image(singleList, w, context, background);
+                }
+                else {
+                    Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+                    background.setAlpha((float) 0);
+                    w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 }
             }
         });
@@ -435,8 +431,6 @@ public class ClaimBundle implements Parcelable{
             nullCheck[1] = true;
         if(otherInsurance != null)
             nullCheck[2] = true;
-        else
-            Log.d("error!!!!!!!!!!!!!!!!!!", "otherInsurance null!!!!!!!!!!!!!!!!!\n\n\n\n\n\n\n");
         if(wholeScene != null)
             nullCheck[3] = true;
         if(yourPlate != null)
@@ -494,4 +488,6 @@ public class ClaimBundle implements Parcelable{
     public ClaimBundle getThisClaim() {
         return this;
     }
+
+    public String getImageListID() { return imageListID; }
 }

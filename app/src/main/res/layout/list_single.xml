@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_margin="5dp"
+        android:textColor="@color/colorWhite"
         android:background="@drawable/cycle"
         android:textSize="15dp"/>
     <ImageView

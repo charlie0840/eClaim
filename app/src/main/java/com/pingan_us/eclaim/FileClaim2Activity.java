@@ -15,6 +15,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Window;
 import android.view.WindowManager;
@@ -45,6 +47,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import me.nereo.multi_image_selector.MultiImageSelectorActivity;
@@ -68,12 +71,12 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
     private static final int REQUEST_CAMERA = 0, SELECT_FILE = 1, INSERT_IMAGE = 1, CHANGE_IMAGE = 2,
             MY_CAMERA_REQUEST_CODE = 1, WHOLE = 3, YOUR = 4, OTHER = 5, MORE = 6;
 
-    private Button next_btn;
     private View l1, l2, l3;
     private CustomList adapter;
     private GridLayout default_grid;
     private LinearLayout p1, p2, p3;
     private RelativeLayout background;
+    private Button next_btn, cancel_btn;
     private ImageView whole_scene, your_plate, other_plate;
     private static FileClaim2Activity activity;
 
@@ -94,6 +97,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         activity = this;
 
         next_btn = (Button) findViewById(R.id.start_step3_button);
+        cancel_btn = (Button) findViewById(R.id.step3_cancel_button);
 
         default_grid = (GridLayout) findViewById(R.id.default_pic_grid);
 
@@ -125,6 +129,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         l2.setOnClickListener(this);
         l3.setOnClickListener(this);
         next_btn.setOnClickListener(this);
+        cancel_btn.setOnClickListener(this);
 
         picList = new ArrayList<Bitmap>();
         titleList = new ArrayList<String>();
@@ -149,7 +154,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
                 //Toast.makeText(FileClaim2Activity.this, "position " + position + " You Clicked at " +titleList.get(+ position) + " position " + position + " size " + titleList.size(), Toast.LENGTH_SHORT).show();
                 pos = position;
                 if(position == 0){
-                    if(picList.size() < 9) {
+                    if(picList.size() < 10) {
                         change_or_insert = INSERT_IMAGE;
                         selectImage();
                     }
@@ -198,13 +203,18 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
                     Toast.makeText(getApplicationContext(), MyAppConstants.emptyOtherPlate_FC2, Toast.LENGTH_LONG).show();
                     break;
                 }
-                //getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 background.setAlpha((float) 0.5);
                 uploadImageGroup();
                 //claim.uploadStep2Image(singleByteList, w, getApplicationContext());
 //                Intent intent = new Intent(getApplicationContext(), FileClaim3Activity.class);
 //                intent.putExtra("ClaimBundle", claim);
 //                startActivity(intent);
+                break;
+            case R.id.step3_cancel_button:
+                Intent intent = new Intent(this, HomeActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 break;
         }
     }
@@ -256,7 +266,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
     private void galleryIntent() {
         Intent intent = new Intent(getApplicationContext(), MultiImageSelectorActivity.class);
         if(change_or_insert == INSERT_IMAGE) {
-            intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, 9);
+            intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, 9 - picList.size() + 1);
             intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_MULTI);
             intent.putStringArrayListExtra(MultiImageSelectorActivity.EXTRA_DEFAULT_SELECTED_LIST, strList);
         }
@@ -282,16 +292,13 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         Bitmap bm=null;
         List<String> path = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
 
-        Uri uri = null;
-
         for(int i = 0; i < path.size(); i++) {
-            //Toast.makeText(getApplicationContext(), "before this is " + path.get(i), Toast.LENGTH_SHORT).show();
             File image = new File(path.get(i));
             final Uri currUri = Uri.fromFile(image);
 
             //bm = Bitmap.createBitmap(Utility.compressImageUri(currUri, 1024, 768, getApplicationContext()));
 
-            /*testing codes*/
+            //decode bitmap from uri
             ReceiverThread thread = new ReceiverThread(currUri, 900, 700, getApplicationContext());
             Thread th = new Thread(thread);
             th.start();
@@ -302,7 +309,6 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             }
 
             bm = Bitmap.createBitmap(thread.getBitmap());
-            /*end of testing codes*/
 
                         //BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
 
@@ -312,7 +318,6 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             if(change_or_insert == CHANGE_IMAGE)
                 setList(bitmap);
             else {
-                //Toast.makeText(getApplicationContext(), "add!!!!!!!!", Toast.LENGTH_LONG).show();
                 addToList(bitmap);
             }
         }
@@ -377,10 +382,8 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
     }
 
     public void addToList(Bitmap resBitmap) {
-        //Toast.makeText(getApplicationContext(), "before " + picList.size(), Toast.LENGTH_SHORT).show();
         picList.add(resBitmap);
         titleList.add("Tap to remove");
-        //Toast.makeText(getApplicationContext(), "after " + picList.size(), Toast.LENGTH_SHORT).show();
         adapter.notifyDataSetChanged();
     }
 
@@ -403,7 +406,6 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
     }
 
     private void uploadImg(final Bitmap bmp, final int action) {
-        //Toast.makeText(getApplicationContext(), "uploading image!!! action " + action, Toast.LENGTH_LONG).show();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         byte[] byteArray = stream.toByteArray();
@@ -443,19 +445,21 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
 
     private void uploadImageGroup() {
         byteList = new ArrayList<byte[]>();
+        List<String> strList = new ArrayList<>();
         int i = 0;
         for(Bitmap bmp:picList) {
             i++;
             if(i == 1)
                 continue;
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            Bitmap bmp1 = Bitmap.createBitmap(Utility.compressImage(null, bmp, 900, 700, getApplicationContext(), false));
-            bmp1.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             byte[] byteArray = stream.toByteArray();
+            Log.d("DEBUG!!!!!!!!!!!", "" + byteArray);
+            strList.add(Base64.encodeToString(byteArray, Base64.DEFAULT));
             byteList.add(byteArray);
-            bmp1.recycle();
+            //bmp.recycle();
         }
-        claim.setStep2Bundle(singleByteList, w, byteList, getApplicationContext());
+        claim.setStep2Bundle(singleByteList, w, strList, byteList.get(0), getApplicationContext(), background);
         //claim.setStep2Bundle(byteList);
     }
 

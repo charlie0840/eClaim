@@ -289,8 +289,11 @@ public class Utility {
             scaledBitmap = BitmapFactory.decodeFile(srcImagePath, options);
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
+            Log.d("ERROR!!!!!!!!!!!!", e.toString());
+
         }
         if (scaledBitmap == null) {
+            Log.d("ERROR!!!!!!!!!!!!", "scaleBitmap is null");
             return null;//压缩失败
         }
         //生成最终输出的bitmap
@@ -315,7 +318,8 @@ public class Utility {
             actualOutBitmap = Bitmap.createBitmap(actualOutBitmap, 0, 0,
                     actualOutBitmap.getWidth(), actualOutBitmap.getHeight(), matrix, true);
         } catch (IOException e) {
-            e.printStackTrace();
+                Log.d("ERROR!!!!!!!!!!!!", e.toString());
+                e.printStackTrace();
             return null;
         }
         return actualOutBitmap;

@@ -54,7 +54,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         nav_bar = findViewById(R.id.nav_layout);
 
-        ImageView profile_nav = (ImageView) nav_bar.findViewById(R.id.home_nav);
+        ImageView profile_nav = (ImageView) nav_bar.findViewById(R.id.profile_nav);
         ImageView claim_nav = (ImageView) nav_bar.findViewById(R.id.claims_nav);
         profile_nav.setOnClickListener(this);
         claim_nav.setOnClickListener(this);
@@ -88,7 +88,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.profile_nav:
                 Intent intent = new Intent(this, ProfileActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
+                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                 break;
             case R.id.claims_nav:
                 Intent intent1 = new Intent(this, ViewClaimt.class);

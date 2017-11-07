@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ListViewCompat;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -39,7 +41,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
     private boolean noClaim = true, slideIn = true;
     private List<String> claimList, claimIDList = new ArrayList<String>();
     private List<Bitmap> picList = new ArrayList<Bitmap>();
-    private List<byte[]> byteList = new ArrayList<byte[]>();
+    private List<String> byteList = new ArrayList<>();
     private ListView claim_list, pic_list;
     private RelativeLayout list_section, claim_section;
     private ClaimCustomList adapter;
@@ -91,6 +93,8 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         imHide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 if(slideIn) {
                     slideIn = false;
                     list_section.startAnimation(leftIn);
@@ -121,6 +125,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                         }
                     }, 1000);
                 }
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
         });
         slideIn = false;
@@ -200,10 +205,10 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                 getClaimList();
                 break;
             case R.id.vc_next_btn:
-                loadMorePictures(limit, 9, byteList);
+                loadMorePictures(limit, 9);
                 break;
             case R.id.vc_prev_btn:
-                loadMorePictures(0, limit, byteList);
+                loadMorePictures(0, limit);
                 break;
         }
     }
@@ -278,7 +283,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                         e1.printStackTrace();
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     }
-                    byteList = new ArrayList<byte[]>();
+                    byteList = new ArrayList<String>();
                     try {
                         if(currClaim.get("morePicturesID") != null) {
                             ImageGetterThread th = new ImageGetterThread((String)currClaim.get("morePicturesID"));
@@ -286,14 +291,19 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                             thread.start();
                             try {
                                 thread.join();
+                                byteList = new ArrayList<String>(th.getList());
+                                Log.d("DEBUG getting pic", "" + byteList.size());
+
                             } catch (InterruptedException e1) {
+                                Log.d("ERROR E1!!!!!", e1.toString());
                                 e1.printStackTrace();
                             }
-                            byteList = new ArrayList<byte[]>(th.getList());
+                            Toast.makeText(getApplicationContext(), "getting pictures with size " + byteList.size(), Toast.LENGTH_LONG).show();
                         }
                             //byteList = new ArrayList<byte[]>((List<byte[]>) currClaim.get("morePictures"));
-                    } catch (ClassCastException e1) {
-                        e1.printStackTrace();
+                    } catch (ClassCastException e2) {
+                        Log.d("ERROR E2!!!!!", e2.toString());
+                        e2.printStackTrace();
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     }
 
@@ -314,24 +324,25 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                         whoDrive_txt.setText("other");
                         fillImageView(driverLicenseByte, driver_license_pic);
                     }
-                    loadMorePictures(0, limit, byteList);
+                    loadMorePictures(0, limit);
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 }
             }
         });
     }
 
-    public void loadMorePictures(int start, int end, List<byte[]> byteList) {
+    public void loadMorePictures(int start, int end) {
+        Log.d("DEBUG loading pic", "" + byteList.size());
+        Toast.makeText(getApplicationContext(), "loading pictures with size " + byteList.size(), Toast.LENGTH_LONG).show();
         picList.clear();
         if(byteList.size() <= start)
             return;
         for(int i = start; i < end; i++) {
             if(i == byteList.size())
                 break;
-            byte[] bytes = byteList.get(i);
-            Bitmap bmp;
+            byte[] bytes = Base64.decode(byteList.get(i), Base64.DEFAULT);
             BitmapFactory.Options options1 = new BitmapFactory.Options();
-            bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options1);
+            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options1);
             Bitmap finalBmp = Bitmap.createScaledBitmap(bmp, 640, 480, true);
             bmp.recycle();
             picList.add(finalBmp);
