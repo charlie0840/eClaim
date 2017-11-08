@@ -21,8 +21,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:textSize="15dp"
-                android:text="search"
-                android:background="@drawable/cycle"/>
+                android:text=" search "
+                android:background="@drawable/btn_background"/>
             <EditText
                 android:id="@+id/loc_search_text"
                 android:layout_width="match_parent"
@@ -56,9 +56,8 @@
                 android:layout_height="40dp"
                 android:layout_alignBottom="@+id/map_test"
                 android:layout_alignParentLeft="true"
-                android:layout_alignTop="@+id/loc_confirm_button"
                 android:layout_margin="10dp"
-                android:background="@drawable/cycle"
+                android:background="@drawable/btn_background"
                 android:src="@drawable/locateicon"
                 android:scaleType="fitCenter"
                 android:alpha="0.6"/>
@@ -68,7 +67,7 @@
                 android:layout_height="40dp"
                 android:layout_centerHorizontal="true"
                 android:layout_alignBottom="@+id/map_test"
-                android:background="@drawable/cycle"
+                android:background="@drawable/btn_background"
                 android:alpha="0.6"
                 android:text="Confirm"
                 android:textSize="20dp"

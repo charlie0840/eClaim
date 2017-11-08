@@ -292,7 +292,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
                 if(this.getCurrentFocus() != null)
                     inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                if(phone_txt.equals("")) {
+                if(phone_txt.equals("") && !vehicle_num_spinner.getSelectedItem().toString().equals("1")) {
                     Toast.makeText(getApplicationContext(), "Please input the phone number", Toast.LENGTH_LONG).show();
                     break;
                 }
@@ -304,14 +304,18 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                     Toast.makeText(getApplicationContext(), "Please select the location", Toast.LENGTH_LONG).show();
                     break;
                 }
-//                if(f1 == null && other_rbtn.isChecked()) {
-//                    Toast.makeText(getApplicationContext(), "Please select picture for driver license", Toast.LENGTH_LONG).show();
-//                    break;
-//                }
-//                if(f2 == null) {
-//                    Toast.makeText(getApplicationContext(), "Please select picture for driver license of other driver", Toast.LENGTH_LONG).show();
-//                    break;
-//                }
+                if(byteList.get(0) == null && other_rbtn.isChecked()) {
+                    Toast.makeText(getApplicationContext(), "Please select picutre for driver license", Toast.LENGTH_LONG).show();
+                    break;
+                }
+                if(byteList.get(1) == null && !vehicle_num_spinner.getSelectedItem().toString().equals("1")) {
+                    Toast.makeText(getApplicationContext(), "Please select picture for driver license", Toast.LENGTH_LONG).show();
+                    break;
+                }
+                if(byteList.get(2) == null && !vehicle_num_spinner.getSelectedItem().toString().equals("1")) {
+                    Toast.makeText(getApplicationContext(), "Please select picture for driver license of other driver", Toast.LENGTH_LONG).show();
+                    break;
+                }
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 spinner.setVisibility(View.VISIBLE);
@@ -636,7 +640,8 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         claim.setStep1Bundle(injure_box.isChecked(), drivable_box.isChecked(), present_box.isChecked(), I_rbtn.isChecked(),
                 time_txt, location_txt, vehicle_spinner.getSelectedItem().toString(), vehicle_num_spinner.getSelectedItem().toString(), phone_txt);
         background.setAlpha((float) 0.5);
-        claim.uploadStep1Image(byteList, w, getApplicationContext(), background);
+        claim.uploadStep1Image(vehicle_num_spinner.getSelectedItem().toString(), I_rbtn.isChecked(),
+                byteList, w, getApplicationContext(), background);
 
         //       Intent intent = new Intent(getApplicationContext(), FileClaim2Activity.class);
    //     intent.putExtra("ClaimBundle", claim);

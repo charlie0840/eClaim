@@ -118,65 +118,98 @@ public class ClaimBundle implements Parcelable{
 //        }
 //    }
 
-    public void uploadStep1Image(List<byte[]> list, final Window w, final Context context, final RelativeLayout background) {
+    public void uploadStep1Image(String num, final boolean person, List<byte[]> list, final Window w, final Context context, final RelativeLayout background) {
         byte[] file = null;
         file = list.get(0);
-        if(file != null)
-            driverLicense = new ParseFile("image", file);
-        file = list.get(1);
-        if(file != null)
-            otherLicense = new ParseFile("image", file);
-        file = list.get(2);
-        if(file != null)
-            otherInsurance = new ParseFile("image", file);
+        if(!person) {
+            if (file != null)
+                driverLicense = new ParseFile("image", file);
+        }
+        if(!num.equals("1")) {
+            file = list.get(1);
+            if (file != null)
+                otherLicense = new ParseFile("image", file);
+            file = list.get(2);
+            if (file != null)
+                otherInsurance = new ParseFile("image", file);
+        }
 
         w.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        otherLicense.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    otherInsurance.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e == null) {
-                                if(driverLicense != null) {
-                                    driverLicense.saveInBackground(new SaveCallback() {
-                                        @Override
-                                        public void done(ParseException e) {
-                                            w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                            background.setAlpha((float) 0);
-                                            Intent intent = new Intent(context, FileClaim2Activity.class);
-                                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                            intent.putExtra("ClaimBundle", getThisClaim());
-                                            context.startActivity(intent);
-                                        }
-                                    });
+        if(!vehicleNum.equals("1")) {
+            otherLicense.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        otherInsurance.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    if (driverLicense != null && !person) {
+                                        driverLicense.saveInBackground(new SaveCallback() {
+                                            @Override
+                                            public void done(ParseException e) {
+                                                w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                                background.setAlpha((float) 0);
+                                                Intent intent = new Intent(context, FileClaim2Activity.class);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                intent.putExtra("ClaimBundle", getThisClaim());
+                                                context.startActivity(intent);
+                                            }
+                                        });
+                                    }
+                                    else {
+                                        w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                                        background.setAlpha((float) 0);
+                                        Intent intent = new Intent(context, FileClaim2Activity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        intent.putExtra("ClaimBundle", getThisClaim());
+                                        context.startActivity(intent);
+                                    }
                                 }
                                 else {
+                                    Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+                                    Log.d("error!!!!!!!!!!!", e.toString());
                                     w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                     background.setAlpha((float) 0);
-                                    Intent intent = new Intent(context, FileClaim2Activity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    intent.putExtra("ClaimBundle", getThisClaim());
-                                    context.startActivity(intent);
                                 }
-                            } else {
-                                Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-                                Log.d("error!!!!!!!!!!!", e.toString());
-                                w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                                background.setAlpha((float) 0);
                             }
-                        }
-                    });
-                } else {
-                    Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-                    Log.d("error!!!!!!!!!!!", e.toString());
-                    w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                    background.setAlpha((float) 0);
+                        });
+                    }
+                    else {
+                        Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+                        Log.d("error!!!!!!!!!!!", e.toString());
+                        w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        background.setAlpha((float) 0);
+                    }
+
                 }
+
+            });
+        }
+        else {
+            if (driverLicense != null && !person) {
+                driverLicense.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        background.setAlpha((float) 0);
+                        Intent intent = new Intent(context, FileClaim2Activity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("ClaimBundle", getThisClaim());
+                        context.startActivity(intent);
+                    }
+                });
             }
-        });
+            else {
+                w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                background.setAlpha((float) 0);
+                Intent intent = new Intent(context, FileClaim2Activity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("ClaimBundle", getThisClaim());
+                context.startActivity(intent);
+            }
+        }
         //if(otherLicense != null) {
 //            otherLicense.saveInBackground(new SaveCallback() {
 //                @Override
@@ -294,13 +327,10 @@ public class ClaimBundle implements Parcelable{
         this.phoneOther = phoneOther;
     }
 
-    public void setStep2Bundle(final List<byte[]> singleList, final Window w, List<String> list, byte[] sample, final Context context, final RelativeLayout background) {
+    public void setStep2Bundle(final List<byte[]> singleList, final Window w, List<String> list, final Context context, final RelativeLayout background) {
         this.morePictures = new ArrayList<String>(list);
-        if(list.size() == 0)
-            return;
         final ParseObject imageList = new ParseObject("ImageList");
         imageList.put("list", list);
-        imageList.put("sample", android.util.Base64.encodeToString(sample, android.util.Base64.DEFAULT));
         imageList.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {

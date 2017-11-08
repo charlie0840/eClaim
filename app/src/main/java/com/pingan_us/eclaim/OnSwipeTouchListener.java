@@ -36,6 +36,10 @@ public class OnSwipeTouchListener implements OnTouchListener {
             try {
                 float diffY = e2.getY() - e1.getY();
                 float diffX = e2.getX() - e1.getX();
+                if(diffX == 0 && diffY == 0) {
+                    onClick();
+                    return true;
+                }
                 if (Math.abs(diffX) > Math.abs(diffY)) {
                     if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
                         if (diffX > 0) {
@@ -71,5 +75,8 @@ public class OnSwipeTouchListener implements OnTouchListener {
     }
 
     public void onSwipeBottom() {
+    }
+
+    public void onClick() {
     }
 }

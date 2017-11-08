@@ -304,7 +304,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             //bm = Bitmap.createBitmap(Utility.compressImageUri(currUri, 1024, 768, getApplicationContext()));
 
             //decode bitmap from uri
-            ReceiverThread thread = new ReceiverThread(currUri, 900, 700, getApplicationContext());
+            ReceiverThread thread = new ReceiverThread(currUri, 1024, 768, getApplicationContext());
             Thread th = new Thread(thread);
             th.start();
             try {
@@ -357,7 +357,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             e.printStackTrace();
         }
         Bitmap resBitmap = Bitmap.createScaledBitmap(thumbnail, thumbnail.getWidth()/2, thumbnail.getHeight()/2, true);
-        Bitmap bmp = Bitmap.createBitmap(Utility.compressImage(uri, thumbnail, 900, 700, getApplicationContext(), true));
+        Bitmap bmp = Bitmap.createBitmap(Utility.compressImage(uri, thumbnail, 1024, 768, getApplicationContext(), true));
         if(which_loc != MORE)
             uploadImg(bmp, which_loc);
         if(change_or_insert == INSERT_IMAGE)
@@ -464,7 +464,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             byteList.add(byteArray);
             //bmp.recycle();
         }
-        claim.setStep2Bundle(singleByteList, w, strList, byteList.get(0), getApplicationContext(), background);
+        claim.setStep2Bundle(singleByteList, w, strList, getApplicationContext(), background);
         //claim.setStep2Bundle(byteList);
     }
 

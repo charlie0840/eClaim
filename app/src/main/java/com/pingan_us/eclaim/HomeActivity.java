@@ -186,4 +186,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             }
         }, 1000);
     }
+
+    @Override
+    public void onBackPressed() {}
 }

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -114,6 +115,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                             claim_list_title.setVisibility(View.GONE);
                             imHide.setImageResource(R.drawable.drawerout);
                             vc_background.setVisibility(View.INVISIBLE);
+                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         }
                     }, 1000);
                 }
@@ -129,10 +131,12 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                         @Override
                         public void run() {
                             imHide.setImageResource(R.drawable.drawerback);
+                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         }
                     }, 1000);
                 }
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                progressBar.setVisibility(View.GONE);
+                background.setAlpha((float) 0);
             }
         });
         slideIn = false;
@@ -168,15 +172,34 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
 
         adapter = new ClaimCustomList(ViewClaimt.this, claimList);
         claim_list.setAdapter(adapter);
+
+        claim_list.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                int num_of_visible_view = claim_list.getLastVisiblePosition() - claim_list.getFirstVisiblePosition();
+                int first_loc = claim_list.getFirstVisiblePosition();
+                int last_loc = claim_list.getLastVisiblePosition();
+                if(pos >= first_loc && pos <= last_loc) {
+                    claim_list.getChildAt(pos - first_loc).setBackgroundColor(getResources().getColor(R.color.colorGray));
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {}
+        });
+
         claim_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                for(int i = 0; i < claim_list.getChildCount(); i++) {
+                Log.d("DEBUG!!!!!!", "size is " + adapter.getCount() + " clicking at loc " + position);
+                int num_of_visible_view = claim_list.getLastVisiblePosition() - claim_list.getFirstVisiblePosition();
+                int first_loc = claim_list.getFirstVisiblePosition();
+                for(int i = 0; i <= num_of_visible_view; i++) {
                     claim_list.getChildAt(i).setBackgroundColor(getResources().getColor(R.color.colorWhite));
                 }
-                claim_list.getChildAt(position).setBackgroundColor(getResources().getColor(R.color.colorGray));
+                claim_list.getChildAt(position - first_loc).setBackgroundColor(getResources().getColor(R.color.colorGray));
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 pos = position;
@@ -302,6 +325,8 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                         }
                     } catch (ParseException e1) {
                         e1.printStackTrace();
+                        progressBar.setVisibility(View.GONE);
+                        background.setAlpha((float) 0);
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     }
                     byteList = new ArrayList<String>();
@@ -325,6 +350,8 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                     } catch (ClassCastException e2) {
                         Log.d("ERROR E2!!!!!", e2.toString());
                         e2.printStackTrace();
+                        background.setAlpha((float) 0);
+                        progressBar.setVisibility(View.GONE);
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     }
 
@@ -346,7 +373,6 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                         fillImageView(driverLicenseByte, driver_license_pic);
                     }
                     loadMorePictures(0, limit);
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 }
             }
         });
@@ -356,21 +382,22 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         Log.d("DEBUG loading pic", "" + byteList.size());
         Toast.makeText(getApplicationContext(), "loading pictures with size " + byteList.size(), Toast.LENGTH_LONG).show();
         picList.clear();
-        if(byteList.size() <= start)
-            return;
-        for(int i = start; i < end; i++) {
-            if(i == byteList.size())
-                break;
-            byte[] bytes = Base64.decode(byteList.get(i), Base64.DEFAULT);
-            BitmapFactory.Options options1 = new BitmapFactory.Options();
-            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options1);
-            Bitmap finalBmp = Bitmap.createScaledBitmap(bmp, 640, 480, true);
-            bmp.recycle();
-            picList.add(finalBmp);
+        if(byteList.size() > start) {
+            for (int i = start; i < end; i++) {
+                if (i == byteList.size())
+                    break;
+                byte[] bytes = Base64.decode(byteList.get(i), Base64.DEFAULT);
+                BitmapFactory.Options options1 = new BitmapFactory.Options();
+                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options1);
+                Bitmap finalBmp = Bitmap.createScaledBitmap(bmp, 640, 480, true);
+                bmp.recycle();
+                picList.add(finalBmp);
+            }
         }
         adapter_pic.notifyDataSetChanged();
         background.setAlpha((float) 0);
         progressBar.setVisibility(View.GONE);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 
     public void fillImageView(byte[] bytes, ImageView view) {
@@ -391,6 +418,8 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
             }
             catch (ClassCastException e) {
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                progressBar.setVisibility(View.GONE);
+                background.setAlpha((float) 0);
             }
         }
         if(claimIDList.size() != 0)
@@ -412,7 +441,5 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
     }
 
     @Override
-    public void onBackPressed() {
-        Toast.makeText(getApplicationContext(), "Back Pressed!!!", Toast.LENGTH_LONG).show();
-    }
+    public void onBackPressed() {}
 }

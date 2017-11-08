@@ -36,8 +36,7 @@ import com.parse.ParseInstallation;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener{
-    private View nav_bar;
-    private Button login, register, logout;
+    private Button login, register;
     private EditText username, password;
     private String user_name, user_password;
     private RelativeLayout background;
@@ -61,27 +60,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         login=(Button)findViewById(R.id.loginbutton);
         register = (Button)findViewById(R.id.registerbutton);
-        logout = (Button)findViewById(R.id.logoutbutton);
 
         username=(EditText)findViewById(R.id.username);
         password=(EditText)findViewById(R.id.password);
-        logout.setVisibility(View.GONE);
         register.setVisibility(View.VISIBLE);
 
         login.setOnClickListener(this);
-        logout.setOnClickListener(this);
         register.setOnClickListener(this);
 
         username.setOnKeyListener(this);
         password.setOnKeyListener(this);
 
-        nav_bar = findViewById(R.id.nav_layout);
-        ImageView profile_nav = (ImageView) nav_bar.findViewById(R.id.profile_nav);
-        ImageView claim_nav = (ImageView) nav_bar.findViewById(R.id.claims_nav);
-        profile_nav.setOnClickListener(this);
-        claim_nav.setOnClickListener(this);
         progressBar.setVisibility(View.GONE);
-        nav_bar.setVisibility(View.GONE);
     }
 
     @Override
@@ -100,30 +90,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 logIn();
                 break;
-            case R.id.logoutbutton:
-                ParseUser currUser = ParseUser.getCurrentUser();
-                currUser.logOut();
-                ProfileActivity.getInstance().finish();
-                if(ViewClaimt.getInstance() != null)
-                    ViewClaimt.getInstance().finish();
-                Intent intent2 = new Intent(getApplicationContext(), LoginActivity.class);
-                intent2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent2);
-                break;
             case R.id.registerbutton:
                 Intent intent3 = new Intent(getApplicationContext(), RegisterActivity.class);
                 intent3.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent3);
-                break;
-            case R.id.profile_nav:
-                Intent intent = new Intent(this, ProfileActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
-                break;
-            case R.id.claims_nav:
-                Intent intent1 = new Intent(this, ViewClaimt.class);
-                intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                 break;
         }
     }
@@ -162,13 +132,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 } else {
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     enabled = true;
-                    logout.setVisibility(View.VISIBLE);
-                    username.setVisibility(View.GONE);
-                    password.setVisibility(View.GONE);
-                    login.setVisibility(View.GONE);
-                    register.setVisibility(View.GONE);
-                    nav_bar.setVisibility(View.VISIBLE);
-
                     Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
@@ -180,4 +143,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {}
 }
