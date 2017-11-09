@@ -30,7 +30,7 @@ public class CustomList extends ArrayAdapter<String>{
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView= inflater.inflate(R.layout.list_single, null, true);
         TextView txtTitle = (TextView) rowView.findViewById(R.id.txt);
-
+        txtTitle.setText("Tap here to remove");
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
         txtTitle.setText(web.get(position));
 

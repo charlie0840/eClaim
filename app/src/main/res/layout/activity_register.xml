@@ -216,7 +216,7 @@
                 android:layout_centerHorizontal="true"
                 android:textSize="20dp"
                 android:textColor="@color/colorWhite"
-                android:text="Add Driver's License"/>
+                android:text="Add Profile Photo"/>
             <ImageView
                 android:id="@+id/reg_photo"
                 android:layout_width="100dp"

@@ -11,9 +11,10 @@
         android:alpha="0.3">
     </RelativeLayout>
     <ScrollView
+        android:id="@+id/profile_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/profile_logout_button">
+        android:layout_above="@+id/nav_layout">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -62,6 +63,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/phone_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/profile_photo"
@@ -94,6 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/first_layer">
+
                 <RelativeLayout
                     android:id="@+id/entire_id_section"
                     android:alpha="0.6"
@@ -105,44 +108,49 @@
                     android:focusableInTouchMode="true"
                     android:background="@drawable/cycle">
                     <RelativeLayout
-                        android:id="@+id/id_section"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_margin="10dp">
-                        <TextView
-                            android:id="@+id/id_section_title"
-                            android:layout_height="wrap_content"
+                        android:id="@+id/profile_id_section"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <RelativeLayout
+                            android:id="@+id/id_section"
                             android:layout_width="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="10dp"
-                            android:textSize="30dp"
-                            android:textStyle="bold"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_margin="10dp">
+                            <TextView
+                                android:id="@+id/id_section_title"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:textSize="30dp"
+                                android:textStyle="bold"
+                                android:textColor="@color/colorBlack"
+                                android:text="Your ID"/>
+                        </RelativeLayout>
+                        <ImageSwitcher
+                            android:id="@+id/ID_switch"
+                            android:layout_width="250dp"
+                            android:layout_height="140dp"
+                            android:background="@drawable/cycle"
+                            android:layout_below="@+id/id_section"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp">
+                        </ImageSwitcher>
+                        <Button
+                            android:id="@+id/id_add_button"
+                            android:layout_width="150dp"
+                            android:layout_height="45dp"
+                            android:layout_margin="10dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_below="@+id/ID_switch"
+                            android:background="@drawable/btn_background"
+                            android:text="Edit your ID"
+                            android:textSize="15dp"
                             android:textColor="@color/colorBlack"
-                            android:text="Your ID"/>
+                            android:scaleType="fitCenter"/>
                     </RelativeLayout>
-                    <ImageSwitcher
-                        android:id="@+id/ID_switch"
-                        android:layout_width="250dp"
-                        android:layout_height="140dp"
-                        android:background="@drawable/cycle"
-                        android:layout_below="@+id/id_section"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp">
-                    </ImageSwitcher>
-                    <Button
-                        android:id="@+id/id_add_button"
-                        android:layout_width="150dp"
-                        android:layout_height="45dp"
-                        android:layout_margin="10dp"
-                        android:layout_centerHorizontal="true"
-                        android:layout_below="@+id/ID_switch"
-                        android:background="@drawable/btn_background"
-                        android:text="Edit your ID"
-                        android:textSize="15dp"
-                        android:textColor="@color/colorBlack"
-                        android:scaleType="fitCenter"/>
                 </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/entire_vehicle_section"
@@ -156,85 +164,125 @@
                     android:focusableInTouchMode="true"
                     android:background="@drawable/cycle">
                     <RelativeLayout
-                        android:id="@+id/vehicle_section"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_margin="10dp">
-                        <TextView
-                            android:id="@+id/vehicle_section_title"
-                            android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="10dp"
-                            android:textSize="30dp"
-                            android:textStyle="bold"
-                            android:textColor="@color/colorBlack"
-                            android:text="Your vehicles"/>
-                    </RelativeLayout>
-                    <ImageSwitcher
-                        android:id="@+id/vehicle_switch"
-                        android:layout_width="250dp"
-                        android:layout_height="140dp"
-                        android:background="@drawable/cycle"
-                        android:layout_below="@+id/vehicle_section"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp">
-                    </ImageSwitcher>
-                    <TextView
-                        android:id="@+id/profile_vehicle_name_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/vehicle_switch"
-                        android:layout_centerHorizontal="true"
-                        android:text="Add a vehicle"
-                        android:textSize="20dp"
-                        android:textColor="@color/colorBlack"/>
-                    <RelativeLayout
+                        android:id="@+id/profile_vehicle_section"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/profile_vehicle_name_text">
-                        <Button
-                            android:id="@+id/profile_delete_vehicle_button"
-                            android:layout_width="140dp"
-                            android:layout_height="45dp"
-                            android:layout_alignParentLeft="true"
-                            android:layout_margin="15dp"
-                            android:text="Delete Vehicle"
-                            android:background="@drawable/btn_background"
-                            android:textSize="15dp"
+                        android:layout_height="match_parent">
+                        <RelativeLayout
+                            android:id="@+id/vehicle_section"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_margin="10dp">
+                            <TextView
+                                android:id="@+id/vehicle_section_title"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:textSize="30dp"
+                                android:textStyle="bold"
+                                android:textColor="@color/colorBlack"
+                                android:text="Your vehicles"/>
+                        </RelativeLayout>
+                        <ImageView
+                            android:id="@+id/profile_prev_vehicle_button"
+                            android:layout_width="35dp"
+                            android:layout_height="120dp"
+                            android:layout_margin="10dp"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@+id/vehicle_switch"
+                            android:src="@drawable/drawerback"
+                            android:scaleType="fitCenter"/>
+                        <ImageView
+                            android:id="@+id/profile_next_vehicle_button"
+                            android:layout_width="35dp"
+                            android:layout_height="120dp"
+                            android:layout_margin="10dp"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@+id/vehicle_switch"
+                            android:src="@drawable/drawerout"
+                            android:scaleType="fitCenter"/>
+                        <ImageSwitcher
+                            android:id="@+id/vehicle_switch"
+                            android:layout_width="250dp"
+                            android:layout_height="140dp"
+                            android:background="@drawable/cycle"
+                            android:layout_below="@+id/vehicle_section"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp">
+                        </ImageSwitcher>
+                        <TextView
+                            android:id="@+id/profile_vehicle_name_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/vehicle_switch"
+                            android:layout_centerHorizontal="true"
+                            android:text="Add a vehicle"
+                            android:textSize="20dp"
                             android:textColor="@color/colorBlack"/>
-                        <Button
-                            android:id="@+id/profile_add_vehicle_button"
-                            android:layout_width="140dp"
-                            android:layout_height="45dp"
-                            android:layout_alignParentRight="true"
-                            android:layout_margin="15dp"
-                            android:text="Add a Vehicle"
-                            android:background="@drawable/btn_background"
-                            android:textSize="15dp"
-                            android:textColor="@color/colorBlack"/>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/profile_vehicle_name_text">
+                            <Button
+                                android:id="@+id/profile_delete_vehicle_button"
+                                android:layout_width="140dp"
+                                android:layout_height="45dp"
+                                android:layout_alignParentLeft="true"
+                                android:layout_margin="15dp"
+                                android:text="Delete Vehicle"
+                                android:background="@drawable/btn_background"
+                                android:textSize="15dp"
+                                android:textColor="@color/colorBlack"/>
+                            <Button
+                                android:id="@+id/profile_add_vehicle_button"
+                                android:layout_width="140dp"
+                                android:layout_height="45dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_margin="15dp"
+                                android:text="Add a Vehicle"
+                                android:background="@drawable/btn_background"
+                                android:textSize="15dp"
+                                android:textColor="@color/colorBlack"/>
+                        </RelativeLayout>
                     </RelativeLayout>
+
                 </RelativeLayout>
             </RelativeLayout>
+            <Button
+                android:id="@+id/profile_logout_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/second_layer"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/colorRed"
+                android:alpha="0.8"
+                android:textColor="@color/colorBlack"
+                android:textSize="25dp"
+                android:text="Log out"/>
         </RelativeLayout>
 
     </ScrollView>
-    <Button
-        android:id="@+id/profile_logout_button"
+
+    <RelativeLayout
+        android:id="@+id/profile_background"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="45dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@color/colorRed"
-        android:alpha="0.8"
-        android:textColor="@color/colorBlack"
-        android:textSize="25dp"
-        android:text="Log out"/>
+        android:layout_height="match_parent"
+        android:background="@color/colorBlack"
+        android:alpha="0">
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/profile_progressBar"
+            android:progressDrawable="@drawable/circular_progress_bar"/>
+    </RelativeLayout>
     <include layout="@layout/navigation_bar"
         android:id="@+id/nav_layout"/>
 

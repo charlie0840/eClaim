@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -42,7 +43,9 @@ import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
@@ -81,12 +84,14 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     private Animation animationLOut, animationLIn;
 
     private View nav_bar;
+    private ProgressBar progressBar;
     private CircleImageView profile_photo;
     private TextView name_text, phone_text, vehicle_text;
-    private ImageView switcherImageView, switcherImageView2;
     private Button edit_btn, add_btn, delete_btn, logout_btn;
     private ImageSwitcher IDImageSwitcher, VehicleImageSwitcher;
-    private RelativeLayout id_section, vehicle_section, add_id, add_vehicle;
+    private ImageView switcherImageView, switcherImageView2, prev_btn, next_btn;
+    private RelativeLayout id_section, vehicle_section, add_id, add_vehicle, vehicle_block,
+            id_block, name_layer, phone_layer, background;
 
     private int counter, ID_or_Vehicle;
     private String userChoosenTask, phone_no, full_name, vehicleName;
@@ -95,7 +100,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     private List<String> carList = new ArrayList<String>(), carIDList = new ArrayList<String>();
     private static final int REQUEST_CAMERA = 0, SELECT_FILE = 1, MY_CAMERA_REQUEST_CODE = 1, MY_CALL_REQUEST_CODE = 2,
             PROFILE_PHOTO = 3, ID = 0, VEHICLE = 1;
-
+    private boolean resume = true, hasVehicle = false;
     private static ProfileActivity activity;
 
     @Override
@@ -106,20 +111,18 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         IDPicList = new ArrayList<Drawable>();
         vehiclePicList = new ArrayList<Drawable>();
 
-        vehiclePicList.add(getResources().getDrawable(R.drawable.add));
+        vehiclePicList.add(resize(getResources().getDrawable(R.drawable.add), 400, 400));
 
         nav_bar = findViewById(R.id.nav_layout);
 
         profile_photo = (CircleImageView) findViewById(R.id.profile_photo);
-        Bitmap icon1 = BitmapFactory.decodeResource(getApplicationContext().getResources(),
-                R.drawable.add);
-        Drawable p1 = new BitmapDrawable(icon1);
+        Drawable p1 = resize(getResources().getDrawable(R.drawable.add), 400, 400);
         IDPicList.add(p1);
         vehiclePicList.add(p1);
 
 
-        ImageView home_nav = (ImageView) nav_bar.findViewById(R.id.home_nav);
-        ImageView claim_nav = (ImageView) nav_bar.findViewById(R.id.claims_nav);
+        RelativeLayout home_nav = (RelativeLayout) nav_bar.findViewById(R.id.home_nav);
+        RelativeLayout claim_nav = (RelativeLayout) nav_bar.findViewById(R.id.claims_nav);
         home_nav.setOnClickListener(this);
         claim_nav.setOnClickListener(this);
 
@@ -129,6 +132,8 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         phone_text.setText(phone_no);
         name_text.setText(full_name);
 
+        progressBar = (ProgressBar) findViewById(R.id.profile_progressBar);
+
         IDImageSwitcher = (ImageSwitcher) findViewById(R.id.ID_switch);
         VehicleImageSwitcher = (ImageSwitcher) findViewById(R.id.vehicle_switch);
 
@@ -136,12 +141,21 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         add_vehicle = (RelativeLayout) findViewById(R.id.vehicle_section);
         id_section = (RelativeLayout) findViewById(R.id.entire_id_section);
         vehicle_section = (RelativeLayout) findViewById(R.id.entire_vehicle_section);
+        vehicle_block = (RelativeLayout) findViewById(R.id.profile_vehicle_section);
+        id_block = (RelativeLayout) findViewById(R.id.profile_id_section);
+        name_layer = (RelativeLayout) findViewById(R.id.name_layout);
+        phone_layer = (RelativeLayout) findViewById(R.id.phone_layout);
+        background = (RelativeLayout) findViewById(R.id.profile_background);
 
         edit_btn = (Button) findViewById(R.id.id_add_button);
         logout_btn = (Button) findViewById(R.id.profile_logout_button);
         add_btn = (Button) findViewById(R.id.profile_add_vehicle_button);
+        prev_btn = (ImageView) findViewById(R.id.profile_prev_vehicle_button);
+        next_btn = (ImageView) findViewById(R.id.profile_next_vehicle_button);
         delete_btn = (Button) findViewById(R.id.profile_delete_vehicle_button);
 
+        prev_btn.setOnClickListener(this);
+        next_btn.setOnClickListener(this);
         edit_btn.setOnClickListener(this);
         add_btn.setOnClickListener(this);
         delete_btn.setOnClickListener(this);
@@ -183,53 +197,44 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         VehicleImageSwitcher.setOutAnimation(animationLOut);
         VehicleImageSwitcher.setInAnimation(animationLIn);
 
-        id_section.setOnTouchListener(new OnSwipeTouchListener(getBaseContext()) {
-            int switcherImage = 0;
-
+        id_section.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick() {
-                Toast.makeText(getApplicationContext(), "Click!", Toast.LENGTH_LONG).show();
-                switcherImage = IDPicList.size();
+            public void onClick(View v) {
+                int switcherImage = IDPicList.size();
                 counter++;
                 if (counter == switcherImage)
                     counter = 0;
                 IDImageSwitcher.setImageDrawable(IDPicList.get(counter));
-            }
 
-            @Override
-            public void onSwipeRight() {
-                switcherImage = IDPicList.size();
-                counter++;
-                if (counter == switcherImage)
-                    counter = 0;
-                IDImageSwitcher.setImageDrawable(IDPicList.get(counter));
-            }
-
-            @Override
-            public void onSwipeLeft() {
-                switcherImage = IDPicList.size();
-                //Toast.makeText(getApplicationContext(), "left touched with size " + switcherImage, Toast.LENGTH_LONG).show();
-                counter--;
-                if (counter == -1)
-                    counter = switcherImage - 1;
-                IDImageSwitcher.setImageDrawable(IDPicList.get(counter));
             }
         });
+//        id_section.setOnTouchListener(new OnSwipeTouchListener(getBaseContext()) {
+//            int switcherImage = 0;
+//
+//            @Override
+//            public void onSwipeRight() {
+//                switcherImage = IDPicList.size();
+//                counter++;
+//                if (counter == switcherImage)
+//                    counter = 0;
+//                IDImageSwitcher.setImageDrawable(IDPicList.get(counter));
+//            }
+//
+//            @Override
+//            public void onSwipeLeft() {
+//                switcherImage = IDPicList.size();
+//                //Toast.makeText(getApplicationContext(), "left touched with size " + switcherImage, Toast.LENGTH_LONG).show();
+//                counter--;
+//                if (counter == -1)
+//                    counter = switcherImage - 1;
+//                IDImageSwitcher.setImageDrawable(IDPicList.get(counter));
+//            }
+//        });
 
         vehicle_section.setOnTouchListener(new OnSwipeTouchListener(getBaseContext()) {
             int switcherImage = 0;
 
             @Override
-            public void onClick() {
-                Toast.makeText(getApplicationContext(), "Click!", Toast.LENGTH_LONG).show();
-                switcherImage = IDPicList.size();
-                counter++;
-                if (counter == switcherImage)
-                    counter = 0;
-                VehicleImageSwitcher.setImageDrawable(vehiclePicList.get(counter));
-            }
-
-            @Override
             public void onSwipeRight() {
                 switcherImage = vehiclePicList.size();
                 counter++;
@@ -242,59 +247,86 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             @Override
             public void onSwipeLeft() {
                 switcherImage = vehiclePicList.size();
-                //Toast.makeText(getApplicationContext(), "left touched", Toast.LENGTH_LONG).show();
                 counter--;
                 if (counter == -1)
                     counter = switcherImage - 1;
                 VehicleImageSwitcher.setImageDrawable(vehiclePicList.get(counter));
                 vehicle_text.setText(carList.get(counter));
-
             }
         });
-
         activity = this;
+
+        progressBar.setVisibility(View.GONE);
+        profile_photo.setVisibility(View.INVISIBLE);
+        logout_btn.setVisibility(View.INVISIBLE);
+        vehicle_block.setVisibility(View.INVISIBLE);
+        id_block.setVisibility(View.INVISIBLE);
+        name_layer.setVisibility(View.INVISIBLE);
+        phone_layer.setVisibility(View.INVISIBLE);
+        doAnimation();
     }
 
     @TargetApi(23)
     @Override
     public void onClick(View v) {
+        int switcherImage = 0;
         switch (v.getId()) {
             case R.id.id_add_button:
                 ID_or_Vehicle = ID;
-                //Toast.makeText(getApplicationContext(), "add pic!", Toast.LENGTH_SHORT).show();
                 selectImage();
                 break;
             case R.id.profile_add_vehicle_button:
                 ID_or_Vehicle = VEHICLE;
-                //Toast.makeText(getApplicationContext(), "add pic!", Toast.LENGTH_SHORT).show();
-                final CharSequence[] items = { "Confirm",
-                        "Cancel" };
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
 
                 LayoutInflater inflater=ProfileActivity.this.getLayoutInflater();
                 //this is what I did to added the layout to the alert dialog
                 View layout=inflater.inflate(R.layout.popup_window,null);
                 builder.setView(layout);
-
-                builder.setTitle("Add Vehicle");
                 final EditText editText = (EditText) layout.findViewById(R.id.editTextDialogUserInput);
-                builder.setItems(items, new DialogInterface.OnClickListener() {
+                Button confirm_btn = (Button) layout.findViewById(R.id.pop_confirm_button);
+                Button cancel_btn = (Button) layout.findViewById(R.id.pop_cancel_button);
+
+                final AlertDialog dialog = builder.create();
+                dialog.show();
+
+                confirm_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int item) {
-                        boolean result=Utility.checkPermission(ProfileActivity.this);
-                        if(!result)
-                            Toast.makeText(getApplicationContext(), "no permission!!!!", Toast.LENGTH_LONG).show();
-                        if (items[item].equals("Confirm")) {
-                            vehicleName = editText.getText().toString();
-                            dialog.dismiss();
-                            selectImage();
-                        } else if (items[item].equals("Cancel")) {
-                            dialog.dismiss();
-                        }
+                    public void onClick(View v) {
+                        vehicleName = editText.getText().toString();
+                        dialog.dismiss();
+                        selectImage();
                     }
                 });
-                builder.show();
-                //selectImage();
+                cancel_btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                break;
+            case R.id.profile_prev_vehicle_button:
+                switcherImage = vehiclePicList.size();
+                if(switcherImage == 0) {
+                    break;
+                }
+                counter--;
+                if (counter == -1)
+                    counter = switcherImage - 1;
+                VehicleImageSwitcher.setImageDrawable(vehiclePicList.get(counter));
+                vehicle_text.setText(carList.get(counter));
+                break;
+            case R.id.profile_next_vehicle_button:
+                switcherImage = vehiclePicList.size();
+                if(switcherImage == 0) {
+                    break;
+                }
+                counter++;
+                if (counter == switcherImage)
+                    counter = 0;
+                VehicleImageSwitcher.setImageDrawable(vehiclePicList.get(counter));
+                vehicle_text.setText(carList.get(counter));
                 break;
             case R.id.profile_delete_vehicle_button:
                 deleteVehicle();
@@ -381,8 +413,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                 //MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
         }
         Bitmap resBitmap = Bitmap.createScaledBitmap(bm, bm.getWidth(), bm.getHeight(), true);
-        Drawable d = new BitmapDrawable(getResources(), resBitmap);
-        addToList(d, resBitmap);
+        addToList(resBitmap);
     }
 
     private void onCaptureImageResult(Intent data) {
@@ -403,22 +434,32 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             e.printStackTrace();
         }
         Bitmap resBitmap = Bitmap.createScaledBitmap(thumbnail, thumbnail.getWidth(), thumbnail.getHeight(), true);
-        Drawable d = new BitmapDrawable(getResources(), resBitmap);
-        addToList(d, resBitmap);
+        addToList(resBitmap);
 
     }
 
-    public void addToList(Drawable pic, Bitmap bmp) {
+    public void addToList(Bitmap bmp) {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        progressBar.setVisibility(View.VISIBLE);
+        background.setAlpha((float) 0.5);
+        Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 600, 350, true);
+        Drawable pic = new BitmapDrawable(getResources(), scaledBmp);
         if (ID_or_Vehicle == ID) {
             IDPicList.set(0, pic);
+            switcherImageView.setImageDrawable(pic);
             uploadImg(bmp);
         } else if (ID_or_Vehicle == VEHICLE){
+            if(!hasVehicle) {
+                vehiclePicList.clear();
+                carList.clear();
+                hasVehicle = true;
+            }
             vehiclePicList.add(pic);
+            if(vehiclePicList.size() > 1)
+                counter = vehiclePicList.size() - 2;
             carList.add(vehicleName);
-            switcherImageView2.setImageDrawable(pic);
-            vehicle_text.setText(vehicleName);
+            next_btn.performClick();
             counter = carList.size() - 1;
             uploadImg(bmp);
         }
@@ -473,6 +514,9 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         full_name = (String)currentUser.get("lastName") + "," + (String)currentUser.get("firstName");
         phone_no = (String)currentUser.get("phoneNo");
 
+        name_text.setText(full_name);
+        phone_text.setText(phone_no);
+
         ParseFile IDCard = null;
         ParseFile bmp = null;
         try {
@@ -501,7 +545,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         //Bitmap bmp1= Bitmap.createBitmap(Utility.compressImage(bmp, 1024, 768, getApplicationContext(), false));
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         final byte[] byteArray = stream.toByteArray();
-
         final ParseFile file;
         if(ID_or_Vehicle == ID) {
             file = new ParseFile("IDCard", byteArray);
@@ -514,10 +557,12 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             public void done(ParseException e) {
                 if(e == null) {
                     uploadData(file);
-                    getVehicleList();
+                    bmp.recycle();
                 }
                 else {
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    background.setAlpha((float) 0);
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(getApplicationContext(), "pic uploading went wrong!!! " + e.toString(), Toast.LENGTH_LONG).show();
                 }
             }
@@ -546,8 +591,14 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                         idList.add(objectID);
                         carIDList.add(objectID);
                         currUser.put("vehicleID", idList);
-                        currUser.saveInBackground();
+                        try {
+                            currUser.save();
+                        } catch (ParseException e1) {
+                            e1.printStackTrace();
+                        }
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        background.setAlpha((float) 0);
+                        progressBar.setVisibility(View.GONE);
                     }
                 }
             });
@@ -559,6 +610,8 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                 @Override
                 public void done(ParseException e) {
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    background.setAlpha((float) 0);
+                    progressBar.setVisibility(View.GONE);
                 }
             });
         }
@@ -568,6 +621,8 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                 @Override
                 public void done(ParseException e) {
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    background.setAlpha((float) 0);
+                    progressBar.setVisibility(View.GONE);
                 }
             });
         }
@@ -591,8 +646,10 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         if(list.size() == 0) {
             vehiclePicList.add(getResources().getDrawable(R.drawable.add));
             carList.add("Add a vehicle");
+            hasVehicle = false;
             return;
         }
+        hasVehicle = true;
         int i = 0;
         while(i < list.size()) {
             String currStr = list.get(i);
@@ -610,7 +667,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                     e1.printStackTrace();
                 }
                 Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-                Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 640, 480, false);
+                Bitmap scaledBmp = Bitmap.createScaledBitmap(bmp, 600, 350, false);
                 Drawable d = new BitmapDrawable(getResources(), scaledBmp);
                 bmp.recycle();
                 vehiclePicList.add(d);
@@ -625,24 +682,28 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     }
 
     public void deleteVehicle() {
-        if(carList.size() == 0) {
+        if(carIDList.size() == 0) {
             return;
         }
         carList.remove(counter);
         vehiclePicList.remove(counter);
         String id = carIDList.get(counter);
         carIDList.remove(counter);
+        if(carIDList.size() == 0)
+            hasVehicle = false;
         counter = 0;
-        if(vehiclePicList.size() != 0) {
-            switcherImageView2.setImageDrawable(vehiclePicList.get(0));
-            vehicle_text.setText(carList.get(0));
+        if(vehiclePicList.size() == 0) {
+            vehiclePicList.add(getResources().getDrawable(R.drawable.add));
+            carList.add("No vehicle");
         }
-        else {
-            switcherImageView2.setImageDrawable(getResources().getDrawable(R.drawable.add));
-            vehicle_text.setText("No vehicle");
-        }
+        next_btn.performClick();
         ParseUser currUser = ParseUser.getCurrentUser();
         currUser.put("vehicleID", carIDList);
+        try {
+            currUser.save();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Vehicle");
         query.whereEqualTo("objectId", id);
         try {
@@ -660,15 +721,19 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         Bitmap profileImage = null;
         BitmapFactory.Options options = new BitmapFactory.Options();
         profileImage = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length, options);
+        Bitmap finalBmp = Bitmap.createScaledBitmap(profileImage, 600, 350, true);
+        profileImage.recycle();
         if(IDCardByte != null) {
             IDPicList.clear();
             BitmapFactory.Options options1 = new BitmapFactory.Options();
-            Bitmap cardBmp = BitmapFactory.decodeByteArray(IDCardByte, 0, IDCardByte.length, options1);
+            Bitmap bmp = BitmapFactory.decodeByteArray(IDCardByte, 0, IDCardByte.length, options1);
+            Bitmap cardBmp = Bitmap.createScaledBitmap(bmp, 600, 350, true);
+            bmp.recycle();
             Drawable d = new BitmapDrawable(getResources(), cardBmp);
             IDPicList.add(d);
             switcherImageView.setImageDrawable(d);
         }
-        profile_photo.setImageBitmap(profileImage);
+        profile_photo.setImageBitmap(finalBmp);
     }
 
     @Override
@@ -677,15 +742,47 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
-        loadContent();
-        vehicle_text.setText(carList.get(0));
-        /*
-        MotionEvent event = MotionEvent.obtain(0.1, 0.1, ,
-                x, y, pressure, size,
-                metaState, xPrecision, yPrecision,
-                deviceId, edgeFlags);
-        onTouchEvent(event);*/
-        switcherImageView.performClick();
-        switcherImageView2.performClick();
+        if(resume) {
+            loadContent();
+            vehicle_text.setText(carList.get(0));
+            id_section.performClick();
+            id_section.setClickable(false);
+            next_btn.performClick();
+            resume = false;
+        }
+    }
+
+    public void doAnimation() {
+        ScrollView scrollView = findViewById(R.id.profile_scrollview);
+
+        final Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up_in);
+        final Animation alpha = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.alpha);
+        final Animation scale = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale);
+        scrollView.startAnimation(slideUp);
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                profile_photo.setVisibility(View.VISIBLE);
+                logout_btn.setVisibility(View.VISIBLE);
+                vehicle_block.setVisibility(View.VISIBLE);
+                id_block.setVisibility(View.VISIBLE);
+                phone_layer.setVisibility(View.VISIBLE);
+                name_layer.setVisibility(View.VISIBLE);
+                profile_photo.startAnimation(scale);
+                logout_btn.startAnimation(alpha);
+                name_layer.startAnimation(alpha);
+                phone_layer.startAnimation(alpha);
+                id_block.startAnimation(alpha);
+                vehicle_block.startAnimation(alpha);
+            }
+        }, 1800);
+    }
+
+    private Drawable resize(Drawable image, int height, int width) {
+        Bitmap b = ((BitmapDrawable)image).getBitmap();
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, height, width, true);
+        //b.recycle();
+        return new BitmapDrawable(getResources(), bitmapResized);
     }
 }

@@ -54,8 +54,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         nav_bar = findViewById(R.id.nav_layout);
 
-        ImageView profile_nav = (ImageView) nav_bar.findViewById(R.id.profile_nav);
-        ImageView claim_nav = (ImageView) nav_bar.findViewById(R.id.claims_nav);
+        RelativeLayout profile_nav = (RelativeLayout) nav_bar.findViewById(R.id.profile_nav);
+        RelativeLayout claim_nav = (RelativeLayout) nav_bar.findViewById(R.id.claims_nav);
         profile_nav.setOnClickListener(this);
         claim_nav.setOnClickListener(this);
 
@@ -79,7 +79,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         username_txt.setVisibility(View.INVISIBLE);
         email_txt.setVisibility(View.INVISIBLE);
 
-
         doAnimation();
     }
     @TargetApi(23)
@@ -100,7 +99,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                     requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, MY_CALL_REQUEST_CODE);
                 } else {
                     Intent callIntent = new Intent(Intent.ACTION_CALL);
-                    callIntent.setData(Uri.parse("tel:123456789"));
+                    callIntent.setData(Uri.parse("tel:6262678903"));
                     startActivity(callIntent);
                 }
                 break;
@@ -166,8 +165,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         final Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up_in);
         final Animation alpha = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.alpha);
-        final Animation scale = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.scale);
+        final Animation scale = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale);
         scrollView.startAnimation(slideUp);
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

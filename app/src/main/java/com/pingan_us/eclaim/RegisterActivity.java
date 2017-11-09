@@ -257,10 +257,8 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                     alertDialog.show();
                 }
                 else {
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     e.printStackTrace();
-                    Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-
-                    Toast.makeText(RegisterActivity.this, "Registration failed!", Toast.LENGTH_LONG).show();
                     switch(e.getCode()) {
                         case ParseException.USERNAME_TAKEN:
                             Toast.makeText(getApplicationContext(), "User name has been taken!", Toast.LENGTH_LONG).show();

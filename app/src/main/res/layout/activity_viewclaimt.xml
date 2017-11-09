@@ -450,7 +450,7 @@
                     android:layout_toRightOf="@+id/vc_claim_list"
                     android:layout_centerVertical="true"
                     android:src="@drawable/drawerback"
-                    android:background="@color/colorGray"/>
+                    android:background="@color/colorBrightGreen"/>
                 <TextView
                     android:id="@+id/vc_claim_list_title"
                     android:layout_width="match_parent"

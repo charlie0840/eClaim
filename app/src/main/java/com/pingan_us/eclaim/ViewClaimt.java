@@ -79,8 +79,8 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
 
         View nav_bar = findViewById(R.id.nav_layout);
 
-        ImageView home_nav = (ImageView) nav_bar.findViewById(R.id.home_nav);
-        ImageView profile_nav = (ImageView) nav_bar.findViewById(R.id.profile_nav);
+        RelativeLayout home_nav = (RelativeLayout) nav_bar.findViewById(R.id.home_nav);
+        RelativeLayout profile_nav = (RelativeLayout) nav_bar.findViewById(R.id.profile_nav);
         home_nav.setOnClickListener(this);
         profile_nav.setOnClickListener(this);
 
@@ -180,7 +180,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                 int first_loc = claim_list.getFirstVisiblePosition();
                 int last_loc = claim_list.getLastVisiblePosition();
                 if(pos >= first_loc && pos <= last_loc) {
-                    claim_list.getChildAt(pos - first_loc).setBackgroundColor(getResources().getColor(R.color.colorGray));
+                    claim_list.getChildAt(pos - first_loc).setBackgroundColor(getResources().getColor(R.color.colorBrightGreen));
                 }
             }
 
@@ -229,6 +229,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                 claim_list_title.setVisibility(View.GONE);
                 break;
             case R.id.profile_nav:
+                background.setAlpha((float) 0.5);
                 Intent intent1 = new Intent(this, ProfileActivity.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));

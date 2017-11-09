@@ -3,8 +3,14 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/profilebackground">
-
+    android:background="@drawable/regbackground">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBlack"
+        android:alpha="0.3">
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/finish_step_title"
         android:layout_width="match_parent"
@@ -21,11 +27,11 @@
             android:layout_centerHorizontal="true"
             android:textSize="20dp"
             android:layout_gravity="center_horizontal"
-            android:textColor="@color/colorBlack"
+            android:textColor="@color/colorWhite"
             android:text="Your case has been successfully submitted for review. You can go to Your Claims to check the status."/>
 
     </LinearLayout>
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/finish_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/cycle"
+        android:background="@drawable/btn_background"
         android:alpha="0.6"
         android:textSize="20dp"
         android:text="Back to Profile" />

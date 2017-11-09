@@ -10,28 +10,46 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Type Your Vehicle's Model/Make : "
-        android:textSize="20dp"
+        android:text="Vehicle's Make/Model"
+        android:textSize="18dp"
         android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <EditText
         android:id="@+id/editTextDialogUserInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
+        android:textSize="15dp"
         android:textColor="@color/colorBlack"
         android:hint="Model/Make">
         <requestFocus/>
-
     </EditText>
-    <Button
-        android:id="@+id/remove_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textSize="10dp"
-        android:text="Remove"
-        android:visibility="gone"
-        android:clickable="false"/>
+    <RelativeLayout
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/pop_confirm_button"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:text="Confirm"
+            android:textSize="15dp"
+            android:textColor="@color/colorBlack"
+            android:background="@drawable/btn_background"/>
+        <Button
+            android:id="@+id/pop_cancel_button"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:text="Cancel"
+            android:textSize="15dp"
+            android:textColor="@color/colorBlack"
+            android:background="@drawable/btn_background"
+            />
+    </RelativeLayout>
 </LinearLayout>

@@ -124,7 +124,7 @@
                         android:textSize="15dp"
                         android:textColor="@color/colorBlack"
                         android:textStyle="bold"
-                        android:text="1-800-000-0000"/>
+                        android:text="(626)267-8903"/>
                     <ImageView
                         android:id="@+id/home_assistance_phone_btn"
                         android:layout_width="80dp"
