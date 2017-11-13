@@ -27,11 +27,6 @@ public class ReceiverThread implements Runnable {
 
     public void run() {
         bmp = Bitmap.createBitmap(Utility.compressImageUri(srcImageUri, outWidth, outHeight, context));
-  //      synchronized (srcImageUri) {
-    //        Log.d("threading!!!!!!!!!!!", "thread notified to update list");
-      //      srcImageUri.notify();
-        //}
-
     }
     public Bitmap getBitmap() {
         return bmp;

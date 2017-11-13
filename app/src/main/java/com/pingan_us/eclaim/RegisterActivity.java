@@ -4,6 +4,7 @@ package com.pingan_us.eclaim;
  * Created by Charlie0840 on 10/13/2017.
  */
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,6 +12,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,7 +21,9 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.util.Base64;
 import android.view.KeyEvent;
 import android.view.View;
@@ -41,6 +45,9 @@ import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -53,9 +60,9 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
     private ImageView PHOTO;
     private Button registerButton, cancelButton;
 
-    private final int ACTIVITY_SELECT_IMAGE = 1234;
+    private final int ACTIVITY_SELECT_IMAGE = 1234, MY_CAMERA_REQUEST_CODE = 1, REQUEST_CAMERA = 2, SELECT_FILE = 3;
 
-    private String user_name, first_name, last_name, user_password, confirm_password, email_address, phone;
+    private String user_name, first_name, last_name, user_password, confirm_password, email_address, phone, userChoosenTask;
     private boolean reg = true;
     private Bitmap picBinary;
 
@@ -100,25 +107,46 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch(requestCode) {
-            case 1234:
-                if(resultCode == RESULT_OK){
-                    Bitmap bm=null;
-                    if (data != null) {
-                        //Utility.getCameraPhotoOrientation(getApplicationContext(), );
-                        bm = Utility.compressImageUri(data.getData(), 640, 480, getApplicationContext());
-                        //MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-                    }
-                    Bitmap yourSelectedImage = Bitmap.createScaledBitmap(bm, 300, 200, true);
-                    picBinary = Bitmap.createScaledBitmap(bm, bm.getWidth(), bm.getHeight(), true);
-
-                    bm.recycle();
-
-                    Toast.makeText(getApplicationContext(), yourSelectedImage.getWidth() + " " + yourSelectedImage.getHeight(), Toast.LENGTH_LONG).show();
-                    PHOTO.setImageBitmap(yourSelectedImage);
-                }
-                break;
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == SELECT_FILE)
+                onSelectFromGalleryResult(data);
+            else if (requestCode == REQUEST_CAMERA)
+                onCaptureImageResult(data);
         }
+    }
+
+    private void onSelectFromGalleryResult(Intent data) {
+        if (data != null) {
+            picBinary = Bitmap.createBitmap(Utility.compressImageUri(data.getData(), 640, 480, getApplicationContext()));
+            //MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+            Bitmap yourSelectedImage = Bitmap.createScaledBitmap(picBinary, 640, 480, true);
+            PHOTO.setImageBitmap(yourSelectedImage);
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Failed to get picture", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void onCaptureImageResult(Intent data) {
+        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        File destination = new File(Environment.getExternalStorageDirectory(),
+                System.currentTimeMillis() + ".jpg");
+        FileOutputStream fo;
+        try {
+            destination.createNewFile();
+            fo = new FileOutputStream(destination);
+            fo.write(bytes.toByteArray());
+            fo.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        picBinary = Bitmap.createScaledBitmap(thumbnail, thumbnail.getWidth(), thumbnail.getHeight(), true);
+        Bitmap yourSelectedImage = Bitmap.createScaledBitmap(picBinary, 640, 480, true);
+        PHOTO.setImageBitmap(yourSelectedImage);
     }
 
     @Override
@@ -201,13 +229,62 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                 startActivity(intent);
                 break;
             case R.id.reg_photo:
-                Intent i = new Intent();
-                i.setType("image/*");
-                i.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(i, "Select File"), ACTIVITY_SELECT_IMAGE);
+                selectImage();
                 break;
         }
     }
+
+    private void selectImage() {
+        final CharSequence[] items = {"Take Photo", "Choose from Library",
+                "Cancel"};
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(RegisterActivity.this);
+        builder.setTitle("Add Photo");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                boolean result = Utility.checkPermission(RegisterActivity.this);
+                if (!result)
+                    Toast.makeText(getApplicationContext(), "No permission, please grant the access to gallery", Toast.LENGTH_LONG).show();
+                if (items[item].equals("Take Photo")) {
+                    userChoosenTask = "Take Photo";
+                    if (result)
+                        cameraIntent();
+                } else if (items[item].equals("Choose from Library")) {
+                    userChoosenTask = "Choose from Library";
+                    if (result)
+                        galleryIntent();
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void cameraIntent() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        PackageManager pm = getApplicationContext().getPackageManager();
+        if (ActivityCompat.checkSelfPermission(RegisterActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(RegisterActivity.this, new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
+        }
+        if (ActivityCompat.checkSelfPermission(RegisterActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA))
+                startActivityForResult(intent, REQUEST_CAMERA);
+            else
+                Toast.makeText(getApplicationContext(), "No camera detected", Toast.LENGTH_LONG).show();
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Permission of camera is needed", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void galleryIntent() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
+    }
+
 
     private void uploadImg() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();

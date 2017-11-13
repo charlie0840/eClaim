@@ -36,43 +36,8 @@ public class ImageGetterThread implements Runnable {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-//        query.getFirstInBackground(new GetCallback<ParseObject>() {
-//            @Override
-//            public void done(ParseObject object, ParseException e) {
-//                if(e == null) {
-//                    if(object != null) {
-//                        try {
-//                            if(object.get("list") != null)
-//                                list = new ArrayList<String>((List<String>) object.get("list"));
-//                            Log.d("DEBUG!!!!!!", "" + list.size());
-//                        } catch (ClassCastException e1) {
-//                            Log.d("ERROR!!!!!", e1.toString());
-//                            e1.printStackTrace();
-//                        }
-//                        Log.d("DEBUG!!!!!", "wake the thread!!!");
-//                        synchronized (id) {
-//                            id.notify();
-//                        }
-//                    }
-//                }
-//                else
-//                    Log.d("ERROR!!!!!", e.toString());
-//
-//            }
-//        });
-//        synchronized (id) {
-//            try {
-//                Log.d("DEBUG!!!!!", "Start to wait!!!");
-//                id.wait();
-//                Log.d("DEBUG!!!!!", "wake up!!!!!");
-//
-//            } catch (InterruptedException e) {
-//            }
-//        }
     }
     public List<String> getList() {
-        Log.d("DEBUG!!!!!!", "" + list.size());
         return list;
     }
 }

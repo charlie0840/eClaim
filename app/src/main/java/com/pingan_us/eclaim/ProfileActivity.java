@@ -29,7 +29,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -111,14 +110,15 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         IDPicList = new ArrayList<Drawable>();
         vehiclePicList = new ArrayList<Drawable>();
 
-        vehiclePicList.add(resize(getResources().getDrawable(R.drawable.add), 400, 400));
+        vehiclePicList.add(resize(getResources().getDrawable(R.drawable.insurance), 400, 400));
 
         nav_bar = findViewById(R.id.nav_layout);
 
         profile_photo = (CircleImageView) findViewById(R.id.profile_photo);
-        Drawable p1 = resize(getResources().getDrawable(R.drawable.add), 400, 400);
+        Drawable p1 = resize(getResources().getDrawable(R.drawable.driverlicense), 400, 400);
+        Drawable p2 = resize(getResources().getDrawable(R.drawable.insurance), 400, 400);
         IDPicList.add(p1);
-        vehiclePicList.add(p1);
+        vehiclePicList.add(p2);
 
 
         RelativeLayout home_nav = (RelativeLayout) nav_bar.findViewById(R.id.home_nav);
@@ -388,7 +388,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         Toast.makeText(this, "camera!!!!", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         PackageManager pm = getApplicationContext().getPackageManager();
-        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
         } else {
             if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA))
@@ -408,12 +408,21 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
 
     private void onSelectFromGalleryResult(Intent data) {
         Bitmap bm = null;
+        Bitmap resBitmap = null;
         if (data != null) {
-                bm = Bitmap.createBitmap(Utility.compressImageUri(data.getData(), 1024, 768, getApplicationContext()));
-                //MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+            bm = Bitmap.createBitmap(Utility.compressImageUri(data.getData(), 1024, 768, getApplicationContext()));
+            //MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+            if(bm != null) {
+                resBitmap = Bitmap.createScaledBitmap(bm, bm.getWidth(), bm.getHeight(), true);
+                addToList(resBitmap);
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "!", Toast.LENGTH_LONG).show();
+            }
         }
-        Bitmap resBitmap = Bitmap.createScaledBitmap(bm, bm.getWidth(), bm.getHeight(), true);
-        addToList(resBitmap);
+        else {
+            Toast.makeText(getApplicationContext(), "Failed to get picture", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void onCaptureImageResult(Intent data) {
@@ -644,7 +653,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
 
     public void getBitmapList(List<String> list) {
         if(list.size() == 0) {
-            vehiclePicList.add(getResources().getDrawable(R.drawable.add));
+            vehiclePicList.add(getResources().getDrawable(R.drawable.insurance));
             carList.add("Add a vehicle");
             hasVehicle = false;
             return;
@@ -674,7 +683,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                 carList.add(name);
             } catch (ParseException e) {
                 e.printStackTrace();
-                Log.d("DEBUG!!!!!", "while " + currStr + " " + e.toString());
             }
         }
         if(vehiclePicList.get(0) != null)
@@ -693,7 +701,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             hasVehicle = false;
         counter = 0;
         if(vehiclePicList.size() == 0) {
-            vehiclePicList.add(getResources().getDrawable(R.drawable.add));
+            vehiclePicList.add(getResources().getDrawable(R.drawable.insurance));
             carList.add("No vehicle");
         }
         next_btn.performClick();
@@ -711,7 +719,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             obj.delete();
         } catch (ParseException e) {
             e.printStackTrace();
-            Log.d("DEBUG!!!!!", "delete " + e.toString());
         }
     }
 
@@ -721,7 +728,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         Bitmap profileImage = null;
         BitmapFactory.Options options = new BitmapFactory.Options();
         profileImage = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length, options);
-        Bitmap finalBmp = Bitmap.createScaledBitmap(profileImage, 600, 350, true);
+        Bitmap finalBmp = Bitmap.createScaledBitmap(profileImage, 320, 240, true);
         profileImage.recycle();
         if(IDCardByte != null) {
             IDPicList.clear();

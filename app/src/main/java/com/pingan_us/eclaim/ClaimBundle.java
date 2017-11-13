@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -91,33 +90,6 @@ public class ClaimBundle implements Parcelable{
         this.otherInsurance = null;
     }
 
-//    public void uploadStepImage(byte[] file, Window w, int id) {
-//        if(id == 1) {
-//            wholeScene = new ParseFile("image", file);
-//            uploadImg(wholeScene, w, 0);
-//        }
-//        if(id == 2) {
-//            yourPlate = new ParseFile("image", file);
-//            uploadImg(yourPlate, w, 0);
-//        }
-//        if(id == 3) {
-//            otherPlate = new ParseFile("image", file);
-//            uploadImg(otherPlate, w, 0);
-//        }
-//        if(id == 4) {
-//            driverLicense = new ParseFile("image", file);
-//            uploadImg(driverLicense, w, 0);
-//        }
-//        if(id == 5) {
-//            otherLicense = new ParseFile("image", file);
-//            uploadImg(otherLicense, w, 0);
-//        }
-//        if(id == 6) {
-//            otherInsurance = new ParseFile("image", file);
-//            uploadImg(otherInsurance, w, 0);
-//        }
-//    }
-
     public void uploadStep1Image(String num, final boolean person, List<byte[]> list, final Window w, final Context context, final RelativeLayout background) {
         byte[] file = null;
         file = list.get(0);
@@ -169,7 +141,6 @@ public class ClaimBundle implements Parcelable{
                                 }
                                 else {
                                     Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-                                    Log.d("error!!!!!!!!!!!", e.toString());
                                     w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                     background.setAlpha((float) 0);
                                 }
@@ -178,7 +149,6 @@ public class ClaimBundle implements Parcelable{
                     }
                     else {
                         Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-                        Log.d("error!!!!!!!!!!!", e.toString());
                         w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         background.setAlpha((float) 0);
                     }
@@ -210,48 +180,6 @@ public class ClaimBundle implements Parcelable{
                 context.startActivity(intent);
             }
         }
-        //if(otherLicense != null) {
-//            otherLicense.saveInBackground(new SaveCallback() {
-//                @Override
-//                public void done(ParseException e) {
-//                    if (e == null) {
-//                        otherInsurance.saveInBackground(new SaveCallback() {
-//                            @Override
-//                            public void done(ParseException e) {
-//                                if (e == null) {
-//                                    if(driverLicense != null) {
-//                                        driverLicense.saveInBackground(new SaveCallback() {
-//                                            @Override
-//                                            public void done(ParseException e) {
-//                                                w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                                                Intent intent = new Intent(context, FileClaim2Activity.class);
-//                                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                                intent.putExtra("ClaimBundle", getThisClaim());
-//                                                context.startActivity(intent);
-//                                            }
-//                                        });
-//                                    }
-//                                    else {
-//                                        w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                                        Intent intent = new Intent(context, FileClaim2Activity.class);
-//                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                        intent.putExtra("ClaimBundle", getThisClaim());
-//                                        context.startActivity(intent);
-//                                    }
-//                                } else {
-//                                    Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-//                                    Log.d("error!!!!!!!!!!!", e.toString());
-//                                    w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                                }
-//                            }
-//                        });
-//                    } else {
-//                        Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-//                        Log.d("error!!!!!!!!!!!", e.toString());
-//                        w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                    }
-//                }
-//            });
     }
 
     public void uploadStep2Image(List<byte[]> list, final Window w, final Context context, final RelativeLayout background) {
@@ -288,7 +216,6 @@ public class ClaimBundle implements Parcelable{
                                         }
                                         else {
                                             Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-                                            Log.d("error!!!!!!!!!!!", e.toString());
                                             background.setAlpha((float) 0);
                                             w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                         }
@@ -297,7 +224,6 @@ public class ClaimBundle implements Parcelable{
                             }
                             else {
                                 Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-                                Log.d("error!!!!!!!!!!!", e.toString());
                                 background.setAlpha((float) 0);
                                 w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                             }
@@ -306,7 +232,6 @@ public class ClaimBundle implements Parcelable{
                 }
                 else {
                     Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-                    Log.d("error!!!!!!!!!!!", e.toString());
                     background.setAlpha((float) 0);
                     w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 }
@@ -349,9 +274,6 @@ public class ClaimBundle implements Parcelable{
     }
 
     private void uploadImg(final ParseFile file, final Window w, final int i) {
-        if(i == 3) {
-            Log.d("error", "several failed");
-        }
         file.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -359,7 +281,6 @@ public class ClaimBundle implements Parcelable{
                     w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 }
                 else {
-                    Log.d("error", e.toString());
                     uploadImg(file, w, i + 1);
                 }
             }
@@ -369,7 +290,6 @@ public class ClaimBundle implements Parcelable{
     public void uploadClaimBundle(final Window w, final Context context) {
         final ParseUser currUser = ParseUser.getCurrentUser();
         final ParseObject Claim = new ParseObject("Claim");
-        Log.d("names", vehicleNum + " !!!!!!!!" + time + " !!!!!!!!!" + location + " !!!!!!!!" + vehicleID + " !!!!!!!" + phoneOther);
         Claim.put("injured", injured);
         Claim.put("drivable", drivable);
         Claim.put("atScene", atScene);
@@ -388,20 +308,16 @@ public class ClaimBundle implements Parcelable{
             Claim.put("otherInsurance", otherInsurance);
         }
         else {
-            Log.d("error", "otherInsurance is null");
         }
         Claim.put("wholeScene", wholeScene);
         Claim.put("yourPlate", yourPlate);
         Claim.put("otherPlate", otherPlate);
         //Claim.put("morePictures", morePictures);
         Claim.put("morePicturesID", imageListID);
-        Toast.makeText(context, "start to upload claim", Toast.LENGTH_LONG).show();
         Claim.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 if(e == null) {
-                    Log.d("done", "claim upload done");
-                    Toast.makeText(context, "claim built", Toast.LENGTH_LONG).show();
                     final String objectID = Claim.getObjectId();
                     List<String> claimList = new ArrayList<String>();
                     if(currUser.get("claimID") != null) {
@@ -417,7 +333,6 @@ public class ClaimBundle implements Parcelable{
                         @Override
                         public void done(ParseException e) {
                             if(e == null) {
-                                Toast.makeText(context, "user updated", Toast.LENGTH_LONG).show();
                                 w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                 Intent intent = new Intent(context, ClaimFinishActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -439,7 +354,6 @@ public class ClaimBundle implements Parcelable{
                     });
                 }
                 else {
-                    Log.d("error", "error uploading claim " + e.toString());
                     w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 }
             }
@@ -489,14 +403,6 @@ public class ClaimBundle implements Parcelable{
         if(nullCheck[5])
             out.writeValue(otherPlate);
         if(nullCheck[6]) {
-        //    Log.d("Debuging!!!!!!!!!!!", "start to take care of list");
-        ///    out.writeInt(morePictures.size());
-        //    for(byte[] array: morePictures) {
-        //        Log.d("Debuging!!!!!!!!!!!", "seqencing!!!!!!!!!!!!");
-        //        out.writeInt(array.length);
-        //        out.writeByteArray(array);
-        //    }
-        //    Log.d("Debuging!!!!!!!!!!!", "succeed!!!!!!!!!!!!!!!!!!!");
             out.writeString(imageListID);
         }
     }

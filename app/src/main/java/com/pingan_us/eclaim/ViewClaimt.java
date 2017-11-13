@@ -199,7 +199,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                 for(int i = 0; i <= num_of_visible_view; i++) {
                     claim_list.getChildAt(i).setBackgroundColor(getResources().getColor(R.color.colorWhite));
                 }
-                claim_list.getChildAt(position - first_loc).setBackgroundColor(getResources().getColor(R.color.colorGray));
+                claim_list.getChildAt(position - first_loc).setBackgroundColor(getResources().getColor(R.color.colorBrightGreen));
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                         WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 pos = position;
@@ -339,17 +339,11 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                             try {
                                 thread.join();
                                 byteList = new ArrayList<String>(th.getList());
-                                Log.d("DEBUG getting pic", "" + byteList.size());
-
                             } catch (InterruptedException e1) {
-                                Log.d("ERROR E1!!!!!", e1.toString());
                                 e1.printStackTrace();
                             }
-                            Toast.makeText(getApplicationContext(), "getting pictures with size " + byteList.size(), Toast.LENGTH_LONG).show();
                         }
-                            //byteList = new ArrayList<byte[]>((List<byte[]>) currClaim.get("morePictures"));
                     } catch (ClassCastException e2) {
-                        Log.d("ERROR E2!!!!!", e2.toString());
                         e2.printStackTrace();
                         background.setAlpha((float) 0);
                         progressBar.setVisibility(View.GONE);
@@ -380,8 +374,6 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
     }
 
     public void loadMorePictures(int start, int end) {
-        Log.d("DEBUG loading pic", "" + byteList.size());
-        Toast.makeText(getApplicationContext(), "loading pictures with size " + byteList.size(), Toast.LENGTH_LONG).show();
         picList.clear();
         if(byteList.size() > start) {
             for (int i = start; i < end; i++) {

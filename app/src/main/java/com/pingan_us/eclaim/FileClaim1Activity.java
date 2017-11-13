@@ -348,7 +348,6 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
             case R.id.I_pick_radiobutton:
                 add_person_btn.setVisibility(View.GONE);
                 add_person_pic.setVisibility(View.GONE);
-                //byteList.set(0, null);
                 if (other_rbtn.isChecked())
                     other_rbtn.setChecked(false);
                 break;
@@ -489,7 +488,6 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //Toast.makeText(getApplicationContext(), "REQUEST CODE IS       " + requestCode, Toast.LENGTH_SHORT).show();
         if(requestCode == GET_LOC_REQUEST) {
             if(resultCode == RESULT_OK) {
                 LatLng currLoc = null;
@@ -507,14 +505,10 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 Bitmap bm=null;
                 if (data != null) {
                         bm = Utility.compressImageUri(data.getData(), 1024, 768, getApplicationContext());
-                        //MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-                    if(bm == null) {
-                        Toast.makeText(getApplicationContext(), "Wrong !!!!!!!", Toast.LENGTH_LONG).show();
-                    }
                 }
                 if(drive_or_insur == DRIVE) {
                     if(bm == null) {
-                        Toast.makeText(getApplicationContext(), "Wrong !!!!!!!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Failed to load image", Toast.LENGTH_LONG).show();
                     }
                     else {
                         p2 = Bitmap.createScaledBitmap(bm, bm.getWidth(), bm.getHeight(), true);
@@ -570,82 +564,12 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         return activity;
     }
 
-    public void uploadData() {//final Bitmap bmp) {
-//        Toast.makeText(getApplicationContext(), "uploading Data!!!", Toast.LENGTH_LONG).show();
-//        final ParseUser currUser = ParseUser.getCurrentUser();
-//        final ParseObject Claim = new ParseObject("Claim");
-//
-//        Claim.put("injured", injure_box.isChecked());
-//        Claim.put("drivable", drivable_box.isChecked());
-//        Claim.put("atScene", present_box.isChecked());
-//        Claim.put("vehicleNum", vehicle_num_spinner.getSelectedItem().toString());
-//        Claim.put("time", time_txt);
-//        Claim.put("person", I_rbtn.isChecked());
-//        Claim.put("location", location_txt);
-//        Claim.put("vehicleID", vehicle_id);
-//        Claim.put("phoneOther", phone_txt);
-//        if(f1 != null)
-//            Claim.put("driverLicense", f1);
-//        Claim.put("otherLicense", f2);
-//        Claim.put("otherInsurance", f3);
-//
-//        Claim.saveInBackground(new SaveCallback() {
-//            @Override
-//            public void done(ParseException e) {
-//                if(e == null) {
-//                    Toast.makeText(getApplicationContext(), "claim uploading all good!!!!!!!", Toast.LENGTH_LONG).show();
-//                    final String objectID = Claim.getObjectId();
-//                    List<String> claimList = new ArrayList<String>();
-//                    if(currUser.get("claimID") != null) {
-//                        try {
-//                            claimList = new ArrayList<String>((List<String>) currUser.get("claimID"));
-//                        }
-//                        catch (ClassCastException e1) {
-//                        }
-//                    }
-//                    claimList.add(objectID);
-//                    currUser.put("claimID", claimList);
-//                    currUser.saveInBackground(new SaveCallback() {
-//                        @Override
-//                        public void done(ParseException e) {
-//                            if(e == null) {
-//                                Toast.makeText(getApplicationContext(), "user update all good!!!!!!", Toast.LENGTH_LONG).show();
-//                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                                Intent intent = new Intent(getApplicationContext(), FileClaim2Activity.class);
-//                                intent.putExtra("claimID", objectID);
-//                                startActivity(intent);
-//                            }
-//                            else{
-//                                ParseQuery<ParseObject> query = ParseQuery.getQuery("Claim");
-//                                query.whereEqualTo("objectID", objectID);
-//                                query.getInBackground(objectID, new GetCallback<ParseObject>() {
-//                                    public void done(ParseObject object, ParseException e) {
-//                                        if (e == null) {
-//                                            object.deleteInBackground();
-//                                        }
-//                                    }
-//                                });
-//                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                                Toast.makeText(getApplicationContext(), "user update went wrong!!! " + e.toString(), Toast.LENGTH_LONG).show();
-//                            }
-//                        }
-//                    });
-//                }
-//                else {
-//                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                    Toast.makeText(getApplicationContext(), "claim uploading went wrong!!! " + e.toString(), Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        });
+    public void uploadData() {
         claim.setStep1Bundle(injure_box.isChecked(), drivable_box.isChecked(), present_box.isChecked(), I_rbtn.isChecked(),
                 time_txt, location_txt, vehicle_spinner.getSelectedItem().toString(), vehicle_num_spinner.getSelectedItem().toString(), phone_txt);
         background.setAlpha((float) 0.5);
         claim.uploadStep1Image(vehicle_num_spinner.getSelectedItem().toString(), I_rbtn.isChecked(),
                 byteList, w, getApplicationContext(), background);
-
-        //       Intent intent = new Intent(getApplicationContext(), FileClaim2Activity.class);
-   //     intent.putExtra("ClaimBundle", claim);
-     //   startActivity(intent);
     }
 
     private void uploadImg(final Bitmap bmp, final int action) {

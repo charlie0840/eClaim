@@ -16,7 +16,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name="com.pingan_us.eclaim.ParseInitialization"
+        android:name=".ParseInitialization"
         android:allowBackup="true"
         android:icon="@drawable/appicon"
         android:label="@string/app_name"
@@ -31,17 +31,16 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".LoginActivity"
             android:configChanges="orientation"
             android:label="eClaim"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".MapActivity"
             android:configChanges="orientation"
@@ -104,7 +103,8 @@
             android:value="@string/back4app_client_key" />
 
         <activity android:name=".ViewClaimt" />
-        <activity android:name=".HomeActivity"></activity>
+        <activity android:name=".HomeActivity" />
+        <activity android:name=".photoActivity"></activity>
     </application>
 
 </manifest>

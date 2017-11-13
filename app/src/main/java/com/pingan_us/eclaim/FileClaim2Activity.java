@@ -211,10 +211,6 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 background.setAlpha((float) 0.5);
                 uploadImageGroup();
-                //claim.uploadStep2Image(singleByteList, w, getApplicationContext());
-//                Intent intent = new Intent(getApplicationContext(), FileClaim3Activity.class);
-//                intent.putExtra("ClaimBundle", claim);
-//                startActivity(intent);
                 break;
             case R.id.step3_cancel_button:
                 Intent intent = new Intent(this, HomeActivity.class);
@@ -259,7 +255,6 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
     }
 
     private void cameraIntent() {
-        //Toast.makeText(this, "camera!!!!", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         PackageManager pm = getApplicationContext().getPackageManager();
         if(pm.hasSystemFeature(PackageManager.FEATURE_CAMERA))
@@ -300,9 +295,6 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         for(int i = 0; i < path.size(); i++) {
             File image = new File(path.get(i));
             final Uri currUri = Uri.fromFile(image);
-
-            //bm = Bitmap.createBitmap(Utility.compressImageUri(currUri, 1024, 768, getApplicationContext()));
-
             //decode bitmap from uri
             ReceiverThread thread = new ReceiverThread(currUri, 1024, 768, getApplicationContext());
             Thread th = new Thread(thread);
@@ -314,8 +306,6 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             }
 
             bm = Bitmap.createBitmap(thread.getBitmap());
-
-                        //BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
 
             Bitmap bitmap = Bitmap.createScaledBitmap(bm, bm.getWidth() / 2, bm.getHeight() / 2, true);
             if(which_loc != MORE)
@@ -364,7 +354,6 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             addToList(resBitmap);
         else
             setList(resBitmap);
-        //thumbnail.recycle();
     }
 
     @Override
@@ -416,36 +405,17 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         byte[] byteArray = stream.toByteArray();
         final ParseFile file = new ParseFile("imageID", byteArray);
         if(action == WHOLE) {
-            //getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            //claim.uploadStepImage(byteArray, w, 1);
             singleByteList.set(0, byteArray);
             f1 = file;
         }
         else if(action == YOUR) {
-            //getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            //claim.uploadStepImage(byteArray, w, 2);
             singleByteList.set(1, byteArray);
             f2 = file;
         }
         else if(action == OTHER) {
-            //getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            //claim.uploadStepImage(byteArray, w, 3);
             singleByteList.set(2,byteArray);
             f3 = file;
         }
-//        file.saveInBackground(new SaveCallback() {
-//            @Override
-//            public void done(ParseException e) {
-//                if(e == null) {
-//                    bmp.recycle();
-//                    Toast.makeText(getApplicationContext(), "All good! start to upload data!!!", Toast.LENGTH_LONG).show();
-//                }
-//                else {
-//                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                    Toast.makeText(getApplicationContext(), "pic uploading went wrong!!! " + e.toString(), Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        });
     }
 
     private void uploadImageGroup() {
@@ -462,46 +432,9 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             Log.d("DEBUG!!!!!!!!!!!", "" + byteArray);
             strList.add(Base64.encodeToString(byteArray, Base64.DEFAULT));
             byteList.add(byteArray);
-            //bmp.recycle();
         }
         claim.setStep2Bundle(singleByteList, w, strList, getApplicationContext(), background);
-        //claim.setStep2Bundle(byteList);
     }
-
-//    public void uploadData() {
-//        Toast.makeText(getApplicationContext(), "uploading Data!!!", Toast.LENGTH_LONG).show();
-//        ParseQuery<ParseObject> query = ParseQuery.getQuery("Claim");
-//        query.getInBackground(claim_id, new GetCallback<ParseObject>() {
-//            @Override
-//            public void done(ParseObject object, ParseException e) {
-//                if(e == null) {
-//                    object.put("wholeScene", f1);
-//                    object.put("yourPlate", f2);
-//                    object.put("otherPlate", f3);
-//                    object.put("morePictures", byteList);
-//                    object.saveInBackground(new SaveCallback() {
-//                        @Override
-//                        public void done(ParseException e) {
-//                            if(e == null) {
-//                                Toast.makeText(getApplicationContext(), "claim uploading all good!!!!!!!", Toast.LENGTH_LONG).show();
-//                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                                Intent intent = new Intent(getApplicationContext(), FileClaim3Activity.class);
-//                                intent.putExtra("claimID", claim_id);
-//                                startActivity(intent);
-//                            }
-//                            else {
-//                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-//                                Toast.makeText(getApplicationContext(), "claim uploading went wrong!!! " + e.toString(), Toast.LENGTH_LONG).show();
-//                            }
-//                        }
-//                    });
-//                }
-//                else {
-//                    Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        });
-//    }
 
     public static FileClaim2Activity getInstance() {
         return activity;

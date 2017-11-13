@@ -358,7 +358,7 @@
                                     android:layout_height="120dp"
                                     android:layout_margin="5dp"
                                     android:layout_gravity="center_horizontal"
-                                    android:src="@drawable/addphoto"
+                                    android:src="@drawable/add"
                                     android:scaleType="fitCenter">
                                 </ImageView>
                                 <TextView
@@ -374,7 +374,7 @@
                                     android:layout_height="120dp"
                                     android:layout_margin="5dp"
                                     android:layout_gravity="center_horizontal"
-                                    android:src="@drawable/addphoto"
+                                    android:src="@drawable/add"
                                     android:scaleType="fitCenter">
                                 </ImageView>
                                 <TextView
@@ -390,7 +390,7 @@
                                     android:layout_height="120dp"
                                     android:layout_margin="5dp"
                                     android:layout_gravity="center_horizontal"
-                                    android:src="@drawable/addphoto"
+                                    android:src="@drawable/add"
                                     android:scaleType="fitCenter">
                                 </ImageView>
                             </LinearLayout>

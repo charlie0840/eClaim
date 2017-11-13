@@ -59,7 +59,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_margin="25dp"
                     android:layout_below="@+id/home_username"
-                    android:textSize="20dp"
+                    android:textSize="15dp"
                     android:text="Email Address"
                     android:textColor="@color/colorBlack"
                     android:textStyle="bold"/>

@@ -173,9 +173,8 @@ public class MapActivity extends FragmentActivity implements View.OnClickListene
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        } else {
-            Toast.makeText(getApplicationContext(), "getting current location!!!!!", Toast.LENGTH_LONG).show();
-
+        }
+        else {
             if(googleApiClient != null)
                 googleApiClient.connect();
             Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
@@ -198,12 +197,8 @@ public class MapActivity extends FragmentActivity implements View.OnClickListene
          * move the camera with animation
          */
         LatLng latLng = new LatLng(latitude, longitude);
-        //mMap.addMarker(new MarkerOptions()
-        //        .position(latLng)
-        //        .draggable(true));
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        //mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
         mMap.getUiSettings().setZoomControlsEnabled(true);
 
 
@@ -287,7 +282,6 @@ public class MapActivity extends FragmentActivity implements View.OnClickListene
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(MapActivity.this, "onMarkerClick", Toast.LENGTH_SHORT).show();
         return true;
     }
 

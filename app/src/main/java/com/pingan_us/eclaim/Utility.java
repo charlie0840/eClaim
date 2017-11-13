@@ -140,7 +140,6 @@ public class Utility {
         List<String> vehicleIDList = new ArrayList<String>();
         if(user.get("vehicleID") != null)
             vehicleIDList = new ArrayList<String>((List<String>)user.get("vehicleID"));
-        Log.d("testing!!!!!!!!!!!!!!!!", "id size is " + vehicleIDList.size());
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Vehicle");
         query.whereEqualTo("objectId", vehicleIDList);
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -151,7 +150,6 @@ public class Utility {
                         for(ParseObject object:objects) {
                             String name = (String) object.get("modelMake");
                             strList.add(name);
-                            Log.d("testing!!!!!!!!!!!!!!!!", "car size is " + strList.size());
                         }
                     }
                 }
@@ -289,11 +287,8 @@ public class Utility {
             scaledBitmap = BitmapFactory.decodeFile(srcImagePath, options);
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
-            Log.d("ERROR!!!!!!!!!!!!", e.toString());
-
         }
         if (scaledBitmap == null) {
-            Log.d("ERROR!!!!!!!!!!!!", "scaleBitmap is null");
             return null;//压缩失败
         }
         //生成最终输出的bitmap
@@ -318,7 +313,6 @@ public class Utility {
             actualOutBitmap = Bitmap.createBitmap(actualOutBitmap, 0, 0,
                     actualOutBitmap.getWidth(), actualOutBitmap.getHeight(), matrix, true);
         } catch (IOException e) {
-                Log.d("ERROR!!!!!!!!!!!!", e.toString());
                 e.printStackTrace();
             return null;
         }
