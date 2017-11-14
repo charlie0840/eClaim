@@ -185,23 +185,26 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int loc = 0;
+                Intent intent = new Intent(getApplicationContext(), photoActivity.class);
+                intent.putExtra("isList", true);
+                intent.putExtra("claimData", claimIDList.get(pos));
                 if(isFirstPage) {
-                    Bitmap bmp = picList.get(position);
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-                    Intent intent = new Intent(getApplicationContext(), photoActivity.class);
-                    intent.putExtra("imageByte",byteArray);
+                    //Bitmap bmp = picList.get(position);
+                    //ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    //bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    //byte[] byteArray = stream.toByteArray();
+                    intent.putExtra("location", position);
+                    //intent.putExtra("imageByte",byteArray);
                     startActivity(intent);
                 }
                 else if(pic_list.getChildCount() != 0) {
                     loc = position + 5;
-                    Bitmap bmp = picList.get(loc);
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-                    Intent intent = new Intent(getApplicationContext(), photoActivity.class);
-                    intent.putExtra("imageByte",byteArray);
+                    //Bitmap bmp = picList.get(loc);
+                    //ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    //bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    //byte[] byteArray = stream.toByteArray();
+                    intent.putExtra("location", loc);
+                    //intent.putExtra("imageByte",byteArray);
                     startActivity(intent);
                 }
             }
@@ -324,30 +327,11 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                 picToGet = "driverLicense";
                 break;
         }
-        final String str = picToGet;
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Claim");
-        query.whereEqualTo("objectId", claimIDList.get(pos));
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        query.getFirstInBackground(new GetCallback<ParseObject>() {
-            @Override
-            public void done(ParseObject object, ParseException e) {
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                if(e == null) {
-                    byte[] wholeSceneByte = new byte[0];
-                    try {
-                        if(object.get(str) != null) {
-                            byte[] bytes = ((ParseFile) object.get(str)).getData();
-                            Intent intent = new Intent(getApplicationContext(), photoActivity.class);
-                            intent.putExtra("imageByte", bytes);
-                            startActivity(intent);
-                        }
-                    } catch (ParseException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            }
-        });
-
+        Intent intent = new Intent(getApplicationContext(), photoActivity.class);
+        intent.putExtra("isList", false);
+        intent.putExtra("imageData", picToGet);
+        intent.putExtra("claimData", claimIDList.get(pos));
+        startActivity(intent);
     }
 
     public void fillClaim(int position) {
@@ -486,7 +470,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                 byte[] bytes = Base64.decode(byteList.get(i), Base64.DEFAULT);
                 BitmapFactory.Options options1 = new BitmapFactory.Options();
                 Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options1);
-                Bitmap finalBmp = Bitmap.createScaledBitmap(bmp, 640, 480, true);
+                Bitmap finalBmp = Bitmap.createScaledBitmap(bmp, 240, 180, true);
                 bmp.recycle();
                 picList.add(finalBmp);
             }
@@ -501,7 +485,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         Bitmap bmp;
         BitmapFactory.Options options1 = new BitmapFactory.Options();
         bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options1);
-        Bitmap finalBmp = Bitmap.createScaledBitmap(bmp, 640, 480, true);
+        Bitmap finalBmp = Bitmap.createScaledBitmap(bmp, 240, 180, true);
         bmp.recycle();
         view.setImageBitmap(finalBmp);
     }

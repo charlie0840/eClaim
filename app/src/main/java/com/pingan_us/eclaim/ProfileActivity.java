@@ -370,18 +370,19 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         Bitmap bm = null;
         Bitmap resBitmap = null;
         if (data != null) {
-            bm = Bitmap.createBitmap(Utility.compressImageUri(data.getData(), 1024, 768, getApplicationContext()));
-            //MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+            String path = Utility.getPath(getApplicationContext(), data.getData());
+            Uri uri = Uri.parse(new File(path).toString());
+            bm = Bitmap.createBitmap(Utility.compressImageUri(uri, 1024, 768, getApplicationContext()));
             if(bm != null) {
                 resBitmap = Bitmap.createScaledBitmap(bm, bm.getWidth(), bm.getHeight(), true);
                 addToList(resBitmap);
             }
             else {
-                Toast.makeText(getApplicationContext(), "!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Failed to load image!", Toast.LENGTH_LONG).show();
             }
         }
         else {
-            Toast.makeText(getApplicationContext(), "Failed to get picture", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Failed to load image", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -718,6 +719,11 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             resume = false;
             doAnimation();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     public void doAnimation() {

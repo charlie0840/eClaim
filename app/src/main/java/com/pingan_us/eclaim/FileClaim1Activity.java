@@ -3,6 +3,7 @@ package com.pingan_us.eclaim;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +15,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.os.Message;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
@@ -502,9 +505,11 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         }
         else if(requestCode == ACTIVITY_SELECT_IMAGE) {
             if(resultCode == RESULT_OK){
+                String path = Utility.getPath(getApplicationContext(), data.getData());
+                Uri uri = Uri.parse(new File(path).toString());
                 Bitmap bm=null;
                 if (data != null) {
-                        bm = Utility.compressImageUri(data.getData(), 1024, 768, getApplicationContext());
+                        bm = Utility.compressImageUri(uri, 1024, 768, getApplicationContext());
                 }
                 if(drive_or_insur == DRIVE) {
                     if(bm == null) {

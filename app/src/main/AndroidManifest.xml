@@ -83,8 +83,7 @@
         <activity
             android:name=".photoActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Dialog"/>
+            android:screenOrientation="portrait"/>
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

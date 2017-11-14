@@ -36,7 +36,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
-        android:scaleType="fitCenter"
         android:src="@drawable/claimfinish"
         android:layout_centerHorizontal="true"/>
 

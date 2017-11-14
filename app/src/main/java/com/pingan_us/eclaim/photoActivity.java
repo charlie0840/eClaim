@@ -10,16 +10,26 @@ import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ScaleGestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class photoActivity extends FragmentActivity {
     ImageView im_move_zoom_rotate;
@@ -41,9 +51,56 @@ public class photoActivity extends FragmentActivity {
         setContentView(R.layout.activity_photo);
 
         Intent intent = getIntent();
-        byte[] imageByte = intent.getByteArrayExtra("imageByte");
-        bmp = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
 
+        Boolean isList = intent.getBooleanExtra("isList", false);
+        String claimID = intent.getStringExtra("claimData");
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Claim");
+        query.whereEqualTo("objectId", claimID);
+        ParseObject object = null;
+        byte[] bytes = null;
+        try {
+            object = query.getFirst();
+        } catch (ParseException e) {
+            finish();
+        }
+
+        if(!isList) {
+            String imageName = intent.getStringExtra("imageData");
+            ParseFile file = (ParseFile) object.get(imageName);
+            try {
+                bytes = file.getData();
+            } catch (ParseException e) {
+                finish();
+            }
+            bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+        }
+        else {
+            int location = intent.getIntExtra("location", -1);
+            if(location != -1) {
+                List<String> byteList;
+                try {
+                    if (object.get("morePicturesID") != null) {
+                        ImageGetterThread th = new ImageGetterThread((String) object.get("morePicturesID"));
+                        Thread thread = new Thread(th);
+                        thread.start();
+                        try {
+                            thread.join();
+                            byteList = new ArrayList<String>(th.getList());
+                            byte[] byteArray = Base64.decode(byteList.get(location), Base64.DEFAULT);
+                            BitmapFactory.Options options1 = new BitmapFactory.Options();
+                            bmp = BitmapFactory.decodeByteArray(byteArray, 0, bytes.length, options1);
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                } catch (ClassCastException e2) {
+                    e2.printStackTrace();
+                }
+            }
+        }
+
+        //byte[] imageByte = intent.getByteArrayExtra("imageData");
+        //bmp = Bitmap.createScaledBitmap(bmp1, (int)(bmp1.getWidth() * 0.9), (int)(bmp1.getHeight() * 0.9), true);
         init();
 
         layout = (RelativeLayout) findViewById(R.id.photo_layout);
@@ -59,7 +116,10 @@ public class photoActivity extends FragmentActivity {
         layout.setMinimumWidth((int)(dpWidth * 0.8));
         layout.setMinimumHeight((int)(dpHeight * 0.8));
         im_move_zoom_rotate = (ImageView) findViewById(R.id.zoom_image);
-        im_move_zoom_rotate.setImageBitmap(bmp);
+        if(bmp != null)
+            im_move_zoom_rotate.setImageBitmap(bmp);
+        else
+            im_move_zoom_rotate.setImageDrawable(getResources().getDrawable(R.drawable.add));
 
 
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int)(dpWidth * 0.7), (int)(dpHeight * 0.7));
@@ -115,9 +175,6 @@ public class photoActivity extends FragmentActivity {
                             parms.bottomMargin = 0;
                             parms.rightMargin = parms.leftMargin + (5 * parms.width);
                             parms.bottomMargin = parms.topMargin + (10 * parms.height);
-
-                            Log.d("testing", "" + parms.leftMargin + " " + parms.rightMargin + " " + parms.width + " " + parms.topMargin + " " + parms.bottomMargin + " " + parms.height);
-
 
                             view.setLayoutParams(parms);
                         }

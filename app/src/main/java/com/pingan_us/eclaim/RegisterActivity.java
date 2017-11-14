@@ -117,8 +117,9 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
 
     private void onSelectFromGalleryResult(Intent data) {
         if (data != null) {
-            picBinary = Bitmap.createBitmap(Utility.compressImageUri(data.getData(), 640, 480, getApplicationContext()));
-            //MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
+            String path = Utility.getPath(getApplicationContext(), data.getData());
+            Uri uri = Uri.parse(new File(path).toString());
+            picBinary = Bitmap.createBitmap(Utility.compressImageUri(uri, 640, 480, getApplicationContext()));
             Bitmap yourSelectedImage = Bitmap.createScaledBitmap(picBinary, 640, 480, true);
             PHOTO.setImageBitmap(yourSelectedImage);
         }
@@ -225,6 +226,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
             case R.id.reg_cancel_btn:
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
+                finish();
                 break;
             case R.id.reg_photo:
                 selectImage();
@@ -325,6 +327,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                                             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                                             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                             startActivity(intent);
+                                            finish();
                                         }
                                     });
                     AlertDialog alertDialog = alertDialogBuilder.create();
