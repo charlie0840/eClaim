@@ -2,6 +2,7 @@ package com.pingan_us.eclaim;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -37,6 +38,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView phone_btn, profile_photo;
     private RelativeLayout file_claim_btn, view_claim_btn;
     private TextView username_txt, email_txt, assistance_phone_txt;
+    private static HomeActivity activity = getActivity();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +83,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         doAnimation();
     }
+
     @TargetApi(23)
     public void onClick(View v) {
         switch (v.getId()) {
@@ -187,4 +190,8 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {}
+
+    public static HomeActivity getActivity() {
+        return activity;
+    }
 }

@@ -221,9 +221,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                         uploadImg();
                     }
                 }
-
                 break;
-
             case R.id.reg_cancel_btn:
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent);
@@ -284,7 +282,6 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
     }
-
 
     private void uploadImg() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -352,6 +349,4 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
             }
         });
     }
-
-
 }

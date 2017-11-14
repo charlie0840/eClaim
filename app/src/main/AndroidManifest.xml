@@ -38,48 +38,53 @@
         <activity
             android:name=".LoginActivity"
             android:configChanges="orientation"
-            android:label="eClaim"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"></activity>
         <activity
             android:name=".MapActivity"
             android:configChanges="orientation"
-            android:label="eClaim"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name=".RegisterActivity"
             android:configChanges="orientation"
-            android:label="eClaim"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ProfileActivity"
             android:configChanges="orientation"
-            android:label="eClaim"
             android:screenOrientation="portrait" />
         <activity
             android:name=".FileClaim1Activity"
             android:configChanges="orientation"
-            android:label="eClaim"
             android:screenOrientation="portrait" />
         <activity
             android:name=".FileClaim2Activity"
             android:configChanges="orientation"
-            android:label="eClaim"
             android:screenOrientation="portrait" />
         <activity
             android:name=".FileClaim3Activity"
             android:configChanges="orientation"
-            android:label="eClaim"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ClaimFinishActivity"
             android:configChanges="orientation"
-            android:label="eClaim"
             android:screenOrientation="portrait" />
         <activity
             android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity"
             android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".ViewClaimt"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HomeActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".photoActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Dialog"/>
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -101,10 +106,6 @@
         <meta-data
             android:name="com.parse.CLIENT_KEY"
             android:value="@string/back4app_client_key" />
-
-        <activity android:name=".ViewClaimt" />
-        <activity android:name=".HomeActivity" />
-        <activity android:name=".photoActivity"></activity>
     </application>
 
 </manifest>

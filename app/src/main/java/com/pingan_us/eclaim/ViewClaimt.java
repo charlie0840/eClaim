@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -35,28 +36,31 @@ import com.parse.ParseUser;
 
 import org.w3c.dom.Text;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ViewClaimt extends AppCompatActivity implements View.OnClickListener{
     private int pos, limit = 5;
-    private boolean noClaim = true, slideIn = true;
-    private List<String> claimList, claimIDList = new ArrayList<String>();
     private List<Bitmap> picList = new ArrayList<Bitmap>();
     private List<String> byteList = new ArrayList<>();
-    private ListView claim_list, pic_list;
-    private RelativeLayout list_section, claim_section, background, other_driver_section;
+    private List<String> claimList, claimIDList = new ArrayList<String>();
+    private boolean noClaim = true, slideIn = true, isFirstPage = true;
+
+    private ImageView imHide;
     private ClaimCustomList adapter;
     private ProgressBar progressBar;
     private CustomListt adapter_pic;
     private LinearLayout refresh_btn;
     private Button prev_btn, next_btn;
-    private ImageView imHide;
+    private ListView claim_list, pic_list;
     private CheckBox injure_cb, drivable_cb, atScene_cb;
+    private RelativeLayout list_section, claim_section, background,
+            other_driver_section;
     private TextView vehicleNum_txt, time_txt, loc_txt, vehicleType_txt,
-                whoDrive_txt, phoneOfOther_txt, claim_list_title;
+            whoDrive_txt, phoneOfOther_txt, claim_list_title;
     private ImageView driver_license_pic, other_license_pic, other_insurance_pic,
-                whole_scene_pic, your_plate_pic, other_plate_pic;
+            whole_scene_pic, your_plate_pic, other_plate_pic;
     private static ViewClaimt activity;
 
     @Override
@@ -150,6 +154,13 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         other_license_pic = (ImageView) findViewById(R.id.vc_other_driver_license_pic);
         other_insurance_pic = (ImageView) findViewById(R.id.vc_other_insurance_card_pic);
 
+        driver_license_pic.setOnClickListener(this);
+        whole_scene_pic.setOnClickListener(this);
+        your_plate_pic.setOnClickListener(this);
+        other_plate_pic.setOnClickListener(this);
+        other_license_pic.setOnClickListener(this);
+        other_insurance_pic.setOnClickListener(this);
+
         injure_cb = (CheckBox) findViewById(R.id.vc_injure_checkbox);
         atScene_cb = (CheckBox) findViewById(R.id.vc_atscene_checkbox);
         drivable_cb = (CheckBox) findViewById(R.id.vc_drivable_checkbox);
@@ -169,6 +180,32 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
 
         adapter_pic = new CustomListt(ViewClaimt.this, picList);
         pic_list.setAdapter(adapter_pic);
+
+        pic_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int loc = 0;
+                if(isFirstPage) {
+                    Bitmap bmp = picList.get(position);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byte[] byteArray = stream.toByteArray();
+                    Intent intent = new Intent(getApplicationContext(), photoActivity.class);
+                    intent.putExtra("imageByte",byteArray);
+                    startActivity(intent);
+                }
+                else if(pic_list.getChildCount() != 0) {
+                    loc = position + 5;
+                    Bitmap bmp = picList.get(loc);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byte[] byteArray = stream.toByteArray();
+                    Intent intent = new Intent(getApplicationContext(), photoActivity.class);
+                    intent.putExtra("imageByte",byteArray);
+                    startActivity(intent);
+                }
+            }
+        });
 
         adapter = new ClaimCustomList(ViewClaimt.this, claimList);
         claim_list.setAdapter(adapter);
@@ -193,7 +230,6 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Log.d("DEBUG!!!!!!", "size is " + adapter.getCount() + " clicking at loc " + position);
                 int num_of_visible_view = claim_list.getLastVisiblePosition() - claim_list.getFirstVisiblePosition();
                 int first_loc = claim_list.getFirstVisiblePosition();
                 for(int i = 0; i <= num_of_visible_view; i++) {
@@ -220,6 +256,24 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
+            case R.id.vc_whole_scene_pic:
+                openZoom(R.id.vc_whole_scene_pic);
+                break;
+            case R.id.vc_your_plate_pic:
+                openZoom(R.id.vc_your_plate_pic);
+                break;
+            case R.id.vc_other_plate_pic:
+                openZoom(R.id.vc_other_plate_pic);
+                break;
+            case R.id.vc_other_driver_license_pic:
+                openZoom(R.id.vc_other_driver_license_pic);
+                break;
+            case R.id.vc_other_insurance_card_pic:
+                openZoom(R.id.vc_other_insurance_card_pic);
+                break;
+            case R.id.vc_person_license_pic:
+                openZoom(R.id.vc_person_license_pic);
+                break;
             case R.id.home_nav:
                 Intent intent = new Intent(this, HomeActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -238,12 +292,62 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                 getClaimList();
                 break;
             case R.id.vc_next_btn:
+                isFirstPage = false;
                 loadMorePictures(limit, 9);
                 break;
             case R.id.vc_prev_btn:
+                isFirstPage = true;
                 loadMorePictures(0, limit);
                 break;
         }
+    }
+
+    public void openZoom(int id) {
+        String picToGet = "";
+        switch(id) {
+            case R.id.vc_whole_scene_pic:
+                picToGet = "wholeScene";
+                break;
+            case R.id.vc_your_plate_pic:
+                picToGet = "yourPlate";
+                break;
+            case R.id.vc_other_plate_pic:
+                picToGet = "otherPlate";
+                break;
+            case R.id.vc_other_driver_license_pic:
+                picToGet = "otherLicense";
+                break;
+            case R.id.vc_other_insurance_card_pic:
+                picToGet = "otherInsurance";
+                break;
+            case R.id.vc_person_license_pic:
+                picToGet = "driverLicense";
+                break;
+        }
+        final String str = picToGet;
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Claim");
+        query.whereEqualTo("objectId", claimIDList.get(pos));
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject object, ParseException e) {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                if(e == null) {
+                    byte[] wholeSceneByte = new byte[0];
+                    try {
+                        if(object.get(str) != null) {
+                            byte[] bytes = ((ParseFile) object.get(str)).getData();
+                            Intent intent = new Intent(getApplicationContext(), photoActivity.class);
+                            intent.putExtra("imageByte", bytes);
+                            startActivity(intent);
+                        }
+                    } catch (ParseException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
+
     }
 
     public void fillClaim(int position) {

@@ -251,12 +251,10 @@ public class MapActivity extends FragmentActivity implements View.OnClickListene
     }
 
     @Override
-    public void onMarkerDragStart(Marker marker) {
-    }
+    public void onMarkerDragStart(Marker marker) {}
 
     @Override
-    public void onMarkerDrag(Marker marker) {
-    }
+    public void onMarkerDrag(Marker marker) {}
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
@@ -284,7 +282,5 @@ public class MapActivity extends FragmentActivity implements View.OnClickListene
     public boolean onMarkerClick(Marker marker) {
         return true;
     }
-
-
 }
 

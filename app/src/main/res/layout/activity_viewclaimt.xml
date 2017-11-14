@@ -395,6 +395,17 @@
                                 </ImageView>
                             </LinearLayout>
 
+                            <TextView
+                                android:id="@+id/photo_list_title"
+                                android:layout_below="@+id/vc_default_pic_section"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
+                                android:layout_marginBottom="10dp"
+                                android:text="Additional Photos"
+                                android:textColor="@color/colorBlack"
+                                android:textStyle="bold"
+                                android:textSize="15dp"/>
                             <ListView
                                 android:id="@+id/vc_photo_list"
                                 android:layout_width="match_parent"
@@ -402,7 +413,7 @@
                                 android:drawSelectorOnTop="false"
                                 android:listSelector="@android:color/darker_gray"
                                 android:layout_above="@+id/vc_btn_section"
-                                android:layout_below="@id/vc_default_pic_section">
+                                android:layout_below="@id/photo_list_title">
                             </ListView>
                             <RelativeLayout
                                 android:id="@+id/vc_btn_section"

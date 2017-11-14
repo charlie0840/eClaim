@@ -3,45 +3,31 @@ package com.pingan_us.eclaim;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.ExifInterface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.util.Base64;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -49,10 +35,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import com.google.android.gms.common.images.WebImage;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -65,12 +47,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -208,28 +186,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
 
             }
         });
-//        id_section.setOnTouchListener(new OnSwipeTouchListener(getBaseContext()) {
-//            int switcherImage = 0;
-//
-//            @Override
-//            public void onSwipeRight() {
-//                switcherImage = IDPicList.size();
-//                counter++;
-//                if (counter == switcherImage)
-//                    counter = 0;
-//                IDImageSwitcher.setImageDrawable(IDPicList.get(counter));
-//            }
-//
-//            @Override
-//            public void onSwipeLeft() {
-//                switcherImage = IDPicList.size();
-//                //Toast.makeText(getApplicationContext(), "left touched with size " + switcherImage, Toast.LENGTH_LONG).show();
-//                counter--;
-//                if (counter == -1)
-//                    counter = switcherImage - 1;
-//                IDImageSwitcher.setImageDrawable(IDPicList.get(counter));
-//            }
-//        });
 
         vehicle_section.setOnTouchListener(new OnSwipeTouchListener(getBaseContext()) {
             int switcherImage = 0;
@@ -263,7 +219,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         id_block.setVisibility(View.INVISIBLE);
         name_layer.setVisibility(View.INVISIBLE);
         phone_layer.setVisibility(View.INVISIBLE);
-        doAnimation();
+        //doAnimation();
     }
 
     @TargetApi(23)
@@ -348,6 +304,10 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             case R.id.profile_logout_button:
                 ParseUser currUser = ParseUser.getCurrentUser();
                 currUser.logOut();
+                if(HomeActivity.getActivity() != null)
+                    HomeActivity.getActivity().finish();
+                if(ViewClaimt.getInstance() != null)
+                    ViewClaimt.getInstance().finish();
                 Intent intent2 = new Intent(getApplicationContext(), LoginActivity.class); //fixed
                 intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent2.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
@@ -756,6 +716,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             id_section.setClickable(false);
             next_btn.performClick();
             resume = false;
+            doAnimation();
         }
     }
 
@@ -783,7 +744,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                 id_block.startAnimation(alpha);
                 vehicle_block.startAnimation(alpha);
             }
-        }, 1800);
+        }, 1200);
     }
 
     private Drawable resize(Drawable image, int height, int width) {
