@@ -1,5 +1,7 @@
 package com.pingan_us.eclaim;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,8 +19,11 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -38,6 +43,7 @@ public class photoActivity extends FragmentActivity {
     private static final int NONE = 0;
     private static final int DRAG = 1;
     private static final int ZOOM = 2;
+    private static final int MIN_DISTANCE = 20;
     private int mode = NONE;
     private float oldDist = 1f;
     private float d = 0f;
@@ -88,7 +94,7 @@ public class photoActivity extends FragmentActivity {
                             byteList = new ArrayList<String>(th.getList());
                             byte[] byteArray = Base64.decode(byteList.get(location), Base64.DEFAULT);
                             BitmapFactory.Options options1 = new BitmapFactory.Options();
-                            bmp = BitmapFactory.decodeByteArray(byteArray, 0, bytes.length, options1);
+                            bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length, options1);
                         } catch (InterruptedException e1) {
                             e1.printStackTrace();
                         }
@@ -110,49 +116,75 @@ public class photoActivity extends FragmentActivity {
         display.getMetrics(outMetrics);
 
         float density = getResources().getDisplayMetrics().density;
-        float dpHeight = outMetrics.heightPixels/density;
-        float dpWidth = outMetrics.widthPixels/density;
+        final float dpHeight = outMetrics.heightPixels/density;
+        final float dpWidth = outMetrics.widthPixels/density;
 
-        layout.setMinimumWidth((int)(dpWidth * 0.8));
-        layout.setMinimumHeight((int)(dpHeight * 0.8));
+        layout.setMinimumWidth((int)(dpWidth));
+        layout.setMinimumHeight((int)(dpHeight));
         im_move_zoom_rotate = (ImageView) findViewById(R.id.zoom_image);
         if(bmp != null)
             im_move_zoom_rotate.setImageBitmap(bmp);
         else
             im_move_zoom_rotate.setImageDrawable(getResources().getDrawable(R.drawable.add));
+        //im_move_zoom_rotate.setScaleType(ImageView.ScaleType.CENTER);
+        im_move_zoom_rotate.setAdjustViewBounds(true);
+        im_move_zoom_rotate.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int)(dpWidth), (int)(dpHeight));
 
+        //layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int)(dpWidth * 0.7), (int)(dpHeight * 0.7));
-        layoutParams.leftMargin = 50;
-        layoutParams.topMargin = 50;
-        layoutParams.bottomMargin = 50;
-        layoutParams.rightMargin = 50;
+        layoutParams.leftMargin = 150;
+        layoutParams.topMargin = 150;
+        layoutParams.bottomMargin = 150;
+        layoutParams.rightMargin = 150;
         im_move_zoom_rotate.setLayoutParams(layoutParams);
         im_move_zoom_rotate.setScaleX((float)1.5);
         im_move_zoom_rotate.setScaleY((float)1.5);
         im_move_zoom_rotate.setOnTouchListener(new View.OnTouchListener() {
 
             RelativeLayout.LayoutParams parms;
-            int startwidth;
-            int startheight;
+            int width;
+            int height;
+            float rightY = 0;
+            float rightX = 0;
             float dx = 0, dy = 0, x = 0, y = 0;
             float angle = 0;
-
+            float realX = 0, realY = 0;
+            float moved = 0;
+            boolean zoomed = false;
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 final ImageView view = (ImageView) v;
 
+//                Display display = getWindowManager().getDefaultDisplay();
+//                DisplayMetrics outMetrics = new DisplayMetrics ();
+//                display.getMetrics(outMetrics);
+//
+//                float density  = getResources().getDisplayMetrics().density;
+//                final float dpHeight = outMetrics.heightPixels / density;
+//                final float dpWidth  = outMetrics.widthPixels / density;
+//                final int xLimit = getApplicationContext().getResources().getDisplayMetrics().widthPixels;
+//                final int yLimit = getApplicationContext().getResources().getDisplayMetrics().heightPixels;
+
                 ((BitmapDrawable) view.getDrawable()).setAntiAlias(true);
+
                 switch (event.getAction() & MotionEvent.ACTION_MASK) {
                     case MotionEvent.ACTION_DOWN:
+                        zoomed = false;
+                        //Log.d("touch down", event.getX() + " " + event.getY() + " " + event.getRawX() + " " + event.getRawY());
                         parms = (RelativeLayout.LayoutParams) view.getLayoutParams();
-                        startwidth = parms.width;
-                        startheight = parms.height;
+                        //width = v.getMeasuredWidth();
+                        //height = v.getMeasuredHeight();
+                        rightX = event.getRawX();
+                        rightY = event.getRawY();
                         dx = event.getRawX() - parms.leftMargin;
                         dy = event.getRawY() - parms.topMargin;
+                        //rightY = parms.topMargin + height;
+                        //rightX = parms.leftMargin + width;
                         mode = DRAG;
                         break;
                     case MotionEvent.ACTION_POINTER_DOWN:
+                        zoomed = true;
                         oldDist = spacing(event);
                         if (oldDist > 10f) {
                             mode = ZOOM;
@@ -160,6 +192,40 @@ public class photoActivity extends FragmentActivity {
                         d = rotation(event);
                         break;
                     case MotionEvent.ACTION_UP:
+                        if(moved  > MIN_DISTANCE) {
+                            moved = 0;
+                        }
+                        else if(!zoomed){
+                            Log.d("click", "x " + event.getX() + " rx " + event.getRawX() + " y " + event.getY() + " ry " + event.getRawY());
+                            finish();
+                        }
+                        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+//                        RelativeLayout root = (RelativeLayout) findViewById(R.id.photo_layout);
+//                        DisplayMetrics dm = new DisplayMetrics();
+//                        getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
+//                        int statusBarOffset = dm.heightPixels - root.getMeasuredHeight();
+//
+//                        int originalPos[] = new int[2];
+//                        view.getLocationOnScreen( originalPos );
+//
+//                        int xDest = dm.widthPixels/2;
+//                        xDest -= (view.getMeasuredWidth()/2);
+//                        int yDest = dm.heightPixels/2 - (view.getMeasuredHeight()/2) - statusBarOffset;
+
+                      /*  float xDest = dpWidth/2 - v.getWidth()*scale/2;
+                        float yDest = dpHeight/2 - v.getHeight()*scale/2;
+
+                        ObjectAnimator moveX = ObjectAnimator.ofFloat(v, "translationX", realX, xDest);
+                        ObjectAnimator moveY = ObjectAnimator.ofFloat(v, "translationY", realY, yDest);
+
+                        if(((realY + height*scale) >= dpHeight && realY >=0) || ((realX + width*scale) >= dpWidth && realX >= 0) ||
+                                ((realY + height*scale) <= dpHeight && realY <= 0) || ((realX + width*scale) <= dpWidth && realX <= 0)) {
+                            AnimatorSet animSet = new AnimatorSet();
+                            animSet.play(moveX).with(moveY);
+                            animSet.setDuration(500);
+                            animSet.start();
+                        }*/
+                        //getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         break;
                     case MotionEvent.ACTION_POINTER_UP:
                         mode = NONE;
@@ -168,13 +234,28 @@ public class photoActivity extends FragmentActivity {
                         if (mode == DRAG) {
                             x = event.getRawX();
                             y = event.getRawY();
+                            float xt = event.getX();
+                            float yt = event.getY();
+                            moved+=Math.sqrt(Math.pow(x-rightX, 2) + Math.pow(y-rightY, 2));
                             parms.leftMargin = (int) (x - dx);
                             parms.topMargin = (int) (y - dy);
 
                             parms.rightMargin = 0;
                             parms.bottomMargin = 0;
-                            parms.rightMargin = parms.leftMargin + (5 * parms.width);
-                            parms.bottomMargin = parms.topMargin + (10 * parms.height);
+                            //parms.rightMargin = parms.leftMargin + (5 * parms.width);
+                            //parms.bottomMargin = parms.topMargin + (10 * parms.height);
+
+
+                            if (parms.topMargin < 0) parms.topMargin = 0;
+                            if (parms.topMargin + height > dpHeight) parms.topMargin = (int)dpHeight - height;
+                            if (parms.leftMargin < 0) parms.leftMargin = 0;
+                            if (parms.leftMargin + width > dpWidth) parms.leftMargin = (int)dpWidth - width;
+
+
+                            //realX = x + width/2 - width*scale/2;
+                            //realY = y + height/2 - height*scale/2;
+
+                            //Log.d("debug", "xL " + dpWidth + " yL " + dpHeight + " x " + x + "/" + xt + " y " + y + "/" + yt + " l " + parms.leftMargin + " t " + parms.topMargin + " w " + width + " h " + height );
 
                             view.setLayoutParams(parms);
                         }
@@ -190,7 +271,7 @@ public class photoActivity extends FragmentActivity {
                                 float newDist = spacing(event);
                                 if (newDist > 10f) {
                                     float scale = newDist / oldDist * view.getScaleX();
-                                    if (scale > 1.5 && scale < 6) {
+                                    if (scale > 0.5 && scale < 6) {
                                         scalediff = scale;
                                         view.setScaleX(scale);
                                         view.setScaleY(scale);
@@ -210,6 +291,9 @@ public class photoActivity extends FragmentActivity {
                                 parms.rightMargin = parms.leftMargin + (5 * parms.width);
                                 parms.bottomMargin = parms.topMargin + (10 * parms.height);
 
+                                //rightY = parms.topMargin + height;
+                                //rightX = parms.leftMargin + width;
+
                                 view.setLayoutParams(parms);
                             }
                         }
@@ -228,6 +312,7 @@ public class photoActivity extends FragmentActivity {
                 finish();
             }
         });
+        btn.setVisibility(View.GONE);
     }
 
     private float spacing(MotionEvent event) {
