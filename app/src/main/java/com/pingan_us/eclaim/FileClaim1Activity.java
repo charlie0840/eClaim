@@ -1,10 +1,12 @@
 package com.pingan_us.eclaim;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -22,6 +24,9 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
@@ -121,7 +126,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
     private boolean mLocationPermissionGranted = false;
     private Bitmap p1 = null, p2 = null, p3 = null;
     private ParseFile f1 = null, f2 = null, f3 = null;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0, MY_CAMERA_REQUEST_CODE = 1, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
     private static final int GET_LOC_REQUEST = 1, ACTIVITY_SELECT_IMAGE = 2, DRIVE = 1, INSUR = 2, ADD_PERSON = 3;
 
     @Override
@@ -284,6 +289,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         return false;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -364,26 +370,63 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 startActivityForResult(intent2, GET_LOC_REQUEST);
                 break;
             case R.id.other_driver_license_pic:
-                drive_or_insur = DRIVE;
-                Intent i = new Intent();
-                i.setType("image/*");
-                i.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(i, "Select File"), ACTIVITY_SELECT_IMAGE);
-                break;
+                if (checkPermissionREAD_EXTERNAL_STORAGE(this)) {
+                    drive_or_insur = DRIVE;
+                    Intent i = new Intent();
+                    i.setType("image/*");
+                    i.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(i, "Select File"), ACTIVITY_SELECT_IMAGE);
+                    break;
+                }
+                if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    drive_or_insur = DRIVE;
+                    Intent i = new Intent();
+                    i.setType("image/*");
+                    i.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(i, "Select File"), ACTIVITY_SELECT_IMAGE);
+                    break;
+                }
+                else
+                    break;
             case R.id.other_insurance_card_pic:
-                drive_or_insur = INSUR;
-                Intent i1 = new Intent();
-                i1.setType("image/*");
-                i1.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(i1, "Select File"), ACTIVITY_SELECT_IMAGE);
-                break;
+                if (checkPermissionREAD_EXTERNAL_STORAGE(this)) {
+                    drive_or_insur = INSUR;
+                    Intent i = new Intent();
+                    i.setType("image/*");
+                    i.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(i, "Select File"), ACTIVITY_SELECT_IMAGE);
+                    break;
+                }
+
+                if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    drive_or_insur = INSUR;
+                    Intent i1 = new Intent();
+                    i1.setType("image/*");
+                    i1.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(i1, "Select File"), ACTIVITY_SELECT_IMAGE);
+                    break;
+                }
+                else
+                    break;
             case R.id.add_person_pick_button:
-                drive_or_insur = ADD_PERSON;
-                Intent i2 = new Intent();
-                i2.setType("image/*");
-                i2.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(i2, "Select File"), ACTIVITY_SELECT_IMAGE);
-                break;
+                if (checkPermissionREAD_EXTERNAL_STORAGE(this)) {
+                    drive_or_insur = ADD_PERSON;
+                    Intent i = new Intent();
+                    i.setType("image/*");
+                    i.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(i, "Select File"), ACTIVITY_SELECT_IMAGE);
+                    break;
+                }
+                if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    drive_or_insur = ADD_PERSON;
+                    Intent i2 = new Intent();
+                    i2.setType("image/*");
+                    i2.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(i2, "Select File"), ACTIVITY_SELECT_IMAGE);
+                    break;
+                }
+                else
+                    break;
         }
     }
 
@@ -622,4 +665,50 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
             }
         });
     }
+
+    public void showDialog(final Context context,
+                           final String permission) {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
+        alertBuilder.setCancelable(true);
+        alertBuilder.setTitle("Permission necessary");
+        alertBuilder.setMessage("Gallery permission is necessary");
+        alertBuilder.setPositiveButton(android.R.string.yes,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions((Activity) context,
+                                new String[] { permission },
+                                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                    }
+                });
+        AlertDialog alert = alertBuilder.create();
+        alert.show();
+    }
+
+    public boolean checkPermissionREAD_EXTERNAL_STORAGE(final Context context) {
+        int currentAPIVersion = Build.VERSION.SDK_INT;
+        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(context,
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        (Activity) context,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    showDialog(context, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+                } else {
+                    ActivityCompat
+                            .requestPermissions(
+                                    (Activity) context,
+                                    new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
+                                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                }
+                return false;
+            } else {
+                return true;
+            }
+
+        } else {
+            return true;
+        }
+    }
+
 }

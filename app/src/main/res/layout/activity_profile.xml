@@ -188,7 +188,7 @@
                             android:id="@+id/profile_prev_vehicle_button"
                             android:layout_width="35dp"
                             android:layout_height="120dp"
-                            android:layout_margin="10dp"
+                            android:layout_margin="5dp"
                             android:layout_centerVertical="true"
                             android:layout_toLeftOf="@+id/vehicle_switch"
                             android:src="@drawable/drawerback"
@@ -197,14 +197,14 @@
                             android:id="@+id/profile_next_vehicle_button"
                             android:layout_width="35dp"
                             android:layout_height="120dp"
-                            android:layout_margin="10dp"
+                            android:layout_margin="5dp"
                             android:layout_centerVertical="true"
                             android:layout_toRightOf="@+id/vehicle_switch"
                             android:src="@drawable/drawerout"
                             android:scaleType="fitCenter"/>
                         <ImageSwitcher
                             android:id="@+id/vehicle_switch"
-                            android:layout_width="250dp"
+                            android:layout_width="240dp"
                             android:layout_height="140dp"
                             android:background="@drawable/cycle"
                             android:layout_below="@+id/vehicle_section"
@@ -227,7 +227,7 @@
                             android:layout_below="@+id/profile_vehicle_name_text">
                             <Button
                                 android:id="@+id/profile_delete_vehicle_button"
-                                android:layout_width="140dp"
+                                android:layout_width="120dp"
                                 android:layout_height="45dp"
                                 android:layout_alignParentLeft="true"
                                 android:layout_margin="15dp"
@@ -237,7 +237,7 @@
                                 android:textColor="@color/colorBlack"/>
                             <Button
                                 android:id="@+id/profile_add_vehicle_button"
-                                android:layout_width="140dp"
+                                android:layout_width="120dp"
                                 android:layout_height="45dp"
                                 android:layout_alignParentRight="true"
                                 android:layout_margin="15dp"

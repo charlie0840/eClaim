@@ -295,11 +295,13 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                 Intent intent = new Intent(this, HomeActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+                finish();
                 break;
             case R.id.claims_nav:
                 Intent intent1 = new Intent(this, ViewClaimt.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+                finish();
                 break;
             case R.id.profile_logout_button:
                 ParseUser currUser = ParseUser.getCurrentUser();

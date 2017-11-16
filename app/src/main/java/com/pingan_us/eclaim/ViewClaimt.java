@@ -1,6 +1,7 @@
 package com.pingan_us.eclaim;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ListViewCompat;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,10 +43,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ViewClaimt extends AppCompatActivity implements View.OnClickListener{
+
+    private static final int WIDTH = 200, HEIGHT = 120;
+
     private int pos, limit = 5;
     private List<Bitmap> picList = new ArrayList<Bitmap>();
     private List<String> byteList = new ArrayList<>();
-    private List<String> claimList, claimIDList = new ArrayList<String>();
+    private List<String> claimList, claimIDList = new ArrayList<String>(), claimIDASCList = new ArrayList<>();
     private boolean noClaim = true, slideIn = true, isFirstPage = true;
 
     private ImageView imHide;
@@ -179,6 +184,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         claimList = new ArrayList<String>();
 
         adapter_pic = new CustomListt(ViewClaimt.this, picList);
+
         pic_list.setAdapter(adapter_pic);
 
         pic_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -284,12 +290,14 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                 claim_list.setVisibility(View.GONE);
                 refresh_btn.setVisibility(View.GONE);
                 claim_list_title.setVisibility(View.GONE);
+                finish();
                 break;
             case R.id.profile_nav:
                 background.setAlpha((float) 0.5);
                 Intent intent1 = new Intent(this, ProfileActivity.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+                finish();
                 break;
             case R.id.vc_refresh_btn:
                 getClaimList();
@@ -476,6 +484,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
             }
         }
         adapter_pic.notifyDataSetChanged();
+
         background.setAlpha((float) 0);
         progressBar.setVisibility(View.GONE);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -492,10 +501,17 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
 
     public void getClaimList() {
         ParseUser currUser = ParseUser.getCurrentUser();
-        claimIDList = new ArrayList<String>();
+        claimIDList = new ArrayList<>();
+        claimIDASCList = new ArrayList<>();
         if(currUser.get("claimID") != null) {
             try {
                 claimIDList = new ArrayList<String>((List<String>) currUser.get("claimID"));
+                for(int i = 0; i < claimIDList.size(); i++) {
+                    String curr = "";
+                    for(char c:claimIDList.get(i).toCharArray())
+                        curr+=Integer.toString((int)c);
+                    claimIDASCList.add(curr);
+                }
             }
             catch (ClassCastException e) {
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -506,8 +522,9 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         if(claimIDList.size() != 0)
             noClaim = false;
         claimList.clear();
-        for(int i = 0; i < claimIDList.size(); i++) {
-            claimList.add("CLAIM " + claimIDList.get(i));
+        adapter.notifyDataSetInvalidated();
+        for(int i = 0; i < claimIDASCList.size(); i++) {
+            claimList.add("NO: " + claimIDASCList.get(i));
         }
         adapter.notifyDataSetChanged();
     }

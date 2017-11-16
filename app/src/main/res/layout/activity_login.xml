@@ -1,14 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:gravity="center_horizontal"
-android:orientation="vertical"
-
-tools:context="com.pingan_us.eclaim.LoginActivity"
-android:weightSum="1">
-
-<!-- Login progress -->
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context="com.pingan_us.eclaim.LoginActivity"
+    android:background="@color/colorWhite"
+    android:weightSum="1">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,75 +35,78 @@ android:weightSum="1">
             android:layout_gravity="center_horizontal"
             android:text="your personal auto claim assistance"
             android:textColor="@color/colorBlack"/>
-
-        <LinearLayout
-            android:id="@+id/email_login_form"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:weightSum="1"
-            android:layout_weight="0.42">
-
-            <android.support.design.widget.TextInputLayout
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/email_login_form"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <AutoCompleteTextView
-                    android:id="@+id/username"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="1"
+                android:layout_weight="0.42">
+
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Username"
-                    android:maxLines="1"
-                    android:imeOptions="actionNext" />
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_height="wrap_content">
+                    <AutoCompleteTextView
+                        android:id="@+id/username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Username"
+                        android:maxLines="1"
+                        android:imeOptions="actionNext" />
+                </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <EditText
-                    android:id="@+id/password"
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:id="@+id/password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Password"
+                        android:imeActionId="@+id/login"
+                        android:imeActionLabel="@string/action_sign_in_short"
+                        android:imeOptions="actionUnspecified"
+                        android:inputType="textPassword"
+                        android:maxLines="1"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                    android:id="@+id/loginbutton"
+                    android:layout_width="148dp"
                     android:layout_height="wrap_content"
-                    android:hint="Password"
-                    android:imeActionId="@+id/login"
-                    android:imeActionLabel="@string/action_sign_in_short"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="textPassword"
-                    android:maxLines="1"/>
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_marginTop="10dp"
+                    android:text="  login  "
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:textSize="20dp"
+                    android:onClick="onLogin"
+                    android:background="@drawable/cycle"
+                    android:alpha="0.6"/>
+                <Button
+                    android:id="@+id/registerbutton"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textSize="16dp"
+                    android:text="  Regester here  "
+                    android:layout_gravity="center_horizontal"
+                    android:alpha="0.6"
+                    android:background="@drawable/cycle" />
+                <TextView
+                    android:id="@+id/login_forgetpw_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Forgot password?"
+                    android:textColor="@color/colorBlack"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingTop="30dp"/>
 
-            <Button
-                android:id="@+id/loginbutton"
-                android:layout_width="148dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="  login  "
-                android:layout_gravity="center_horizontal|center_vertical"
-                android:textSize="20dp"
-                android:onClick="onLogin"
-                android:background="@drawable/cycle"
-                android:alpha="0.6"/>
-            <Button
-                android:id="@+id/registerbutton"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textSize="16dp"
-                android:text="  Regester here  "
-                android:layout_gravity="center_horizontal"
-                android:alpha="0.6"
-                android:background="@drawable/cycle" />
-            <TextView
-                android:id="@+id/login_forgetpw_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Forgot password?"
-                android:textColor="@color/colorBlack"
-                android:layout_gravity="center_horizontal"
-                android:paddingTop="30dp"/>
-
-        </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
     <RelativeLayout
         android:id="@+id/login_background"

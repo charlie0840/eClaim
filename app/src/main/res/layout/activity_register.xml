@@ -356,7 +356,7 @@
                     android:id="@+id/reg_confirmpassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Confirm your password"
+                    android:hint="Confirm password"
                     android:textColorHint="@color/colorWhite"
                     android:layout_marginLeft="40dp"
                     android:layout_marginRight="5dp"
@@ -371,7 +371,7 @@
     </ScrollView>
     <Button
         android:id="@+id/reg_confirm_btn"
-        android:layout_width="150dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:textColor="@color/colorWhite"
         android:text="Register"
@@ -381,12 +381,27 @@
         android:layout_alignParentLeft="true"/>
     <Button
         android:id="@+id/reg_cancel_btn"
-        android:layout_width="150dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:background="@color/colorRed"
         android:text="Cancel"
         android:layout_margin="20dp"/>
+    <RelativeLayout
+        android:id="@+id/reg_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBlack"
+        android:alpha="0">
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/reg_progressBar"
+            android:progressDrawable="@drawable/circular_progress_bar"/>
+    </RelativeLayout>
 </RelativeLayout>
 

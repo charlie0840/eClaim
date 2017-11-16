@@ -369,12 +369,13 @@ public class ClaimBundle implements Parcelable{
     public void writeToParcel(Parcel out, int flag) {
         boolean[] boolArray = new boolean[] {injured, drivable, atScene, person};
         boolean[] nullCheck = new boolean[] {false, false, false, false, false, false, false};
-        if(driverLicense != null)
+        if(person)
             nullCheck[0] = true;
-        if(otherLicense != null)
+        if(!vehicleNum.equals("1")) {
             nullCheck[1] = true;
-        if(otherInsurance != null)
-            nullCheck[2] = true;
+            if (otherInsurance != null)
+                nullCheck[2] = true;
+        }
         if(wholeScene != null)
             nullCheck[3] = true;
         if(yourPlate != null)

@@ -122,9 +122,9 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         TextView t2 = l2.findViewById(R.id.txt);
         TextView t3 = l3.findViewById(R.id.txt);
 
-        whole_scene.setImageDrawable(getResources().getDrawable(R.drawable.addphoto));
-        your_plate.setImageDrawable(getResources().getDrawable(R.drawable.addphoto));
-        other_plate.setImageDrawable(getResources().getDrawable(R.drawable.addphoto));
+        whole_scene.setImageDrawable(getResources().getDrawable(R.drawable.add));
+        your_plate.setImageDrawable(getResources().getDrawable(R.drawable.add));
+        other_plate.setImageDrawable(getResources().getDrawable(R.drawable.add));
         t1.setText(MyAppConstants.wholeScene_FC2);
         t2.setText(MyAppConstants.yourPlate_FC2);
         t3.setText(MyAppConstants.otherPlate_FC2);
@@ -143,7 +143,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             singleByteList.add(null);
         }
 
-        picList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.addphoto));
+        picList.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.add));
 
         titleList.add(MyAppConstants.morePic);
 
@@ -224,7 +224,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         final CharSequence[] items = { "Take Photo", "Choose from Library",
                 "Cancel" };
         AlertDialog.Builder builder = new AlertDialog.Builder(FileClaim2Activity.this);
-        builder.setTitle("Add Photo!");
+        builder.setTitle("Add File");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
@@ -429,7 +429,6 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
             byte[] byteArray = stream.toByteArray();
-            Log.d("DEBUG!!!!!!!!!!!", "" + byteArray);
             strList.add(Base64.encodeToString(byteArray, Base64.DEFAULT));
             byteList.add(byteArray);
         }

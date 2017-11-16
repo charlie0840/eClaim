@@ -224,14 +224,16 @@
                                     android:id="@+id/vc_person_pick_text"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_alignParentLeft="true"
+                                    android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/vc_person_pick_title"
                                     android:textSize="15dp"
+                                    android:textColor="@color/colorBlack"
                                     android:text="Unknown"/>
                                 <ImageView
                                     android:id="@+id/vc_person_license_pic"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="100dp"
+                                    android:layout_width="200dp"
+                                    android:layout_height="120dp"
+                                    android:layout_centerHorizontal="true"
                                     android:layout_below="@+id/vc_person_pick_text"
                                     android:src="@drawable/driverlicense"
                                     android:visibility="gone"
@@ -249,19 +251,6 @@
                             android:layout_marginLeft="20dp"
                             android:layout_marginRight="20dp"
                             android:layout_marginTop="10dp">
-                            <!--<TextView
-                                android:id="@+id/vc_other_driver_title"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_marginLeft="5dp"
-                                android:layout_marginRight="5dp"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginBottom="10dp"
-                                android:textSize="15dp"
-                                android:textStyle="bold"
-                                android:textColor="@color/colorBlack"
-                                android:text="Information of other drivers"/> -->
                             <TextView
                                 android:id="@+id/vc_other_driver_license_pic_title"
                                 android:layout_width="wrap_content"
@@ -276,8 +265,8 @@
                                 />
                             <ImageView
                                 android:id="@+id/vc_other_driver_license_pic"
-                                android:layout_width="100dp"
-                                android:layout_height="80dp"
+                                android:layout_width="200dp"
+                                android:layout_height="120dp"
                                 android:layout_below="@+id/vc_other_driver_license_pic_title"
                                 android:layout_marginLeft="20dp"
                                 android:layout_centerHorizontal="true"
@@ -299,8 +288,8 @@
                                 />
                             <ImageView
                                 android:id="@+id/vc_other_insurance_card_pic"
-                                android:layout_width="100dp"
-                                android:layout_height="80dp"
+                                android:layout_width="200dp"
+                                android:layout_height="120dp"
                                 android:background="@drawable/cycle"
                                 android:src="@drawable/insurance"
                                 android:layout_below="@+id/vc_other_insurance_card_pic_title"

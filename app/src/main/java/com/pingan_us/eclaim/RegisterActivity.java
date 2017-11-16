@@ -20,9 +20,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.util.Base64;
 import android.view.KeyEvent;
@@ -32,6 +34,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -58,6 +62,8 @@ import java.util.concurrent.ExecutionException;
 public class RegisterActivity extends Activity implements View.OnClickListener, View.OnKeyListener{
     private EditText USER_NAME, FIRST_NAME, LAST_NAME, USER_PASSWORD, CONFIRM_PASSWORD, EMAIL_ADDRESS, PHONE;
     private ImageView PHOTO;
+    private ProgressBar spinner;
+    private RelativeLayout background;
     private Button registerButton, cancelButton;
 
     private final int ACTIVITY_SELECT_IMAGE = 1234, MY_CAMERA_REQUEST_CODE = 1, REQUEST_CAMERA = 2, SELECT_FILE = 3;
@@ -77,6 +83,12 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
         reg = intent.getBooleanExtra("reg", true);
 
         PHOTO = (ImageView) findViewById(R.id.reg_photo);
+
+        spinner = (ProgressBar) findViewById(R.id.reg_progressBar);
+        spinner.setVisibility(View.GONE);
+
+        background = (RelativeLayout) findViewById((R.id.reg_background));
+        background.setVisibility(View.GONE);
 
         registerButton = (Button)findViewById(R.id.reg_confirm_btn);
         cancelButton = (Button)findViewById(R.id.reg_cancel_btn);
@@ -219,6 +231,9 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                     else {
                         getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                        spinner.setVisibility(View.VISIBLE);
+                        background.setVisibility(View.VISIBLE);
+                        background.setAlpha((float)0.7);
                         uploadImg();
                     }
                 }
@@ -240,11 +255,14 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(RegisterActivity.this);
         builder.setTitle("Add Photo");
         builder.setItems(items, new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 boolean result = Utility.checkPermission(RegisterActivity.this);
-                if (!result)
+                if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(getApplicationContext(), "No permission, please grant the access to gallery", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 if (items[item].equals("Take Photo")) {
                     userChoosenTask = "Take Photo";
                     if (result)
@@ -314,10 +332,10 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
         user.signUpInBackground(new SignUpCallback() {
             @Override
             public void done(ParseException e) {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                background.setVisibility(View.INVISIBLE);
+                spinner.setVisibility(View.INVISIBLE);
                 if(e == null) {
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-
-                    Toast.makeText(RegisterActivity.this, "registration done!", Toast.LENGTH_LONG).show();
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(RegisterActivity.this);
                     alertDialogBuilder.setMessage("Registration successful");
                             alertDialogBuilder.setPositiveButton("Return to Login page",
@@ -334,7 +352,6 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                     alertDialog.show();
                 }
                 else {
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     e.printStackTrace();
                     switch(e.getCode()) {
                         case ParseException.USERNAME_TAKEN:

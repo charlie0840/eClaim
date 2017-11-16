@@ -2,24 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/photo_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorBlack">
-    <ImageView
+    android:layout_height="match_parent">
+    <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
         android:id="@+id/zoom_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
-    <Button
-        android:id="@+id/close_image_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <ImageButton
+        android:id="@+id/zoom_close_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
         android:layout_margin="10dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="  Close  "
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:background="@color/colorRed"
-        android:textColor="@color/colorBlack"/>
+        android:src="@drawable/remove"
+        android:scaleType="fitCenter"
+        android:background="@drawable/cycle"/>
 </RelativeLayout>

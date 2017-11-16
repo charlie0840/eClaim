@@ -91,11 +91,13 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(this, ProfileActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+                finish();
                 break;
             case R.id.claims_nav:
                 Intent intent1 = new Intent(this, ViewClaimt.class);
                 intent1.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+                finish();
                 break;
             case R.id.home_assistance_phone_btn:
                 if (ActivityCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {

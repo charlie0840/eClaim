@@ -40,7 +40,7 @@
 
     <Button
         android:id="@+id/finish_step_button"
-        android:layout_width="150dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:layout_alignParentBottom="true"
@@ -51,7 +51,7 @@
         android:text="Submit" />
     <Button
         android:id="@+id/step3_cancel_button"
-        android:layout_width="150dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:layout_alignParentBottom="true"

@@ -1,6 +1,7 @@
 package com.pingan_us.eclaim;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
@@ -36,6 +37,13 @@ import com.parse.ParseInstallation;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, View.OnKeyListener{
+
+    private static final String PREFS_NAME = "preferences";
+    private static final String PREF_UNAME = "Username";
+
+    private final String DefaultUnameValue = "";
+    private String UnameValue;
+
     private Button login, register;
     private EditText username, password;
     private String user_name, user_password;
@@ -135,6 +143,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                     //intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+                    finish();
                 }
                 if(e != null) {
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -145,5 +154,33 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        loadPreference();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        savePreferences();
+    }
+
+    @Override
     public void onBackPressed() {}
+
+    private void savePreferences() {
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, getApplicationContext().MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+
+        UnameValue = username.getText().toString();
+        editor.putString(PREF_UNAME, UnameValue);
+        editor.commit();
+    }
+
+    private void loadPreference() {
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, getApplicationContext().MODE_PRIVATE);
+
+        UnameValue = settings.getString(PREF_UNAME, DefaultUnameValue);
+        username.setText(UnameValue);
+    }
 }
