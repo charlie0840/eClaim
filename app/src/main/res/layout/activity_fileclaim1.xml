@@ -12,7 +12,7 @@
         android:alpha="0.3">
     </LinearLayout>
     <ScrollView
-        android:id="@+id/entire_scroll_section"
+        android:id="@+id/fc1_scroll_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/start_step2_button">
@@ -35,17 +35,24 @@
                     android:layout_centerHorizontal="true"
                     android:textSize="15dp"
                     android:layout_margin="10dp"
-                    android:textColor="@color/colorBlack"
+                    android:textColor="@color/colorWhite"
                     android:text="Step 1 of 3:fill out your info"/>
+                <ImageView
+                    android:id="@+id/fc1_cancel_button"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/dismiss"
+                    android:scaleType="fitCenter"/>
             </RelativeLayout>
             <RelativeLayout
-                android:background="@drawable/cycle"
-                android:alpha="0.6"
+                android:background="@color/colorWhite"
+                android:alpha="0.75"
                 android:id="@+id/checkbox_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+
                 android:layout_below="@id/step1_title">
                 <RelativeLayout
                     android:id="@+id/injure_section"
@@ -105,7 +112,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"/>
-                </RelativeLayout>\
+                </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/vehiclenum_section"
                     android:layout_margin="5dp"
@@ -135,11 +142,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/checkbox_section"
-                android:background="@drawable/cycle"
-                android:alpha="0.6"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp">
+                android:background="@color/colorWhite"
+                android:alpha="0.75"
+                android:layout_marginTop="20dp">
                 <RelativeLayout
                     android:id="@+id/time_section"
                     android:layout_margin="5dp"
@@ -153,20 +158,28 @@
                         android:textSize="15dp"
                         android:textStyle="bold"
                         android:textColor="@color/colorBlack"
-                        android:layout_centerVertical="true"
                         android:text="Select time"/>
-                    <Button
+                    <TextView
                         android:id="@+id/time_picker_btn"
-                        android:layout_alignTop="@+id/time_pick_title"
                         android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:layout_toRightOf="@+id/time_pick_title"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_below="@+id/time_pick_title"
+                        android:layout_centerHorizontal="true"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorBlack"
+                        android:textSize="20dp"
+                        android:background="@drawable/btn_background"
+                        android:text="  Click here to set the time  ">
+                    </TextView>
+                    <TextView
+                        android:id="@+id/fc1_time_indicator"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_below="@+id/time_picker_btn"
                         android:textSize="15dp"
-                        android:alpha="0.8"
-                        android:text="Click here to set the time">
-                    </Button>
+                        android:textColor="@color/colorBlack"/>
                 </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/loc_section"
@@ -189,11 +202,11 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/loc_pick_title"
                         android:layout_centerHorizontal="true"
-                        android:text="Click here to pick location"
+                        android:text="  Click here to pick location  "
                         android:layout_margin="10dp"
-                        android:background="@color/colorPrimary"
+                        android:background="@drawable/btn_background"
                         android:textStyle="bold"
-                        android:textColor="@color/colorWhite"
+                        android:textColor="@color/colorBlack"
                         android:textSize="20dp"/>
                     <TextView
                         android:id="@+id/loc_indicate_text_1"
@@ -290,10 +303,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/time_loc_section"
-                android:background="@drawable/cycle"
-                android:alpha="0.6"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:background="@color/colorWhite"
+                android:alpha="0.75"
                 android:layout_marginTop="10dp">
                 <TextView
                     android:id="@+id/other_driver_title"
@@ -332,6 +343,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:inputType="number"
                     android:textSize="15dp"
                     android:hint="Phone #"
                     android:layout_below="@+id/other_driver_license_pic"
@@ -344,22 +356,22 @@
         android:id="@+id/start_step2_button"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:background="@drawable/btn_background"
-        android:alpha="0.6"
+        android:alpha="0.75"
         android:textSize="15dp"
         android:text="next step" />
     <Button
-        android:id="@+id/step1_cancel_button"
+        android:id="@+id/step1_back_button"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:background="@drawable/cycle"
-        android:alpha="0.6"
+        android:background="@drawable/btn_background"
+        android:alpha="0.75"
         android:textSize="15dp"
         android:text="Cancel" />
     <RelativeLayout

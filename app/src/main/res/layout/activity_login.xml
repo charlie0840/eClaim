@@ -82,19 +82,19 @@
                     android:layout_gravity="center_horizontal|center_vertical"
                     android:textSize="20dp"
                     android:onClick="onLogin"
-                    android:background="@drawable/cycle"
+                    android:background="@drawable/btn_background"
                     android:alpha="0.6"/>
                 <Button
                     android:id="@+id/registerbutton"
                     style="?android:attr/buttonStyleSmall"
-                    android:layout_width="wrap_content"
+                    android:layout_width="148dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:textSize="16dp"
-                    android:text="  Regester here  "
+                    android:text="Regester here"
                     android:layout_gravity="center_horizontal"
                     android:alpha="0.6"
-                    android:background="@drawable/cycle" />
+                    android:background="@drawable/btn_background" />
                 <TextView
                     android:id="@+id/login_forgetpw_button"
                     android:layout_width="wrap_content"

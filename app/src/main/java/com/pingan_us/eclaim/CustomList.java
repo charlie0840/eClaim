@@ -16,10 +16,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CustomList extends ArrayAdapter<String>{
 
     private final Activity context;
+    private String str = "";
     private List<String> web;
     private List<Bitmap> imageId;
-    public CustomList(Activity context, List<String> web, List<Bitmap> imageId) {
+    public CustomList(Activity context, List<String> web, List<Bitmap> imageId, String str) {
         super(context, R.layout.list_single, web);
+        this.str = str;
         this.context = context;
         this.web = web;
         this.imageId = imageId;

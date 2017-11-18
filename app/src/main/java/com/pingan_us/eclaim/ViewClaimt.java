@@ -13,6 +13,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -71,6 +72,8 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_viewclaimt);
 
         progressBar = (ProgressBar) findViewById(R.id.vc_progressBar);
@@ -394,6 +397,10 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                             driverLicenseByte = ((ParseFile) currClaim.get("driverLicense")).getData();
                         } catch (ParseException e1) {
                             e1.printStackTrace();
+                        } catch (NullPointerException e2) {
+                            e2.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "Failed to load the Claim, please reload", Toast.LENGTH_LONG).show();
+                            return;
                         }
                     }
                     byte[] wholeSceneByte = new byte[0];

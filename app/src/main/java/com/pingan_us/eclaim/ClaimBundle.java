@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -67,7 +68,7 @@ public class ClaimBundle implements Parcelable{
         phoneOther = in.readString();
 
         in.readBooleanArray(nullCheck);
-        if(nullCheck[0])
+        if(!nullCheck[0])
             driverLicense = (ParseFile) in.readValue(cl);
         if(nullCheck[1])
             otherLicense = (ParseFile) in.readValue(cl);
@@ -131,6 +132,7 @@ public class ClaimBundle implements Parcelable{
                                         });
                                     }
                                     else {
+                                        Log.d("error", "driverLicense error in step 1");
                                         w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                                         background.setAlpha((float) 0);
                                         Intent intent = new Intent(context, FileClaim2Activity.class);
@@ -162,6 +164,7 @@ public class ClaimBundle implements Parcelable{
                 driverLicense.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
+                        Log.d("error", "driverLicense correct in step 1(2)");
                         w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         background.setAlpha((float) 0);
                         Intent intent = new Intent(context, FileClaim2Activity.class);
@@ -172,6 +175,7 @@ public class ClaimBundle implements Parcelable{
                 });
             }
             else {
+                Log.d("error", "driverLicense error in step 1(2)");
                 w.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 background.setAlpha((float) 0);
                 Intent intent = new Intent(context, FileClaim2Activity.class);
@@ -299,12 +303,13 @@ public class ClaimBundle implements Parcelable{
         Claim.put("location", location);
         Claim.put("vehicleID", vehicleID);
         Claim.put("phoneOther", phoneOther);
-        if(driverLicense != null)
+        if(driverLicense != null && !person)
             Claim.put("driverLicense", driverLicense);
-        if(otherLicense != null) {
-            Claim.put("otherLicense", otherLicense);
+        else if(driverLicense == null && !person) {
+            Log.d("Error", "error in driverLicense");
         }
-        if(otherInsurance != null) {
+        if(otherLicense != null && otherInsurance != null && !vehicleNum.equals("1")) {
+            Claim.put("otherLicense", otherLicense);
             Claim.put("otherInsurance", otherInsurance);
         }
         else {
@@ -391,7 +396,7 @@ public class ClaimBundle implements Parcelable{
         out.writeString(vehicleID);
         out.writeString(phoneOther);
         out.writeBooleanArray(nullCheck);
-        if(nullCheck[0])
+        if(!nullCheck[0])
             out.writeValue(driverLicense);
         if(nullCheck[1])
             out.writeValue(otherLicense);
@@ -403,9 +408,8 @@ public class ClaimBundle implements Parcelable{
             out.writeValue(yourPlate);
         if(nullCheck[5])
             out.writeValue(otherPlate);
-        if(nullCheck[6]) {
+        if(nullCheck[6])
             out.writeString(imageListID);
-        }
     }
 
     public static final Parcelable.Creator<ClaimBundle> CREATOR = new Parcelable.Creator<ClaimBundle>() {

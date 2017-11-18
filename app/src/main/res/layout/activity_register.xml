@@ -57,6 +57,7 @@
                     android:textColorHint="@color/colorWhite"
                     android:layout_marginLeft="40dp"
                     android:layout_marginRight="5dp"
+                    android:backgroundTint="@color/transparent"
                     android:textSize="15dp"
                     android:layout_toRightOf="@+id/reg_username_img"
                     android:textColor="@color/colorWhite"/>
@@ -104,6 +105,7 @@
                     android:textColorHint="@color/colorWhite"
                     android:layout_marginLeft="40dp"
                     android:layout_marginRight="5dp"
+                    android:backgroundTint="@color/transparent"
                     android:textSize="15dp"
                     android:layout_toRightOf="@+id/reg_fn_img"
                     android:textColor="@color/colorWhite"/>
@@ -150,6 +152,7 @@
                     android:textColorHint="@color/colorWhite"
                     android:layout_marginLeft="40dp"
                     android:layout_marginRight="5dp"
+                    android:backgroundTint="@color/transparent"
                     android:textSize="15dp"
                     android:layout_toRightOf="@+id/reg_ln_img"
                     android:textColor="@color/colorWhite"/>
@@ -196,7 +199,9 @@
                     android:textColorHint="@color/colorWhite"
                     android:layout_marginLeft="40dp"
                     android:layout_marginRight="5dp"
+                    android:backgroundTint="@color/transparent"
                     android:textSize="15dp"
+                    android:inputType="number"
                     android:layout_toRightOf="@+id/reg_phone_img"
                     android:textColor="@color/colorWhite"/>
             </RelativeLayout>
@@ -269,6 +274,7 @@
                     android:textColorHint="@color/colorWhite"
                     android:layout_marginLeft="40dp"
                     android:layout_marginRight="5dp"
+                    android:backgroundTint="@color/transparent"
                     android:layout_toRightOf="@+id/reg_email_img"
                     android:textColor="@color/colorWhite"/>
             </RelativeLayout>
@@ -314,6 +320,7 @@
                     android:textColorHint="@color/colorWhite"
                     android:layout_marginLeft="40dp"
                     android:layout_marginRight="5dp"
+                    android:backgroundTint="@color/transparent"
                     android:textSize="15dp"
                     android:layout_toRightOf="@+id/reg_password_img"
                     android:textColor="@color/colorWhite"/>
@@ -350,8 +357,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_centerVertical="true"
                     android:src="@drawable/regpassword"
-                    android:scaleType="fitCenter"
-                    />
+                    android:scaleType="fitCenter" />
                 <EditText
                     android:id="@+id/reg_confirmpassword"
                     android:layout_width="match_parent"
@@ -360,13 +366,12 @@
                     android:textColorHint="@color/colorWhite"
                     android:layout_marginLeft="40dp"
                     android:layout_marginRight="5dp"
+                    android:backgroundTint="@color/transparent"
                     android:textSize="15dp"
                     android:layout_toRightOf="@+id/reg_confirmpassword_img"
                     android:textColor="@color/colorWhite"/>
             </RelativeLayout>
         </LinearLayout>
-
-
     </RelativeLayout>
     </ScrollView>
     <Button

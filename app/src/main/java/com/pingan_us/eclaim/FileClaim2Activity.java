@@ -20,6 +20,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -30,6 +32,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,13 +81,14 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
     private ProgressBar progressBar;
     private LinearLayout p1, p2, p3;
     private RelativeLayout background;
-    private Button next_btn, cancel_btn;
-    private ImageView whole_scene, your_plate, other_plate;
+    private Button next_btn, back_btn;
+    private ImageView whole_scene, your_plate, other_plate, cancel_btn;
     private static FileClaim2Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_fileclaim2);
 
         claim_id = getIntent().getStringExtra("claimID");
@@ -99,7 +103,8 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         activity = this;
 
         next_btn = (Button) findViewById(R.id.start_step3_button);
-        cancel_btn = (Button) findViewById(R.id.step3_cancel_button);
+        back_btn = (Button) findViewById(R.id.step2_back_button);
+        cancel_btn = (ImageView) findViewById(R.id.fc2_cancel_button);
 
         default_grid = (GridLayout) findViewById(R.id.default_pic_grid);
 
@@ -133,6 +138,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         l2.setOnClickListener(this);
         l3.setOnClickListener(this);
         next_btn.setOnClickListener(this);
+        back_btn.setOnClickListener(this);
         cancel_btn.setOnClickListener(this);
 
         picList = new ArrayList<Bitmap>();
@@ -147,7 +153,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
 
         titleList.add(MyAppConstants.morePic);
 
-        adapter = new CustomList(FileClaim2Activity.this, titleList, picList);
+        adapter = new CustomList(FileClaim2Activity.this, titleList, picList, MyAppConstants.tapToRemove);
         list=(ListView)findViewById(R.id.photo_list);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -172,6 +178,10 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
                 }
             }
         });
+
+        cancel_btn.setVisibility(View.INVISIBLE);
+        next_btn.setVisibility(View.INVISIBLE);
+        doAnimation();
     }
 
     @Override
@@ -212,10 +222,16 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
                 background.setAlpha((float) 0.5);
                 uploadImageGroup();
                 break;
-            case R.id.step3_cancel_button:
-                Intent intent = new Intent(this, HomeActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            case R.id.step2_back_button:
+                Intent intent = new Intent(this, FileClaim1Activity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(intent);
+                finish();
+                break;
+            case R.id.fc2_cancel_button:
+                Intent intent1 = new Intent(this, HomeActivity.class);
+                intent1.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent1);
                 break;
         }
     }
@@ -439,6 +455,21 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         return activity;
     }
 
-    @Override
-    public void onBackPressed() {}
+    public void doAnimation() {
+        RelativeLayout scrollView = findViewById(R.id.fc2_view);
+
+        final Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up_in);
+        final Animation alpha = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.alpha);
+        scrollView.startAnimation(slideUp);
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                back_btn.setVisibility(View.VISIBLE);
+                next_btn.setVisibility(View.VISIBLE);
+                back_btn.startAnimation(alpha);
+                next_btn.startAnimation(alpha);
+            }
+        }, 1000);
+    }
 }

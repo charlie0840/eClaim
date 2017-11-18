@@ -14,6 +14,9 @@ public class MyAppConstants {
     public static final String emptyOtherPlate_FC2 = "Please upload the picture of other's plate";
     public static final String morePic = "More Pictures";
 
+    public static final String tapToRemove = "Tap here to remove";
+    public static final String selectTime = "Please select time to continue";
+
     public static final String regUNEmpty = "user name must not be empyt";
     public static final String regFNEmpty = "first name must not be empty";
     public static final String regLNEmpty = "last name must not be empty";

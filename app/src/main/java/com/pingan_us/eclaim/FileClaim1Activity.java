@@ -34,6 +34,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -45,6 +47,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -71,6 +74,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.w3c.dom.Text;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -93,45 +98,44 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
     private ClaimBundle claim = new ClaimBundle();
 
-    protected Spinner vehicle_spinner, vehicle_num_spinner;
-    protected RadioButton I_rbtn, other_rbtn;
-    protected Button next_btn, cancel_btn, time_btn, set_btn, add_person_btn;
-    protected CheckBox injure_box, present_box, drivable_box;
-
-
     private Calendar date;
     private DatePicker datePicker;
     private TimePicker timePicker;
     private AlertDialog alertDialog;
 
     private GoogleMap mMap;
-    private View fg,dialogView;
+    private View dialogView;
     private ProgressBar spinner;
+    private RadioButton I_rbtn, other_rbtn;
     private SupportMapFragment mapFragment;
     private EditText other_driver_phone_txt;
     private GoogleApiClient googleApiClient;
-    private TextView loc_indicate_txt, loc_indicate_txt_1;
-    private ImageView other_drive_pic, other_insur_pic, add_person_pic;
+    private Spinner vehicle_spinner, vehicle_num_spinner;
+    private CheckBox injure_box, present_box, drivable_box;
+    private Button next_btn,back_btn, add_person_btn;
+    private ImageView other_drive_pic, other_insur_pic, add_person_pic, cancel_btn;
+    private TextView loc_indicate_txt, loc_indicate_txt_1, time_indicator, time_btn;
     private RelativeLayout injure_section, present_section, drivable_section, loc_section, background, other_driver_section;
 
-    private int vehicle_id;
     private long time;
     private ArrayAdapter<String> adapter;
-    private List<byte[]> byteList = new ArrayList<byte[]>();
-    private List<String> carIDList = new ArrayList<String>();
-    private List<String> vehicleList = new ArrayList<String>();
-    private String location_txt = "", time_txt = "", claim_id = "", phone_txt = "";
     private int drive_or_insur;
     private double longitude = 0, latitude = 0;
-    private boolean mLocationPermissionGranted = false;
     private Bitmap p1 = null, p2 = null, p3 = null;
     private ParseFile f1 = null, f2 = null, f3 = null;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0, MY_CAMERA_REQUEST_CODE = 1, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
-    private static final int GET_LOC_REQUEST = 1, ACTIVITY_SELECT_IMAGE = 2, DRIVE = 1, INSUR = 2, ADD_PERSON = 3;
+    private boolean mLocationPermissionGranted = false;
+    private List<byte[]> byteList = new ArrayList<byte[]>();
+    private List<String> vehicleList = new ArrayList<String>();
+    private String location_txt = "", time_txt = "", phone_txt = "";
+    private static final int GET_LOC_REQUEST = 1, ACTIVITY_SELECT_IMAGE = 2, DRIVE = 1,
+            INSUR = 2, ADD_PERSON = 3;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0, MY_CAMERA_REQUEST_CODE = 1,
+            MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_fileclaim1);
 
         activity = this;
@@ -153,16 +157,20 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         spinner = (ProgressBar) findViewById(R.id.fc1_progressBar);
         spinner.setVisibility(View.GONE);
 
+        time_btn = (TextView) findViewById(R.id.time_picker_btn);
+        time_indicator = (TextView) findViewById(R.id.fc1_time_indicator);
         loc_indicate_txt = (TextView) findViewById(R.id.loc_indicate_text);
         loc_indicate_txt_1 = (TextView) findViewById(R.id.loc_indicate_text_1);
         other_driver_phone_txt = (EditText) findViewById(R.id.other_driver_phone);
 
-        I_rbtn = (RadioButton) findViewById(R.id.I_pick_radiobutton);
-        other_rbtn = (RadioButton) findViewById(R.id.other_pick_radiobutton);
-        add_person_btn = (Button) findViewById(R.id.add_person_pick_button);
+        back_btn = (Button) findViewById(R.id.step1_back_button);
         next_btn = (Button) findViewById(R.id.start_step2_button);
-        cancel_btn = (Button) findViewById(R.id.step1_cancel_button);
-        time_btn = (Button) findViewById(R.id.time_picker_btn);
+        I_rbtn = (RadioButton) findViewById(R.id.I_pick_radiobutton);
+        cancel_btn = (ImageView) findViewById(R.id.fc1_cancel_button);
+        add_person_btn = (Button) findViewById(R.id.add_person_pick_button);
+        other_rbtn = (RadioButton) findViewById(R.id.other_pick_radiobutton);
+
+        time_indicator.setText(MyAppConstants.selectTime);
 
         other_drive_pic = (ImageView) findViewById(R.id.other_driver_license_pic);
         other_insur_pic = (ImageView) findViewById(R.id.other_insurance_card_pic);
@@ -179,8 +187,6 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         drivable_section = (RelativeLayout) findViewById(R.id.drivable_section);
         other_driver_section = (RelativeLayout) findViewById(R.id.other_driver_section);
         other_driver_section.setVisibility(View.GONE);
-
-        fg = (View) findViewById(R.id.map);
 
         if(ParseUser.getCurrentUser() == null) {
             Intent intent = new Intent(this, LoginActivity.class);
@@ -229,6 +235,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         other_driver_phone_txt.setOnKeyListener(this);
 
         next_btn.setOnClickListener(this);
+        back_btn.setOnClickListener(this);
         cancel_btn.setOnClickListener(this);
         I_rbtn.setOnClickListener(this);
         other_rbtn.setOnClickListener(this);
@@ -267,12 +274,16 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 Date date = new Date(time);
                 time_txt = date.toString();
 
-                time_btn.setText(date.toString());
+                time_indicator.setText(date.toString());
                 alertDialog.dismiss();
             }
         });
         alertDialog.setView(dialogView);
         w = getWindow();
+
+        back_btn.setVisibility(View.GONE);
+        next_btn.setVisibility(View.INVISIBLE);
+        doAnimation();
     }
 
     @Override
@@ -330,10 +341,16 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 spinner.setVisibility(View.VISIBLE);
                 uploadData();
                 break;
-            case R.id.step1_cancel_button:
+            case R.id.fc1_cancel_button:
                 Intent intent = new Intent(this, HomeActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+                this.finish();
+                break;
+            case R.id.step1_back_button:
+                Intent intent2 = new Intent(this, HomeActivity.class);
+                intent2.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent2);
                 this.finish();
                 break;
             case R.id.drivable_section:
@@ -366,8 +383,8 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                     I_rbtn.setChecked(false);
                 break;
             case R.id.loc_indicate_text:
-                Intent intent2 = new Intent(this, MapActivity.class);
-                startActivityForResult(intent2, GET_LOC_REQUEST);
+                Intent intent3 = new Intent(this, MapActivity.class);
+                startActivityForResult(intent3, GET_LOC_REQUEST);
                 break;
             case R.id.other_driver_license_pic:
                 if (checkPermissionREAD_EXTERNAL_STORAGE(this)) {
@@ -591,13 +608,15 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 return "No location selected, please click here to pick location";
             Address obj = addresses.get(0);
             String add = obj.getAddressLine(0);
-            add = add + "\n" + obj.getCountryName();
-            add = add + "\n" + obj.getCountryCode();
+            add = add + "\n" + obj.getLocality();
+            ///add = add + "\n" + obj.getCountryName();
+            add = add + "\n" + obj.getSubAdminArea();
+            //add = add + "\n" + obj.getCountryCode();
             add = add + "\n" + obj.getAdminArea();
             add = add + "\n" + obj.getPostalCode();
-            add = add + "\n" + obj.getSubAdminArea();
-            add = add + "\n" + obj.getLocality();
-            add = add + "\n" + obj.getSubThoroughfare();
+
+            add+="\nLatitude: " + Double.toString(lat) + "\nLongitude: " + Double.toString(lng);
+            //add = add + "\n" + obj.getSubThoroughfare();
             retStr = add;
 
         } catch (IOException e) {
@@ -709,6 +728,24 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         } else {
             return true;
         }
+    }
+
+    public void doAnimation() {
+        ScrollView scrollView = findViewById(R.id.fc1_scroll_section);
+
+        final Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up_in);
+        final Animation alpha = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.alpha);
+        scrollView.startAnimation(slideUp);
+        final android.os.Handler handler = new android.os.Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //cancel_btn.setVisibility(View.VISIBLE);
+                next_btn.setVisibility(View.VISIBLE);
+                //cancel_btn.startAnimation(alpha);
+                next_btn.startAnimation(alpha);
+            }
+        }, 1000);
     }
 
 }

@@ -2,46 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <RelativeLayout
-            android:id="@+id/loc_search_box_section"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
-            <Button
-                android:id="@+id/loc_search_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:textSize="15dp"
-                android:text=" search "
-                android:background="@drawable/btn_background"/>
-            <EditText
-                android:id="@+id/loc_search_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/loc_search_btn"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="10dp"
-                android:layout_centerVertical="true"
-                android:textSize="20dp"
-                android:hint="Location">
-                <requestFocus/>
-            </EditText>
-        </RelativeLayout>
+        android:layout_height="match_parent">
         <RelativeLayout
             android:id="@+id/loc_section_test"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/time_section"
-            android:layout_margin="5dp">
+            android:background="@drawable/cycle">
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:id="@+id/map_test"
@@ -56,22 +24,53 @@
                 android:layout_alignBottom="@+id/map_test"
                 android:layout_alignParentLeft="true"
                 android:layout_margin="10dp"
-                android:background="@drawable/btn_background"
                 android:src="@drawable/locateicon"
+                android:background="@drawable/cycle"
                 android:scaleType="fitCenter"
-                android:alpha="0.6"/>
+                android:alpha="0.7"/>
             <Button
                 android:id="@+id/loc_confirm_button"
-                android:layout_width="160dp"
+                android:layout_width="140dp"
                 android:layout_height="40dp"
                 android:layout_centerHorizontal="true"
                 android:layout_alignBottom="@+id/map_test"
                 android:background="@drawable/btn_background"
-                android:alpha="0.6"
+                android:alpha="0.7"
                 android:text="Confirm"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:layout_margin="10dp"/>
         </RelativeLayout>
-    </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/loc_search_box_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
+            android:layout_margin="10dp">
+            <Button
+                android:id="@+id/loc_search_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginRight="5dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:textSize="15dp"
+                android:text="  search  "
+                android:background="@drawable/btn_background"/>
+            <EditText
+                android:id="@+id/loc_search_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/loc_search_btn"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_centerVertical="true"
+                android:backgroundTint="@color/transparent"
+                android:textSize="15dp"
+                android:hint="Location">
+                <requestFocus/>
+            </EditText>
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 </RelativeLayout>
