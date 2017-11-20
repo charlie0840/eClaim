@@ -112,7 +112,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.home_file_claim_btn:
-                Intent intent2 = new Intent(getApplicationContext(), FileClaim1Activity.class); //fixed
+                Intent intent2 = new Intent(this, FileClaim1Activity.class); //fixed
                 intent2.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent2);
                 if(ViewClaimt.getInstance() != null)
@@ -171,9 +171,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     public void doAnimation() {
         ScrollView scrollView = findViewById(R.id.home_scroll_view);
 
-        final Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up_in);
-        final Animation alpha = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.alpha);
-        final Animation scale = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale);
+        final Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_in);
+        final Animation alpha = AnimationUtils.loadAnimation(this, R.anim.alpha);
+        final Animation scale = AnimationUtils.loadAnimation(this, R.anim.scale);
         scrollView.startAnimation(slideUp);
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

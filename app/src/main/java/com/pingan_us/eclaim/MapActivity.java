@@ -219,7 +219,7 @@ public class MapActivity extends FragmentActivity implements View.OnClickListene
                 e.printStackTrace();
             }
             if(addressList.size() == 0)
-                Toast.makeText(getApplicationContext(), "Location not found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Location not found", Toast.LENGTH_SHORT).show();
             else {
                 Address address = addressList.get(0);
                 LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());

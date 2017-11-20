@@ -62,6 +62,8 @@ public class FileClaim3Activity extends AppCompatActivity implements View.OnClic
 
         auto_repair_spinner = (Spinner) findViewById(R.id.auto_repair_spinner);
 
+        auto_repair_spinner.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+
         repairList.add("ATS Mobile Bumper Repair");
         repairList.add("Collision Consultants Auto Repair");
         repairList.add("Legit Automitive");
@@ -79,6 +81,9 @@ public class FileClaim3Activity extends AppCompatActivity implements View.OnClic
         cancel_btn.setOnClickListener(this);
         confirm_btn.setOnClickListener(this);
 
+        back_btn.setVisibility(View.INVISIBLE);
+        confirm_btn.setVisibility(View.INVISIBLE);
+
         doAnimation();
     }
 
@@ -89,7 +94,7 @@ public class FileClaim3Activity extends AppCompatActivity implements View.OnClic
                 background.setAlpha((float) 0.5);
                 progressBar.setVisibility(View.VISIBLE);
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                claim.uploadClaimBundle(getWindow(), getApplicationContext());
+                claim.uploadClaimBundle(getWindow(), this);
                 break;
             case R.id.step3_back_button:
                 deleteImageList(false);
@@ -133,8 +138,8 @@ public class FileClaim3Activity extends AppCompatActivity implements View.OnClic
     public void doAnimation() {
         RelativeLayout scrollView = findViewById(R.id.fc3_view);
 
-        final Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up_in);
-        final Animation alpha = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.alpha);
+        final Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_in);
+        final Animation alpha = AnimationUtils.loadAnimation(this, R.anim.alpha);
         scrollView.startAnimation(slideUp);
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

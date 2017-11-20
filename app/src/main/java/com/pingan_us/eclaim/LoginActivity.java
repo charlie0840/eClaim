@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 user_name = username.getText().toString();
                 user_password = password.getText().toString();
                 if(user_name.length() == 0) {
-                    Toast.makeText(getApplicationContext(), "please enter user name", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "please enter user name", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 background.setAlpha((float) 0.5);
@@ -99,7 +99,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 logIn();
                 break;
             case R.id.registerbutton:
-                Intent intent3 = new Intent(getApplicationContext(), RegisterActivity.class);
+                Intent intent3 = new Intent(this, RegisterActivity.class);
                 intent3.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent3);
                 break;
@@ -124,9 +124,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Intent shortcutintent = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
         shortcutintent.putExtra("duplicate", false);
         shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "eClaim");
-        Parcelable icon = Intent.ShortcutIconResource.fromContext(getApplicationContext(), R.drawable.app);
+        Parcelable icon = Intent.ShortcutIconResource.fromContext(this, R.drawable.app);
         shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, icon);
-        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(getApplicationContext(), LoginActivity.class));
+        shortcutintent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent(this, LoginActivity.class));
         sendBroadcast(shortcutintent);
     }
 
@@ -141,7 +141,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                     enabled = true;
                     Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                    //intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                     finish();
                 }
@@ -169,7 +168,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onBackPressed() {}
 
     private void savePreferences() {
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, getApplicationContext().MODE_PRIVATE);
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, this.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
 
         UnameValue = username.getText().toString();
@@ -178,7 +177,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void loadPreference() {
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, getApplicationContext().MODE_PRIVATE);
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, this.MODE_PRIVATE);
 
         UnameValue = settings.getString(PREF_UNAME, DefaultUnameValue);
         username.setText(UnameValue);

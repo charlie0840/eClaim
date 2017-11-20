@@ -313,7 +313,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
                     HomeActivity.getActivity().finish();
                 if(ViewClaimt.getInstance() != null)
                     ViewClaimt.getInstance().finish();
-                Intent intent2 = new Intent(getApplicationContext(), LoginActivity.class); //fixed
+                Intent intent2 = new Intent(this, LoginActivity.class); //fixed
                 intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent2.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                 finish();
@@ -352,14 +352,14 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     private void cameraIntent() {
         Toast.makeText(this, "camera!!!!", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        PackageManager pm = getApplicationContext().getPackageManager();
+        PackageManager pm = this.getPackageManager();
         if (ActivityCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
         } else {
             if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA))
                 startActivityForResult(intent, REQUEST_CAMERA);
             else
-                Toast.makeText(getApplicationContext(), "No camera detected", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "No camera detected", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -375,19 +375,19 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         Bitmap bm = null;
         Bitmap resBitmap = null;
         if (data != null) {
-            String path = Utility.getPath(getApplicationContext(), data.getData());
+            String path = Utility.getPath(this, data.getData());
             Uri uri = Uri.parse(new File(path).toString());
-            bm = Bitmap.createBitmap(Utility.compressImageUri(uri, 1024, 768, getApplicationContext()));
+            bm = Bitmap.createBitmap(Utility.compressImageUri(uri, 1024, 768, this));
             if(bm != null) {
                 resBitmap = Bitmap.createScaledBitmap(bm, bm.getWidth(), bm.getHeight(), true);
                 addToList(resBitmap);
             }
             else {
-                Toast.makeText(getApplicationContext(), "Failed to load image!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Failed to load image!", Toast.LENGTH_LONG).show();
             }
         }
         else {
-            Toast.makeText(getApplicationContext(), "Failed to load image", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Failed to load image", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -460,12 +460,12 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
         if (requestCode == MY_CAMERA_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
-                PackageManager pm = getApplicationContext().getPackageManager();
+                PackageManager pm = this.getPackageManager();
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (pm.hasSystemFeature(PackageManager.FEATURE_CAMERA))
                     startActivityForResult(intent, REQUEST_CAMERA);
                 else
-                    Toast.makeText(getApplicationContext(), "No camera detected", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "No camera detected", Toast.LENGTH_LONG).show();
 
             } else {
                 Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
@@ -517,7 +517,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
 
     private void uploadImg(final Bitmap bmp) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        //Bitmap bmp1= Bitmap.createBitmap(Utility.compressImage(bmp, 1024, 768, getApplicationContext(), false));
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
         final byte[] byteArray = stream.toByteArray();
         final ParseFile file;
@@ -734,9 +733,9 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
     public void doAnimation() {
         ScrollView scrollView = findViewById(R.id.profile_scrollview);
 
-        final Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up_in);
-        final Animation alpha = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.alpha);
-        final Animation scale = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.scale);
+        final Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_in);
+        final Animation alpha = AnimationUtils.loadAnimation(this, R.anim.alpha);
+        final Animation scale = AnimationUtils.loadAnimation(this, R.anim.scale);
         scrollView.startAnimation(slideUp);
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

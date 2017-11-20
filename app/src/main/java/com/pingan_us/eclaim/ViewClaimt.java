@@ -1,18 +1,13 @@
 package com.pingan_us.eclaim;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.ListViewCompat;
 import android.util.Base64;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -30,28 +25,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import org.w3c.dom.Text;
-
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ViewClaimt extends AppCompatActivity implements View.OnClickListener{
 
-    private static final int WIDTH = 200, HEIGHT = 120;
-
     private int pos, limit = 5;
     private List<Bitmap> picList = new ArrayList<Bitmap>();
     private List<String> byteList = new ArrayList<>();
     private List<String> claimList, claimIDList = new ArrayList<String>(), claimIDASCList = new ArrayList<>();
-    private boolean noClaim = true, slideIn = true, isFirstPage = true;
+    private boolean slideIn = true, isFirstPage = true;
 
     private ImageView imHide;
     private ClaimCustomList adapter;
@@ -61,9 +50,9 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
     private Button prev_btn, next_btn;
     private ListView claim_list, pic_list;
     private CheckBox injure_cb, drivable_cb, atScene_cb;
-    private RelativeLayout list_section, claim_section, background,
+    private RelativeLayout list_section, background,
             other_driver_section;
-    private TextView vehicleNum_txt, time_txt, loc_txt, vehicleType_txt,
+    private TextView vehicleNum_txt, time_txt, loc_txt,
             whoDrive_txt, phoneOfOther_txt, claim_list_title;
     private ImageView driver_license_pic, other_license_pic, other_insurance_pic,
             whole_scene_pic, your_plate_pic, other_plate_pic;
@@ -97,7 +86,6 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         profile_nav.setOnClickListener(this);
 
         list_section = (RelativeLayout) findViewById(R.id.vc_list_section);
-        claim_section = (RelativeLayout) findViewById(R.id.vc_claim_section);
         other_driver_section = (RelativeLayout) findViewById(R.id.vc_other_driver_section);
         claim_list_title = (TextView) findViewById(R.id.vc_claim_list_title);
         imHide  = (ImageView) findViewById(R.id.vc_drawer_btn);
@@ -106,9 +94,9 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         claim_list_title.setVisibility(View.GONE);
         imHide.setImageResource(R.drawable.drawerout);
         final RelativeLayout vc_background = (RelativeLayout) findViewById(R.id.vc_background);
-        final Animation leftIn = AnimationUtils.loadAnimation(getApplicationContext(),
+        final Animation leftIn = AnimationUtils.loadAnimation(this,
                 R.anim.slide_left_in);
-        final Animation rightOut = AnimationUtils.loadAnimation(getApplicationContext(),
+        final Animation rightOut = AnimationUtils.loadAnimation(this,
                 R.anim.slide_right_in);
         imHide.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,7 +169,6 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         loc_txt = (TextView) findViewById(R.id.vc_loc_indicate_text);
         whoDrive_txt = (TextView) findViewById(R.id.vc_person_pick_text);
         vehicleNum_txt = (TextView) findViewById(R.id.vc_vehicle_num_text);
-        vehicleType_txt = (TextView) findViewById(R.id.vc_vehicle_pick_text);
         phoneOfOther_txt = (TextView) findViewById(R.id.vc_other_driver_phone_text);
 
         claimList = new ArrayList<String>();
@@ -198,22 +185,12 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                 intent.putExtra("isList", true);
                 intent.putExtra("claimData", claimIDList.get(pos));
                 if(isFirstPage) {
-                    //Bitmap bmp = picList.get(position);
-                    //ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    //bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    //byte[] byteArray = stream.toByteArray();
                     intent.putExtra("location", position);
-                    //intent.putExtra("imageByte",byteArray);
                     startActivity(intent);
                 }
                 else if(pic_list.getChildCount() != 0) {
                     loc = position + 5;
-                    //Bitmap bmp = picList.get(loc);
-                    //ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    //bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    //byte[] byteArray = stream.toByteArray();
                     intent.putExtra("location", loc);
-                    //intent.putExtra("imageByte",byteArray);
                     startActivity(intent);
                 }
             }
@@ -338,7 +315,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                 picToGet = "driverLicense";
                 break;
         }
-        Intent intent = new Intent(getApplicationContext(), photoActivity.class);
+        Intent intent = new Intent(this, photoActivity.class);
         intent.putExtra("isList", false);
         intent.putExtra("imageData", picToGet);
         intent.putExtra("claimData", claimIDList.get(pos));
@@ -352,8 +329,13 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
             @Override
             public void done(List<ParseObject> currClaims, ParseException e) {
                 if(e == null) {
-                    if(currClaims.size() == 0)
+                    if(currClaims.size() == 0) {
+                        Toast.makeText(getApplicationContext(), "Claim not found", Toast.LENGTH_LONG).show();
+                        background.setAlpha((float) 0);
+                        progressBar.setVisibility(View.GONE);
+                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                         return;
+                    }
                     ParseObject currClaim = currClaims.get(0);
                     boolean injured = (boolean)currClaim.get("injured");
                     boolean drivable = (boolean)currClaim.get("drivable");
@@ -472,6 +454,13 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                     }
                     loadMorePictures(0, limit);
                 }
+                else {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+                    background.setAlpha((float) 0);
+                    progressBar.setVisibility(View.GONE);
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                }
             }
         });
     }
@@ -526,8 +515,6 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                 background.setAlpha((float) 0);
             }
         }
-        if(claimIDList.size() != 0)
-            noClaim = false;
         claimList.clear();
         adapter.notifyDataSetInvalidated();
         for(int i = 0; i < claimIDASCList.size(); i++) {

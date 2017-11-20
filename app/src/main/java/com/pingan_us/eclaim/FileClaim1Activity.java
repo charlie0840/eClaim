@@ -284,6 +284,8 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         back_btn.setVisibility(View.GONE);
         next_btn.setVisibility(View.INVISIBLE);
         doAnimation();
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
     @Override
@@ -313,27 +315,27 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 if(this.getCurrentFocus() != null)
                     inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                 if(phone_txt.equals("") && !vehicle_num_spinner.getSelectedItem().toString().equals("1")) {
-                    Toast.makeText(getApplicationContext(), "Please input the phone number", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Please input the phone number", Toast.LENGTH_LONG).show();
                     break;
                 }
                 if(time_txt.equals("")){
-                    Toast.makeText(getApplicationContext(), "Please select the time", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Please select the time", Toast.LENGTH_LONG).show();
                     break;
                 }
                 if(location_txt.equals("")) {
-                    Toast.makeText(getApplicationContext(), "Please select the location", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Please select the location", Toast.LENGTH_LONG).show();
                     break;
                 }
                 if(byteList.get(0) == null && other_rbtn.isChecked()) {
-                    Toast.makeText(getApplicationContext(), "Please select picutre for driver license", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Please select picutre for driver license", Toast.LENGTH_LONG).show();
                     break;
                 }
                 if(byteList.get(1) == null && !vehicle_num_spinner.getSelectedItem().toString().equals("1")) {
-                    Toast.makeText(getApplicationContext(), "Please select picture for driver license", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Please select picture for driver license", Toast.LENGTH_LONG).show();
                     break;
                 }
                 if(byteList.get(2) == null && !vehicle_num_spinner.getSelectedItem().toString().equals("1")) {
-                    Toast.makeText(getApplicationContext(), "Please select picture for driver license of other driver", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Please select picture for driver license of other driver", Toast.LENGTH_LONG).show();
                     break;
                 }
                 getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -510,7 +512,6 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
          */
         LatLng latLng = new LatLng(latitude, longitude);
         if(mMap == null){
-            //Toast.makeText(getApplicationContext(), "map null!!!!", Toast.LENGTH_LONG).show();
             return;
         }
         mMap.addMarker(new MarkerOptions()
@@ -565,15 +566,15 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
         }
         else if(requestCode == ACTIVITY_SELECT_IMAGE) {
             if(resultCode == RESULT_OK){
-                String path = Utility.getPath(getApplicationContext(), data.getData());
+                String path = Utility.getPath(this, data.getData());
                 Uri uri = Uri.parse(new File(path).toString());
                 Bitmap bm=null;
                 if (data != null) {
-                        bm = Utility.compressImageUri(uri, 1024, 768, getApplicationContext());
+                        bm = Utility.compressImageUri(uri, 1024, 768, this);
                 }
                 if(drive_or_insur == DRIVE) {
                     if(bm == null) {
-                        Toast.makeText(getApplicationContext(), "Failed to load image", Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, "Failed to load image", Toast.LENGTH_LONG).show();
                     }
                     else {
                         p2 = Bitmap.createScaledBitmap(bm, bm.getWidth(), bm.getHeight(), true);
@@ -636,12 +637,12 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                 time_txt, location_txt, vehicle_spinner.getSelectedItem().toString(), vehicle_num_spinner.getSelectedItem().toString(), phone_txt);
         background.setAlpha((float) 0.5);
         claim.uploadStep1Image(vehicle_num_spinner.getSelectedItem().toString(), I_rbtn.isChecked(),
-                byteList, w, getApplicationContext(), background);
+                byteList, w, this, background);
     }
 
     private void uploadImg(final Bitmap bmp, final int action) {
         if(bmp == null) {
-            Toast.makeText(getApplicationContext(), "Please select picture of insurance card of other driver", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please select picture of insurance card of other driver", Toast.LENGTH_LONG).show();
             return;
         }
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -733,8 +734,8 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
     public void doAnimation() {
         ScrollView scrollView = findViewById(R.id.fc1_scroll_section);
 
-        final Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up_in);
-        final Animation alpha = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.alpha);
+        final Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_in);
+        final Animation alpha = AnimationUtils.loadAnimation(this, R.anim.alpha);
         scrollView.startAnimation(slideUp);
         final android.os.Handler handler = new android.os.Handler();
         handler.postDelayed(new Runnable() {

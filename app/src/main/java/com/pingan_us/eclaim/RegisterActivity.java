@@ -131,14 +131,14 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
 
     private void onSelectFromGalleryResult(Intent data) {
         if (data != null) {
-            String path = Utility.getPath(getApplicationContext(), data.getData());
+            String path = Utility.getPath(this, data.getData());
             Uri uri = Uri.parse(new File(path).toString());
-            picBinary = Bitmap.createBitmap(Utility.compressImageUri(uri, 640, 480, getApplicationContext()));
+            picBinary = Bitmap.createBitmap(Utility.compressImageUri(uri, 640, 480, this));
             Bitmap yourSelectedImage = Bitmap.createScaledBitmap(picBinary, 640, 480, true);
             PHOTO.setImageBitmap(yourSelectedImage);
         }
         else {
-            Toast.makeText(getApplicationContext(), "Failed to get picture", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Failed to get picture", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -190,43 +190,43 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                 user_password = USER_PASSWORD.getText().toString();
                 confirm_password = CONFIRM_PASSWORD.getText().toString();
                 if(user_name.length() == 0) {
-                    Toast.makeText(getApplicationContext(), MyAppConstants.regUNEmpty, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, MyAppConstants.regUNEmpty, Toast.LENGTH_SHORT).show();
                     USER_PASSWORD.setText("");
                     CONFIRM_PASSWORD.setText("");
                 }
                 if(first_name.length() == 0) {
-                    Toast.makeText(getApplicationContext(), MyAppConstants.regFNEmpty, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, MyAppConstants.regFNEmpty, Toast.LENGTH_SHORT).show();
                     USER_PASSWORD.setText("");
                     CONFIRM_PASSWORD.setText("");
                 }
                 else if(last_name.length() == 0) {
-                    Toast.makeText(getApplicationContext(), MyAppConstants.regLNEmpty, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, MyAppConstants.regLNEmpty, Toast.LENGTH_SHORT).show();
                     USER_PASSWORD.setText("");
                     CONFIRM_PASSWORD.setText("");
                 }
                 else if(phone.length() == 0) {
-                    Toast.makeText(getApplicationContext(), MyAppConstants.regPhoneEmpty, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, MyAppConstants.regPhoneEmpty, Toast.LENGTH_SHORT).show();
                     USER_PASSWORD.setText("");
                     CONFIRM_PASSWORD.setText("");
                 }
                 else if(email_address.length() == 0) {
-                    Toast.makeText(getApplicationContext(), MyAppConstants.regEAEmpty, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, MyAppConstants.regEAEmpty, Toast.LENGTH_SHORT).show();
                     USER_PASSWORD.setText("");
                     CONFIRM_PASSWORD.setText("");
                 }
                 else if(user_password.length() < 2) {
-                    Toast.makeText(getApplicationContext(), MyAppConstants.regPWLength, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, MyAppConstants.regPWLength, Toast.LENGTH_SHORT).show();
                     USER_PASSWORD.setText("");
                     CONFIRM_PASSWORD.setText("");
                 }
                 else if(picBinary == null) {
-                    Toast.makeText(getApplicationContext(), MyAppConstants.regUPEmpty, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, MyAppConstants.regUPEmpty, Toast.LENGTH_SHORT).show();
                     USER_PASSWORD.setText("");
                     CONFIRM_PASSWORD.setText("");
                 }
                 else {
                     if (!user_password.equals(confirm_password)) {
-                        Toast.makeText(getApplicationContext(), MyAppConstants.regPWMatch, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, MyAppConstants.regPWMatch, Toast.LENGTH_SHORT).show();
                         USER_PASSWORD.setText("");
                         CONFIRM_PASSWORD.setText("");
                     }
@@ -241,7 +241,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                 }
                 break;
             case R.id.reg_cancel_btn:
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
                 finish();
                 break;
@@ -283,7 +283,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
 
     private void cameraIntent() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        PackageManager pm = getApplicationContext().getPackageManager();
+        PackageManager pm = this.getPackageManager();
         if (ActivityCompat.checkSelfPermission(RegisterActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(RegisterActivity.this, new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
         }

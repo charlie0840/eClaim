@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.PermissionRequest;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -95,7 +97,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
 
         claim = (ClaimBundle) getIntent().getParcelableExtra("ClaimBundle");
 
-        Toast.makeText(getApplicationContext(), "after " + claim.returnTime(), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "after " + claim.returnTime(), Toast.LENGTH_LONG).show();
 
 
         w = getWindow();
@@ -179,7 +181,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             }
         });
 
-        cancel_btn.setVisibility(View.INVISIBLE);
+        back_btn.setVisibility(View.INVISIBLE);
         next_btn.setVisibility(View.INVISIBLE);
         doAnimation();
     }
@@ -206,15 +208,15 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.start_step3_button:
                 if(f1 == null) {
-                    Toast.makeText(getApplicationContext(), MyAppConstants.emptyWholeScene_FC2, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, MyAppConstants.emptyWholeScene_FC2, Toast.LENGTH_LONG).show();
                     break;
                 }
                 if(f2 == null) {
-                    Toast.makeText(getApplicationContext(), MyAppConstants.emptyYourPlate_FC2, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, MyAppConstants.emptyYourPlate_FC2, Toast.LENGTH_LONG).show();
                     break;
                 }
                 if(f3 == null) {
-                    Toast.makeText(getApplicationContext(), MyAppConstants.emptyOtherPlate_FC2, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, MyAppConstants.emptyOtherPlate_FC2, Toast.LENGTH_LONG).show();
                     break;
                 }
                 progressBar.setVisibility(View.VISIBLE);
@@ -252,16 +254,28 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
                     if (android.os.Build.VERSION.SDK_INT >= 23) {
                         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
+                            if(checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+                                cameraIntent();
+                            else
+                                dialog.dismiss();
                         }
                         else
                             cameraIntent();
                     }
-                    else
-                        cameraIntent();
+                    else {
+                        int permission = PermissionChecker.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA);
+                        if(permission == PermissionChecker.PERMISSION_GRANTED) {
+                            cameraIntent();
+                        }
+                        else
+                            dialog.dismiss();
+                    }
                 } else if (items[item].equals("Choose from Library")) {
                     userChoosenTask="Choose from Library";
                     if(result)
                         galleryIntent();
+                    else
+                        dialog.dismiss();
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
@@ -272,15 +286,19 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
 
     private void cameraIntent() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        PackageManager pm = getApplicationContext().getPackageManager();
+        PackageManager pm = this.getPackageManager();
+        if(PermissionChecker.checkSelfPermission(this, Manifest.permission.CAMERA) != PermissionChecker.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Permisison Denied", Toast.LENGTH_LONG).show();
+            return;
+        }
         if(pm.hasSystemFeature(PackageManager.FEATURE_CAMERA))
             startActivityForResult(intent, REQUEST_CAMERA);
         else
-            Toast.makeText(getApplicationContext(), "No camera detected", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No camera detected", Toast.LENGTH_LONG).show();
     }
 
     private void galleryIntent() {
-        Intent intent = new Intent(getApplicationContext(), MultiImageSelectorActivity.class);
+        Intent intent = new Intent(this, MultiImageSelectorActivity.class);
         if(change_or_insert == INSERT_IMAGE) {
             intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, 9 - picList.size() + 1);
             intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_MULTI);
@@ -312,7 +330,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             File image = new File(path.get(i));
             final Uri currUri = Uri.fromFile(image);
             //decode bitmap from uri
-            ReceiverThread thread = new ReceiverThread(currUri, 1024, 768, getApplicationContext());
+            ReceiverThread thread = new ReceiverThread(currUri, 1280, 960, this);
             Thread th = new Thread(thread);
             th.start();
             try {
@@ -343,7 +361,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         FileOutputStream fout;
         try {
             fout = new FileOutputStream(destination);
-            thumbnail.compress(Bitmap.CompressFormat.PNG, 70, fout);
+            thumbnail.compress(Bitmap.CompressFormat.PNG, 100, fout);
             fout.flush();
             fout.close();
         } catch (Exception e) {
@@ -362,8 +380,8 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Bitmap resBitmap = Bitmap.createScaledBitmap(thumbnail, thumbnail.getWidth()/2, thumbnail.getHeight()/2, true);
-        Bitmap bmp = Bitmap.createBitmap(Utility.compressImage(uri, thumbnail, 1024, 768, getApplicationContext(), true));
+        Bitmap resBitmap = Bitmap.createScaledBitmap(thumbnail, thumbnail.getWidth(), thumbnail.getHeight(), true);
+        Bitmap bmp = Bitmap.createBitmap(Utility.compressImage(uri, thumbnail, 1280, 960, this, true));
         if(which_loc != MORE)
             uploadImg(bmp, which_loc);
         if(change_or_insert == INSERT_IMAGE)
@@ -382,7 +400,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
                     else if(userChoosenTask.equals("Choose from Library"))
                         galleryIntent();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Access Denied, please grant eClaim the access to gallery/camera!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Access Denied, please grant eClaim the access to gallery/camera!", Toast.LENGTH_LONG).show();
                 }
                 break;
             case MY_CAMERA_REQUEST_CODE:
@@ -448,7 +466,7 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
             strList.add(Base64.encodeToString(byteArray, Base64.DEFAULT));
             byteList.add(byteArray);
         }
-        claim.setStep2Bundle(singleByteList, w, strList, getApplicationContext(), background);
+        claim.setStep2Bundle(singleByteList, w, strList, this, background);
     }
 
     public static FileClaim2Activity getInstance() {
@@ -458,8 +476,8 @@ public class FileClaim2Activity extends AppCompatActivity implements View.OnClic
     public void doAnimation() {
         RelativeLayout scrollView = findViewById(R.id.fc2_view);
 
-        final Animation slideUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_up_in);
-        final Animation alpha = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.alpha);
+        final Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_in);
+        final Animation alpha = AnimationUtils.loadAnimation(this, R.anim.alpha);
         scrollView.startAnimation(slideUp);
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
