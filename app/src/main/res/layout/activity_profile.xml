@@ -100,7 +100,9 @@
                 <RelativeLayout
                     android:id="@+id/entire_id_section"
                     android:alpha="0.6"
-                    android:layout_margin="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:clickable="true"
@@ -155,7 +157,9 @@
                 <RelativeLayout
                     android:id="@+id/entire_vehicle_section"
                     android:alpha="0.6"
-                    android:layout_margin="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
                     android:layout_height="300dp"
                     android:layout_width="match_parent"
                     android:layout_below="@+id/entire_id_section"

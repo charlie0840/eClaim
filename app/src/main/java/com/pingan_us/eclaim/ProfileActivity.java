@@ -331,7 +331,7 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
             public void onClick(DialogInterface dialog, int item) {
                 boolean result = Utility.checkPermission(ProfileActivity.this);
                 if (!result)
-                    Toast.makeText(getApplicationContext(), "no permission!!!!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "No permission!", Toast.LENGTH_LONG).show();
                 if (items[item].equals("Take Photo")) {
                     userChoosenTask = "Take Photo";
                     if (result)
@@ -350,7 +350,6 @@ public class ProfileActivity extends Activity implements View.OnClickListener {
 
     @TargetApi(23)
     private void cameraIntent() {
-        Toast.makeText(this, "camera!!!!", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         PackageManager pm = this.getPackageManager();
         if (ActivityCompat.checkSelfPermission(ProfileActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {

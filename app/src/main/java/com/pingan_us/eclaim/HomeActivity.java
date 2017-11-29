@@ -135,7 +135,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-
         if(requestCode == MY_CALL_REQUEST_CODE) {
             if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Intent callIntent = new Intent(Intent.ACTION_CALL);

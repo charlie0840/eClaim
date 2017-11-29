@@ -31,6 +31,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,7 +54,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
     private CheckBox injure_cb, drivable_cb, atScene_cb;
     private RelativeLayout list_section, background,
             other_driver_section;
-    private TextView vehicleNum_txt, time_txt, loc_txt,
+    private TextView vehicleNum_txt, time_txt, loc_txt, vehicle_txt,
             whoDrive_txt, phoneOfOther_txt, claim_list_title;
     private ImageView driver_license_pic, other_license_pic, other_insurance_pic,
             whole_scene_pic, your_plate_pic, other_plate_pic;
@@ -167,6 +169,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
 
         time_txt = (TextView) findViewById(R.id.vc_time_text);
         loc_txt = (TextView) findViewById(R.id.vc_loc_indicate_text);
+        vehicle_txt = (TextView) findViewById(R.id.vc_vehicle_pick_text);
         whoDrive_txt = (TextView) findViewById(R.id.vc_person_pick_text);
         vehicleNum_txt = (TextView) findViewById(R.id.vc_vehicle_num_text);
         phoneOfOther_txt = (TextView) findViewById(R.id.vc_other_driver_phone_text);
@@ -342,6 +345,18 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
                     boolean atScene = (boolean)currClaim.get("atScene");
                     boolean person = (boolean)currClaim.get("person");
                     boolean multiVehicle =false;
+
+                    String vehicleID = (String)currClaim.get("vehicleID");
+
+                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Vehicle");
+                    query.whereEqualTo("objectId", vehicleID);
+                    try {
+                        ParseObject obj = query.getFirst();
+                        String vehicleName = (String)obj.get("modelMake");
+                        vehicle_txt.setText(vehicleName);
+                    } catch (ParseException e1) {
+                        e1.printStackTrace();
+                    }
 
                     String vehicleNum = (String)currClaim.get("vehicleNum");
                     if(vehicleNum.equals("1")) {
