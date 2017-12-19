@@ -662,7 +662,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
     public void getVehicles() {
         ParseUser user = ParseUser.getCurrentUser();
-        final List<String> strList = new ArrayList<String>();
+        //final List<String> strList = new ArrayList<String>();
         List<String> vehicleIDList = new ArrayList<String>();
 
         if(user.get("vehicleID") != null)
@@ -670,7 +670,28 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Vehicle");
         query.whereContainedIn("objectId", vehicleIDList);
-        query.findInBackground(new FindCallback<ParseObject>() {
+        try {
+            List<ParseObject> results = query.find();
+            for(ParseObject object:results) {
+                String name = (String) object.get("modelMake");
+                vehicleList.add(name);
+            }
+            adapter.notifyDataSetChanged();
+            if(vehicleList.size() == 0) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("No Vehicle Found");
+                builder.setMessage("Please go to My Profile and add information of your vehicle");
+                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        cancel_btn.performClick();
+                    }
+                }).show();
+            }
+        } catch (ParseException e) {
+            Toast.makeText(this, "Failed to fetch data", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+        /*query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
                 if(e == null) {
@@ -683,7 +704,7 @@ public class FileClaim1Activity extends FragmentActivity implements View.OnClick
                     }
                 }
             }
-        });
+        });*/
     }
 
     public void showDialog(final Context context,
