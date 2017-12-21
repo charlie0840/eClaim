@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private final String DefaultUnameValue = "";
     private String UnameValue;
 
-    private Button login, register;
+    private Button login, register, tryBtn;
     private EditText username, password;
     private String user_name, user_password;
     private RelativeLayout background;
@@ -66,6 +66,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         background = (RelativeLayout) findViewById(R.id.login_background);
         progressBar = (ProgressBar) findViewById(R.id.login_progressBar);
 
+        tryBtn=(Button)findViewById(R.id.trybutton);
         login=(Button)findViewById(R.id.loginbutton);
         register = (Button)findViewById(R.id.registerbutton);
 
@@ -74,6 +75,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         register.setVisibility(View.VISIBLE);
 
         login.setOnClickListener(this);
+        tryBtn.setOnClickListener(this);
         register.setOnClickListener(this);
 
         username.setOnKeyListener(this);
@@ -85,6 +87,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
+            case R.id.trybutton:
+                user_name = "test4";
+                user_password = "11111";
+                background.setAlpha((float) 0.5);
+                progressBar.setVisibility(View.VISIBLE);
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                logIn();
+                break;
             case R.id.loginbutton:
                 user_name = username.getText().toString();
                 user_password = password.getText().toString();

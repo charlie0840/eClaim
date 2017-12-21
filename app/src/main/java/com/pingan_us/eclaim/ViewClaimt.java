@@ -42,7 +42,7 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
     private List<Bitmap> picList = new ArrayList<Bitmap>();
     private List<String> byteList = new ArrayList<>();
     private List<String> claimList, claimIDList = new ArrayList<String>(), claimIDASCList = new ArrayList<>();
-    private boolean slideIn = true, isFirstPage = true;
+    private boolean slideIn = true, isFirstPage = true, hasClaim = false;
 
     private ImageView imHide;
     private ClaimCustomList adapter;
@@ -183,6 +183,8 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         pic_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(!hasClaim)
+                    return;
                 int loc = 0;
                 Intent intent = new Intent(getApplicationContext(), photoActivity.class);
                 intent.putExtra("isList", true);
@@ -297,6 +299,8 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
     }
 
     public void openZoom(int id) {
+        if(!hasClaim)
+            return;
         String picToGet = "";
         switch(id) {
             case R.id.vc_whole_scene_pic:
@@ -535,6 +539,13 @@ public class ViewClaimt extends AppCompatActivity implements View.OnClickListene
         for(int i = 0; i < claimIDASCList.size(); i++) {
             claimList.add("NO: " + claimIDASCList.get(i));
         }
+
+        if(claimList.size() != 0) {
+            hasClaim = true;
+        }
+        else
+            hasClaim = false;
+
         adapter.notifyDataSetChanged();
     }
 

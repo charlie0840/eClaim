@@ -100,6 +100,16 @@
                     android:layout_gravity="center_horizontal"
                     android:alpha="0.6"
                     android:background="@drawable/btn_background" />
+                <Button
+                    android:id="@+id/trybutton"
+                    android:layout_width="148dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textSize="16dp"
+                    android:text="Try it out!"
+                    android:layout_gravity="center_horizontal"
+                    android:alpha="0.6"
+                    android:background="@drawable/btn_background" />
                 <TextView
                     android:id="@+id/login_forgetpw_button"
                     android:layout_width="wrap_content"
